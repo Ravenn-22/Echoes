@@ -1,0 +1,83 @@
+.Auth-container{
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f5f5f5;
+    font-family:  "Dancing Script", cursive;
+   perspective: 1200px;
+   
+   
+}
+.inner{
+    width: 100%px;
+    height: 500px;
+    position: relative;
+    transform-style: preserve-3d;
+     transition: transform 0.8s ease;
+     border-radius: 22px;
+}
+.card{
+    width: 380px;
+    height: 520px;
+    position: relative;
+}
+.flip .inner{
+    transform: rotateX(180deg);
+}
+.front{
+    position: absolute;
+    inset: 0;
+    background: white;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 15px 40x rgba(240, 5, 5, 0.784);
+    backface-visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.Auth-container h1{
+    text-align: center;
+      font-family:"Playfair Display";
+}
+form{
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+.Auth-container input{
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+}
+.Auth-container button{
+    background: black;
+    color: #ddd;
+    padding: 12px;
+    border-radius:8px ;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: 0.25s;
+}
+.Auth-container button:hover{
+    background: #333;
+}
+.Auth-container p{
+    text-align: center;
+    margin-top: 6px;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+.Auth-container span{
+    color: black;
+    font-weight: 600;
+    cursor: pointer;
+
+}
+
+.passwordField{
+    position: relative;
+}

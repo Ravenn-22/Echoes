@@ -1,0 +1,27 @@
+import axios from 'axios';
+
+const API = axios.create({
+    baseURL: 'http://localhost:3007/api'
+});
+
+API.interceptors.request.use((req) => {
+    if (localStorage.getItem('user')) {
+        req.headers.Authorization = `Bearer ${JSON.parse(localStorage.getItem('user')).token}`;
+    }
+    return req;
+});
+export const inviteMember = (id, email) => API.post(`/scrapbooks/${id}/invite`, { email });
+export const registerUser = (formData) => API.post('/auth/register', formData);
+export const loginUser = (formData) => API.post('/auth/login', formData);
+
+export const createScrapbook = (formData) => API.post('/scrapbooks', formData);
+export const getScrapbooks = () => API.get('/scrapbooks');
+export const getScrapbook = (id) => API.get(`/scrapbooks/${id}`);
+export const updateScrapbook = (id, formData) => API.put(`/scrapbooks/${id}`, formData);
+export const deleteScrapbook = (id) => API.delete(`/scrapbooks/${id}`);
+
+export const createMemory = (formData) => API.post('/memories', formData);
+export const getMemories = (scrapbookId) => API.get(`/memories?scrapbookId=${scrapbookId}`);
+export const getMemory = (id) => API.get(`/memories/${id}`);
+export const updateMemory = (id, formData) => API.put(`/memories/${id}`, formData);
+export const deleteMemory = (id) => API.delete(`/memories/${id}`);

@@ -52,7 +52,7 @@ const handleInvite = async (e) => {
                 formData.append('image', image);
 
                 const user = JSON.parse(localStorage.getItem('user'));
-                const { data } = await axios.post('http://localhost:3007/api/upload', formData, {
+                const { data } = await axios.post('https://echoes-j0mn.onrender.com/api/upload', formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                         Authorization: `Bearer ${user.token}`

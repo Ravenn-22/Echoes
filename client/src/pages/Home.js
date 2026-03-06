@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { getScrapbooks, createScrapbook, deleteScrapbook} from '../services/api';
 import { useNavigate } from 'react-router-dom';
 import './Home.css';
+import Loader from '../components/Loader'
 
 const Home = () => {
     const [scrapbooks, setScrapbooks] = useState([]);
@@ -11,7 +12,19 @@ const Home = () => {
     const [showForm, setShowForm] = useState(false);
     const { user, logout } = useAuth();
     const navigate = useNavigate();
+const [loading, setLoading] = useState(false);
 
+const fetchScrapbooks = async () => {
+    try {
+        setLoading(true);
+        const { data } = await getScrapbooks();
+        setScrapbooks(data);
+        setLoading(false);
+    } catch (error) {
+        console.log(error);
+        setLoading(false);
+    }
+};
     useEffect(() => {
         const fetchScrapbooks = async () => {
             try {
@@ -90,20 +103,19 @@ const handleDelete = async (id) => {
                 </div>
             )}
 
-          
+            
             <div className="scrapbooks-section">
                 <h2>Your Scrapbooks</h2>
-                {scrapbooks.length === 0 ? (
+            {loading ? (
+                <Loader />
+            ) : scrapbooks.length === 0 ? (
                     <div className="empty-state">
                         <p>No scrapbooks yet. Create your first one! 🌷</p>
                     </div>
                 ) : (
                     <div className="scrapbooks-grid">
                        {scrapbooks.map((scrapbook) => (
-    <div
-        key={scrapbook._id}
-        className="scrapbook-card"
-    >
+                         <div key={scrapbook._id}    className="scrapbook-card"  >
         <div onClick={() => navigate(`/scrapbook/${scrapbook._id}`)}>
             <div className="scrapbook-card-image">
                 {scrapbook.coverImage ? (
@@ -111,7 +123,8 @@ const handleDelete = async (id) => {
                 ) : (
                     '📸'
                 )}
-            </div>
+    </div>
+
             <h3>{scrapbook.title}</h3>
             <p>{scrapbook.description}</p>
         </div>

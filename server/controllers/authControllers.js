@@ -34,7 +34,7 @@ const registerUser = async (req, res) => {
     try {
         const { username, email, password } = req.body;
 
-        // Check if user already exists
+       
         const userExists = await User.findOne({ email });
         if (userExists) {
             return res.status(400).json({ message: 'User already exists' });
@@ -60,7 +60,7 @@ const registerUser = async (req, res) => {
             token
         });
     } catch (error) {
-        // Handle duplicate key errors specifically
+      
         if (error.code === 11000) {
             return res.status(400).json({ message: 'User already exists' });
         }

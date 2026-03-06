@@ -70,7 +70,7 @@ const handleLogin = async (e) => {
                         </form>
                         <div className="auth-switch">
                             Don't have an account?{' '}
-                            <span onClick={() => setIsFlipped(true)}>Register</span>
+                           <span onClick={() => { setIsFlipped(true); setError(''); }}>Register</span>
                         </div>
                     </div>
 
@@ -103,7 +103,7 @@ const handleLogin = async (e) => {
                         </form>
                         <div className="auth-switch">
                             Already have an account?{' '}
-                            <span onClick={() => setIsFlipped(false)}>Login</span>
+                            <span onClick={() => { setIsFlipped(false); setError(''); }}>Login</span>
                         </div>
                     </div>
 

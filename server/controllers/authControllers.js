@@ -30,7 +30,7 @@ const jwt = require ('jsonwebtoken');
 //         res.status(500).json({message: error.message})
 //     }
 // }
-const register = async (req, res) => {
+const registerUser = async (req, res) => {
     try {
         const { username, email, password } = req.body;
 

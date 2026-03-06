@@ -7,6 +7,7 @@ const Auth = () => {
     const [isFlipped, setIsFlipped] = useState(false);
     const [loginData, setLoginData] = useState({ email: '', password: '' });
     const [registerData, setRegisterData] = useState({ username: '', email: '', password: '' });
+    const [error, setError] = useState('');
 
     const { login, register } = useAuth();
     const navigate = useNavigate();
@@ -19,25 +20,27 @@ const Auth = () => {
         setRegisterData({ ...registerData, [e.target.name]: e.target.value });
     };
 
-    const handleLogin = async (e) => {
-        e.preventDefault();
-        try {
-            await login(loginData);
-            navigate('/home');
-        } catch (error) {
-            console.log(error);
-        }
-    };
+const handleLogin = async (e) => {
+    e.preventDefault();
+    setError('');
+    try {
+        await login(loginData);
+        navigate('/home');
+    } catch (error) {
+        setError(error.response?.data?.message || 'Something went wrong');
+    }
+};
 
-    const handleRegister = async (e) => {
-        e.preventDefault();
-        try {
-            await register(registerData);
-            navigate('/home');
-        } catch (error) {
-            console.log(error);
-        }
-    };
+   const handleRegister = async (e) => {
+    e.preventDefault();
+    setError('');
+    try {
+        await register(registerData);
+        navigate('/home');
+    } catch (error) {
+        setError(error.response?.data?.message || 'Something went wrong');
+    }
+};
 
     return (
         <div className="auth-container">
@@ -62,6 +65,7 @@ const Auth = () => {
                                 placeholder="Password"
                                 onChange={handleLoginChange}
                             />
+                            {error && <p className="auth-error">{error}</p>}
                             <button type="submit" className="auth-btn">Login</button>
                         </form>
                         <div className="auth-switch">
@@ -70,7 +74,7 @@ const Auth = () => {
                         </div>
                     </div>
 
-                    {/* BACK - REGISTER */}
+                   
                     <div className="card-back">
                         <div className="auth-logo">ECHOES</div>
                         <div className="auth-subtitle">Start capturing your beautiful moments ✨</div>
@@ -94,6 +98,7 @@ const Auth = () => {
                                 placeholder="Password"
                                 onChange={handleRegisterChange}
                             />
+                            {error && <p className="auth-error">{error}</p>}
                             <button type="submit" className="auth-btn">Register</button>
                         </form>
                         <div className="auth-switch">

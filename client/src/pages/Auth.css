@@ -149,6 +149,13 @@
 .auth-switch span:hover {
     color: #a0022c;
 }
+.auth-error {
+    color: #ff4d4d;
+    font-size: 0.85rem;
+    text-align: center;
+    margin-bottom: 10px;
+    font-family: 'Raleway', sans-serif;
+}
 
 @media (max-width: 480px) {
     .card-flip {

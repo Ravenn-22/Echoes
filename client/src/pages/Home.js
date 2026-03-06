@@ -14,7 +14,9 @@ const Home = () => {
     const navigate = useNavigate();
 const [loading, setLoading] = useState(false);
 
-const fetchScrapbooks = async () => {
+
+    useEffect(() => {
+        const fetchScrapbooks = async () => {
     try {
         setLoading(true);
         const { data } = await getScrapbooks();
@@ -25,15 +27,6 @@ const fetchScrapbooks = async () => {
         setLoading(false);
     }
 };
-    useEffect(() => {
-        const fetchScrapbooks = async () => {
-            try {
-                const { data } = await getScrapbooks();
-                setScrapbooks(data);
-            } catch (error) {
-                console.log(error);
-            }
-        };
         fetchScrapbooks();
     }, []);
 

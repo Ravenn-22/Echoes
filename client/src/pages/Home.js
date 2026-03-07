@@ -52,7 +52,7 @@ const handleDelete = async (id) => {
     };
     const handleLogout = () => {
         logout();
-        navigate('/auth');
+        navigate('/views');
     };
     
 

@@ -1,5 +1,5 @@
 const Memory = require('../models/Memory');
-const { io } = require('../server');
+const { getIO } = require('../config/socket');
 
 const createMemory = async (req, res) => {
     try {
@@ -16,7 +16,8 @@ const createMemory = async (req, res) => {
 
         const populatedMemory = await Memory.findById(memory._id).populate('createdBy', 'username');
 
-        io.to(scrapbook).emit('newMemory', populatedMemory);
+      const io = getIO();
+      io.to(scrapbook).emit('newMemory', populatedMemory);
 
         res.status(201).json(populatedMemory);
     } catch (error) {

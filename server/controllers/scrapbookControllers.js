@@ -22,8 +22,10 @@ const createScrapbook = async (req, res) => {
 };
 
 const getScrapbooks = async (req, res) => {
-    try {
-        const scrapbooks = await Scrapbook.find({ members: req.user._id });
+      try {
+        const scrapbooks = await Scrapbook.find({ members: req.user._id })
+            .populate('owner', 'username')
+            .populate('members', 'username');
         res.status(200).json(scrapbooks);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -31,8 +33,10 @@ const getScrapbooks = async (req, res) => {
 };
 
 const getScrapbook = async (req, res) => {
-    try {
-        const scrapbook = await Scrapbook.findById(req.params.id);
+   try {
+        const scrapbook = await Scrapbook.findById(req.params.id)
+            .populate('owner', 'username')
+            .populate('members', 'username');
 
         if (!scrapbook) {
             return res.status(404).json({ message: 'Scrapbook not found' });

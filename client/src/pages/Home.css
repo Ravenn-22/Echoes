@@ -260,6 +260,14 @@
     background: #88092b;
     color: white;
 }
+.scrapbook-meta {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    font-size: 0.8rem;
+    color: #232020;
+    font-family: 'Raleway', sans-serif;
+}
 
 @media (max-width: 768px) {
     .navbar {

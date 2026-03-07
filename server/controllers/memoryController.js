@@ -20,8 +20,9 @@ const createMemory = async (req, res) => {
 };
 
 const getMemories = async (req, res) => {
-    try {
-        const memories = await Memory.find({ scrapbook: req.query.scrapbookId });
+     try {
+        const memories = await Memory.find({ scrapbook: req.query.scrapbookId })
+            .populate('createdBy', 'username');
         res.status(200).json(memories);
     } catch (error) {
         res.status(500).json({ message: error.message });

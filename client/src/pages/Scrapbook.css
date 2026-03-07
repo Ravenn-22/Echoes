@@ -261,6 +261,41 @@
     background: #88092b;
     color: white;
 }
+.memory-date{
+    font-size: 0.75rem;
+    color: #9d062e;
+    text-align: center;
+    font-style: italic;
+    margin-top: 5px;
+
+}
+.memory-author {
+    font-size: 0.8rem;
+    color: #9d062e;
+    text-align: center;
+    margin-top: 5px;
+    font-family: 'Raleway', sans-serif;
+}
+
+.lightbox {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    cursor: pointer;
+}
+
+.lightbox img {
+    max-width: 90%;
+    max-height: 90vh;
+    object-fit: contain;
+    border-radius: 10px;
+}
+
+
 
 @media (max-width: 768px) {
     .navbar {

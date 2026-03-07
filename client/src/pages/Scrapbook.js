@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { getScrapbook, getMemories, createMemory, deleteMemory, inviteMember} from '../services/api';
 import axios from 'axios';
 import './Scrapbook.css';
-
+import Toast from "../components/Toast";
 
 const ScrapbookPage = () => {
     const [scrapbook, setScrapbook] = useState(null);
@@ -17,7 +17,8 @@ const ScrapbookPage = () => {
     const [creatingMemory, setCreatingMemory] = useState(false);
     const [deletingMemoryId, setDeletingMemoryId] = useState(null);
     const [inviting, setInviting] = useState(false);
-
+    const [toast, setToast] = useState(null)
+    
     useEffect(() => {
          const fetchData = async () => {
             try {
@@ -37,6 +38,8 @@ const ScrapbookPage = () => {
      const [inviteEmail, setInviteEmail] = useState('');
      const [showInvite, setShowInvite] = useState(false);
 
+     const [lightbox, setLightbox] = useState(null);
+
     const handleInvite = async (e) => {
     e.preventDefault();
     setInviting(true);
@@ -44,9 +47,9 @@ const ScrapbookPage = () => {
         await inviteMember(id, inviteEmail);
         setInviteEmail('');
         setShowInvite(false);
-        alert('Member invited successfully! 🎉');
+        setToast({ message: 'Member invited successfully! 🎉', type: 'success' });
     } catch (error) {
-        alert('User not found!');
+        setToast({ message: 'User not found or already a member!', type: 'error' });
     }finally {
         setInviting(false);
     }
@@ -77,10 +80,15 @@ const ScrapbookPage = () => {
             setTitle('');
             setDescription('');
             setImage(null);
+          setShowForm(false);
+        setToast({ message: 'Memory added successfully! 🌸', type: 'success' });
+
         } catch (error) {
             console.log(error);
+            setToast({ message: 'Failed to add memory', type: 'error' });
         }finally {
         setCreatingMemory(false);
+
     };}
 
 
@@ -89,8 +97,9 @@ const ScrapbookPage = () => {
     try {
         await deleteMemory(id);
         setMemories(memories.filter((m) => m._id !== id));
+         setToast({ message: 'Memory deleted!', type: 'success' });
     } catch (error) {
-        console.log(error);
+          setToast({ message: 'Failed to delete memory', type: 'error' });
     }finally {
         setDeletingMemoryId(null);
     }
@@ -179,6 +188,14 @@ const ScrapbookPage = () => {
                                 </div>
                                 <h3>{memory.title}</h3>
                                 <p>{memory.description}</p>
+                                <p className="memory-author">📸 {memory.createdBy?.username}</p>
+                                <p className='memory-date'>
+                                    {new Date(memory.CreatedAt).toLocaleDateString('en-US', {
+                                        year: 'numeric',
+                                        month: 'long',
+                                        day: 'numeric'
+                                    })}
+                                </p>
                                  <button className="delete-btn" onClick={() => handleDeleteMemory(memory._id)} disabled={deletingMemoryId === memory._id}>
                                        {deletingMemoryId === memory._id ? 'Deleting...' : 'Delete'}
 </button>
@@ -187,6 +204,18 @@ const ScrapbookPage = () => {
                     </div>
                 )}
             </div>
+            {toast && (
+    <Toast
+        message={toast.message}
+        type={toast.type}
+        onClose={() => setToast(null)}
+    />
+)}
+{lightbox && (
+    <div className="lightbox" onClick={() => setLightbox(null)}>
+        <img src={lightbox} alt="full view" />
+    </div>
+)}
         </div>
     );
 };

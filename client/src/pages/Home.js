@@ -4,6 +4,9 @@ import { getScrapbooks, createScrapbook, deleteScrapbook} from '../services/api'
 import { useNavigate } from 'react-router-dom';
 import './Home.css';
 import Loader from '../components/Loader'
+import Toast from '../components/Toast'
+import axios from 'axios';
+
 
 const Home = () => {
     const [scrapbooks, setScrapbooks] = useState([]);
@@ -13,7 +16,9 @@ const Home = () => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
 const [loading, setLoading] = useState(false);
+const [ cover, setCover] = useState(null);
 
+const [toast, setToast] = useState(null)
 
     useEffect(() => {
         const fetchScrapbooks = async () => {
@@ -33,21 +38,37 @@ const [loading, setLoading] = useState(false);
     const handleCreate = async (e) => {
         e.preventDefault();
         try {
+            let coverImage = '';
+            if(cover) {
+                const formData =new FormData();
+                formData.append('image', cover);
+
+                const user =JSON.parse(localStorage.getItem('user'));
+                const { data } =await axios.post('https://echoes-j0mn.onrender.com/api/upload', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        Authorization: `Bearer  ${user.token}`
+                    }
+                })
+                coverImage = data.imageUrl
+            }
             const { data } = await createScrapbook({ title, description });
             setScrapbooks([...scrapbooks, data]);
             setTitle('');
             setDescription('');
             setShowForm(false);
+            setToast({ message: 'Scrapbook created successfully! 🎉', type: 'success' });
         } catch (error) {
-            console.log(error);
+            setToast({message: 'Failed to create Scrapbook', type:'error'});
         }
     };
 const handleDelete = async (id) => {
         try {
             await deleteScrapbook(id);
             setScrapbooks(scrapbooks.filter((s) => s._id !== id));
+            setToast({ message: 'Scrapbook deleted!', type: 'success' });
         } catch (error) {
-            console.log(error);
+           setToast({ message: 'Failed to delete scrapbook', type: 'error' });
         }
     };
     const handleLogout = () => {
@@ -91,6 +112,11 @@ const handleDelete = async (id) => {
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
                         />
+                        <input 
+                        type='file'
+                        accept='image/*'
+                        onChange={(e)=> setCover(e.target.files[0])}
+                        />
                         <button type="submit">Create</button>
                     </form>
                 </div>
@@ -120,6 +146,10 @@ const handleDelete = async (id) => {
 
             <h3>{scrapbook.title}</h3>
             <p>{scrapbook.description}</p>
+            <div className="scrapbook-meta">
+                <span>👤 {scrapbook.owner?.username}</span>
+                <span>👥 {scrapbook.members?.length} members</span>
+            </div>
         </div>
         <button
             className="delete-btn"
@@ -136,6 +166,13 @@ const handleDelete = async (id) => {
                     </div>
                 )}
             </div>
+            {toast && (
+    <Toast
+        message={toast.message}
+        type={toast.type}
+        onClose={() => setToast(null)}
+    />
+)}
         </div>
         
     );

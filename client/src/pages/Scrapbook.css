@@ -294,7 +294,14 @@
     object-fit: contain;
     border-radius: 10px;
 }
+.memory-meta{
 
+color:#777;
+margin-top:6px;
+ font-size: 0.8rem;
+ font-weight: 500;
+    text-align: center;
+}
 
 
 @media (max-width: 768px) {

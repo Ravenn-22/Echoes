@@ -22,7 +22,7 @@ const Views = ( ) => {
                     <p>Memories are love letters we write to our future selves. They are the soft proof that we lived, that we felt deeply, that ordinary days once shimmered in golden light. A shared laugh, a quiet sunset, a random photo taken at the wrong angle — these are the little treasures that grow sweeter with time. Some moments don’t ask to be remembered — they just quietly become unforgettable. The way someone looked at you when you weren’t paying attention. The laughter that echoed a little too long. The soft stillness of a day that felt ordinary but somehow perfect. </p>
                     <p>Keeping memories isn’t about holding on to the past; it’s about honoring the moments that shaped your heart. It’s about saving the warmth of a hug, the sparkle in someone’s eyes, the way happiness once felt in your chest. When you look back, those preserved pieces remind you that love existed there — and still does</p>
                    
-                    <span className="logs"> <span className="register"><Link to="/auth">Get Started</Link></span> <span className="login">  <Link to="/auth">Login</Link></span>  </span>
+                    <span className="logs"> <span className="register"><Link to="/auth">Get Started</Link></span>   </span>
                       </div>
                      
                 </div>

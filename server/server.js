@@ -7,6 +7,8 @@ const authRoutes = require('./routes/authRoutes');
 const scrapbookRoutes = require('./routes/scrapBookRoutes');
 const memoryRoutes = require('./routes/memoryRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
+const notificationRoutes = require( "./routes/notificationRoutes.js");
+
 
 const app = express();
 connectDB();
@@ -23,7 +25,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/scrapbooks', scrapbookRoutes);
 app.use('/api/memories', memoryRoutes);
 app.use('/api/upload', uploadRoutes);
-
+app.use("/api/notifications", notificationRoutes);
 
 app.use((err, req, res, next) => {
     console.error(err.stack)

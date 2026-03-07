@@ -27,9 +27,11 @@ const ScrapbookPage = () => {
             try {
                 setLoading(true);
                 const { data: scrapbookData } = await getScrapbook(id);
+                console.log("Scrapbook:", scrapbookData);
                 setScrapbook(scrapbookData);
 
                 const { data: memoriesData } = await getMemories(id);
+                console.log("Memories:", memoriesData)
                 setMemories(memoriesData);
                  setLoading(false);
             } catch (error) {
@@ -185,25 +187,32 @@ const ScrapbookPage = () => {
                 ) : (
                     <div className="memories-grid">
                         {memories.map((memory) => (
+                     
                             <div key={memory._id} className="memory-card">
+                               
                                 <div className="memory-card-image">
                                     {memory.image ? (
-                                        <img src={memory.image} alt={memory.title} />
+                                        <img 
+                                        src={memory.image} alt={memory.title}
+                                        onClick={() => setLightbox(memory.image)}
+                                            style={{cursor: 'pointer'}}
+                                        
+                                        />
                                     ) : (
                                         '🌸'
                                     )}
-                                  
+                                 
                                 </div>
                                 <h3>{memory.title}</h3>
                                 <p>{memory.description}</p>
-                                <p className="memory-author">📸 {memory.createdBy?.username}</p>
-                                <p className='memory-date'>
-                                    {new Date(memory.CreatedAt).toLocaleDateString('en-US', {
-                                        year: 'numeric',
-                                        month: 'long',
-                                        day: 'numeric'
-                                    })}
-                                </p>
+                               
+                                
+                                {/* <p className='memory-date'>
+                                     {new Date(memory.createdAt).toLocaleString()}
+                                    </p> */}
+                                    <p className="memory-meta">
+  By {memory.createdBy?.username} • {new Date(memory.createdAt).toLocaleDateString()}
+</p>
                                  <button className="delete-btn" onClick={() => handleDeleteMemory(memory._id)} disabled={deletingMemoryId === memory._id}>
                                        {deletingMemoryId === memory._id ? 'Deleting...' : 'Delete'}
 </button>

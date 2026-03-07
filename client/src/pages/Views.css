@@ -65,20 +65,17 @@ section p, .article-p{
     align-items: end;
     justify-content: end;
 }
-.register,.login{
+.register{
     font-family: "Lobster Two", sans-serif;
   font-weight: 400;
   font-style: italic;
-    padding: .8rem 1.2rem;
+    padding: .8rem 2.2rem;
     margin: .8rem;
     border-radius: 12px;
      cursor: pointer;
-    background-color: #232020;
+   background: #72011f;
 }
-.login{
-    background: #72011f;
-    
-}
+
 .logs a{
     color: #fff;
     text-decoration: none;

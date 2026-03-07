@@ -6,6 +6,7 @@ import './Home.css';
 import Loader from '../components/Loader'
 import Toast from '../components/Toast'
 import axios from 'axios';
+import { getNotifications } from '../services/api';
 
 
 const Home = () => {
@@ -13,9 +14,9 @@ const Home = () => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [showForm, setShowForm] = useState(false);
-    const { user, logout } = useAuth();
+    const { user } = useAuth();
     const navigate = useNavigate();
-    
+
 const [loading, setLoading] = useState(false);
 const [ cover, setCover] = useState(null);
 
@@ -48,19 +49,22 @@ const [toast, setToast] = useState(null)
                 const { data } =await axios.post('https://echoes-j0mn.onrender.com/api/upload', formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
-                        Authorization: `Bearer  ${user.token}`
+                        Authorization: `Bearer ${user.token}`
                     }
                 })
                 coverImage = data.imageUrl
+                
             }
             const { data } = await createScrapbook({ title, description, coverImage });
             setScrapbooks([...scrapbooks, data]);
             setTitle('');
             setDescription('');
+            setCover(null);
             setShowForm(false);
             setToast({ message: 'Scrapbook created successfully! 🎉', type: 'success' });
         } catch (error) {
             setToast({message: 'Failed to create Scrapbook', type:'error'});
+            console.log("Scrapbook creation error:", error.response?.data || error);
         }
     };
 const handleDelete = async (id) => {
@@ -73,10 +77,25 @@ const handleDelete = async (id) => {
         }
     };
     const handleLogout = () => {
-        logout();
-        navigate('/views');
+        localStorage.removeItem("user");
+        navigate('/', {replace: true });
+       
     };
     
+    const [notifications, setNotifications] = useState([]);
+  useEffect(() => {
+    const fetchNotifications = async () => {
+        try {
+            const { data } = await getNotifications();
+            console.log("Notifications:", data);
+            setNotifications(data);
+        } catch (err) {
+            console.error("Failed to fetch notifications:", err.response?.status, err.response?.data);
+        }
+    };
+    fetchNotifications();
+}, []);
+
 
     return (
         <div className='home-container'>
@@ -85,6 +104,7 @@ const handleDelete = async (id) => {
                 <div className="navbar-logo">ECHOES</div>
                 <div className="navbar-user">
                     <span className="navbar-username">Hello, {user?.username} 🌸</span>
+                    <div className="notification-icon">🔔 {notifications.length}</div>
                     <button className="logout-btn" onClick={handleLogout}>Logout</button>
                 </div>
             </nav>
@@ -139,7 +159,7 @@ const handleDelete = async (id) => {
         <div onClick={() => navigate(`/scrapbook/${scrapbook._id}`)}>
             <div className="scrapbook-card-image">
                 {scrapbook.coverImage ? (
-                    <img src={scrapbook.coverImage} alt={scrapbook.title} />
+                    <img src={scrapbook.coverImage} alt={scrapbook.title} className="scrapbook-cover"/>
                 ) : (
                     '📸'
                 )}
@@ -151,6 +171,7 @@ const handleDelete = async (id) => {
                 <span>👤 {scrapbook.owner?.username}</span>
                 <span>👥 {scrapbook.members?.length} members</span>
             </div>
+    
         </div>
         <button
             className="delete-btn"

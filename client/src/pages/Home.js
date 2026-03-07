@@ -6,7 +6,7 @@ import './Home.css';
 import Loader from '../components/Loader'
 import Toast from '../components/Toast'
 import axios from 'axios';
-import { getNotifications } from '../services/api';
+
 
 
 const Home = () => {
@@ -82,21 +82,6 @@ const handleDelete = async (id) => {
        
     };
     
-    const [notifications, setNotifications] = useState([]);
-  useEffect(() => {
-    const fetchNotifications = async () => {
-        try {
-            const { data } = await getNotifications();
-            console.log("Notifications:", data);
-            setNotifications(data);
-        } catch (err) {
-            console.error("Failed to fetch notifications:", err.response?.status, err.response?.data);
-        }
-    };
-    fetchNotifications();
-}, []);
-
-
     return (
         <div className='home-container'>
            
@@ -104,7 +89,7 @@ const handleDelete = async (id) => {
                 <div className="navbar-logo">ECHOES</div>
                 <div className="navbar-user">
                     <span className="navbar-username">Hello, {user?.username} 🌸</span>
-                    <div className="notification-icon">🔔 {notifications.length}</div>
+                    {/* <div className="notification-icon">🔔 {notifications.length}</div> */}
                     <button className="logout-btn" onClick={handleLogout}>Logout</button>
                 </div>
             </nav>

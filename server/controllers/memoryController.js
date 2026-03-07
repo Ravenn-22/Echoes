@@ -1,7 +1,5 @@
 const Memory = require('../models/Memory');
-const Notification = require("../models/notification.js");
-const Scrapbook = require ( "../models/Scrapbook.js");
-
+const { io } = require('../server');
 
 const createMemory = async (req, res) => {
     try {
@@ -15,25 +13,12 @@ const createMemory = async (req, res) => {
             scrapbook,
             createdBy: req.user._id
         });
-        const scrapbooks = await Scrapbook.findById(req.body.scrapbook);
 
-for (const member of scrapbooks.members) {
+        const populatedMemory = await Memory.findById(memory._id).populate('createdBy', 'username');
 
-   
-    if (member.toString() !== req.user._id.toString()) {
+        io.to(scrapbook).emit('newMemory', populatedMemory);
 
-        await Notification.create({
-            user: member,
-            message: `${req.user.username} added a new memory`,
-            scrapbook: scrapbooks._id
-        });
-
-    }
-}
-
-
-        res.status(201).json(memory);
-        
+        res.status(201).json(populatedMemory);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -100,16 +85,5 @@ const deleteMemory = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
-
-
-const getNotifications = async (req, res) => {
-
-    const notifications = await Notification
-        .find({ user: req.user._id })
-        .sort({ createdAt: -1 });
-
-    res.json(notifications);
-};
-
 
 module.exports = { createMemory, getMemories, getMemory, updateMemory, deleteMemory };

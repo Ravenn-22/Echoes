@@ -42,4 +42,3 @@ export const uploadImage = async (file) => {
     return response.data.imageUrl; 
 };
 
-export const getNotifications = () => API.get("/notifications");

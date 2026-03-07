@@ -5,6 +5,8 @@ import axios from 'axios';
 import './Scrapbook.css';
 import Loader from '../components/Loader';
 import Toast from "../components/Toast";
+import {io} from 'socket.io-client';
+
 
 const ScrapbookPage = () => {
     const [scrapbook, setScrapbook] = useState(null);
@@ -23,15 +25,25 @@ const ScrapbookPage = () => {
 
     
     useEffect(() => {
+        const socket = io('https://echoes-j0mn.onrender.com');
+    
+    socket.emit('joinScrapbook', id);
+
+    socket.on('newMemory', (memory) => {
+        setMemories((prev) => {
+            const exists = prev.find((m) => m._id === memory._id);
+            if (exists) return prev;
+            setToast({ message: `${memory.createdBy?.username} added a new memory! 🌸`, type: 'success' });
+            return [...prev, memory];
+        });
+    });
          const fetchData = async () => {
             try {
                 setLoading(true);
                 const { data: scrapbookData } = await getScrapbook(id);
-                console.log("Scrapbook:", scrapbookData);
                 setScrapbook(scrapbookData);
 
                 const { data: memoriesData } = await getMemories(id);
-                console.log("Memories:", memoriesData)
                 setMemories(memoriesData);
                  setLoading(false);
             } catch (error) {
@@ -39,7 +51,12 @@ const ScrapbookPage = () => {
             } setLoading(false);
         };
         fetchData();
+
+    return () => {
+        socket.disconnect();
+    };
     }, [id]);
+    
 
 
      const [inviteEmail, setInviteEmail] = useState('');

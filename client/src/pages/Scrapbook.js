@@ -4,6 +4,7 @@ import { getScrapbook, getMemories, createMemory, deleteMemory, inviteMember} fr
 import axios from 'axios';
 import './Scrapbook.css';
 
+
 const ScrapbookPage = () => {
     const [scrapbook, setScrapbook] = useState(null);
     const [memories, setMemories] = useState([]);
@@ -13,9 +14,12 @@ const ScrapbookPage = () => {
     const [showForm, setShowForm] = useState(false);
     const { id } = useParams();
     const navigate = useNavigate();
+    const [creatingMemory, setCreatingMemory] = useState(false);
+    const [deletingMemoryId, setDeletingMemoryId] = useState(null);
+    const [inviting, setInviting] = useState(false);
 
     useEffect(() => {
-        const fetchData = async () => {
+         const fetchData = async () => {
             try {
                 const { data: scrapbookData } = await getScrapbook(id);
                 setScrapbook(scrapbookData);
@@ -28,22 +32,29 @@ const ScrapbookPage = () => {
         };
         fetchData();
     }, [id]);
-const [inviteEmail, setInviteEmail] = useState('');
-const [showInvite, setShowInvite] = useState(false);
 
-const handleInvite = async (e) => {
+
+     const [inviteEmail, setInviteEmail] = useState('');
+     const [showInvite, setShowInvite] = useState(false);
+
+    const handleInvite = async (e) => {
     e.preventDefault();
+    setInviting(true);
     try {
         await inviteMember(id, inviteEmail);
         setInviteEmail('');
         setShowInvite(false);
         alert('Member invited successfully! 🎉');
     } catch (error) {
-        alert('User not found or already a member!');
+        alert('User not found!');
+    }finally {
+        setInviting(false);
     }
-};
+    };
+ 
     const handleCreate = async (e) => {
         e.preventDefault();
+        setCreatingMemory(true);
         try {
             let imageUrl = '';
 
@@ -66,17 +77,22 @@ const handleInvite = async (e) => {
             setTitle('');
             setDescription('');
             setImage(null);
-            setShowForm(false);
         } catch (error) {
             console.log(error);
-        }
-    };
-const handleDeleteMemory = async (id) => {
+        }finally {
+        setCreatingMemory(false);
+    };}
+
+
+    const handleDeleteMemory = async (id) => {
+    setDeletingMemoryId(id);
     try {
         await deleteMemory(id);
         setMemories(memories.filter((m) => m._id !== id));
     } catch (error) {
         console.log(error);
+    }finally {
+        setDeletingMemoryId(null);
     }
 };
     return (
@@ -104,7 +120,9 @@ const handleDeleteMemory = async (id) => {
                 value={inviteEmail}
                 onChange={(e) => setInviteEmail(e.target.value)}
             />
-            <button type="submit">Invite</button>
+            <button type="submit" disabled={inviting}>
+    {inviting ? 'Inviting...' : 'Invite'}
+</button>
         </form>
     </div>
 )}
@@ -134,7 +152,9 @@ const handleDeleteMemory = async (id) => {
                             accept="image/*"
                             onChange={(e) => setImage(e.target.files[0])}
                         />
-                        <button type="submit">Add Memory</button>
+                        <button type="submit" disabled={creatingMemory}>
+    {creatingMemory ? 'Adding memory...' : 'Add Memory'}
+</button>
                     </form>
                 </div>
             )}
@@ -159,12 +179,9 @@ const handleDeleteMemory = async (id) => {
                                 </div>
                                 <h3>{memory.title}</h3>
                                 <p>{memory.description}</p>
-                                 <button
-            className="delete-btn"
-            onClick={() => handleDeleteMemory(memory._id)}
-        >
-            Delete
-        </button>
+                                 <button className="delete-btn" onClick={() => handleDeleteMemory(memory._id)} disabled={deletingMemoryId === memory._id}>
+                                       {deletingMemoryId === memory._id ? 'Deleting...' : 'Delete'}
+</button>
                             </div>
                         ))}
                     </div>

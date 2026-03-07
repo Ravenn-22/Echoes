@@ -18,11 +18,12 @@ app.use(cors({
 
 app.use(express.json());
 
+
 app.use('/api/auth', authRoutes);
 app.use('/api/scrapbooks', scrapbookRoutes);
 app.use('/api/memories', memoryRoutes);
-app.use('/uploads', express.static('uploads'));
 app.use('/api/upload', uploadRoutes);
+
 
 app.use((err, req, res, next) => {
     console.error(err.stack)

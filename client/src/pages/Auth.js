@@ -12,6 +12,8 @@ const Auth = () => {
     const { login, register } = useAuth();
     const navigate = useNavigate();
 
+    const [loading, setLoading ] = useState(false);
+
     const handleLoginChange = (e) => {
         setLoginData({ ...loginData, [e.target.name]: e.target.value });
     };
@@ -23,22 +25,28 @@ const Auth = () => {
 const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
+    setLoading(true);
     try {
         await login(loginData);
         navigate('/home');
     } catch (error) {
         setError(error.response?.data?.message || 'Something went wrong');
+    }finally{
+        setLoading(false)
     }
 };
 
    const handleRegister = async (e) => {
     e.preventDefault();
     setError('');
+     setLoading(true);
     try {
         await register(registerData);
         navigate('/home');
     } catch (error) {
         setError(error.response?.data?.message || 'Something went wrong');
+    }finally{
+        setLoading(false)
     }
 };
 
@@ -66,7 +74,7 @@ const handleLogin = async (e) => {
                                 onChange={handleLoginChange}
                             />
                             {error && <p className="auth-error">{error}</p>}
-                            <button type="submit" className="auth-btn">Login</button>
+                            <button type="submit" className="auth-btn" disabled={loading}>{loading ? 'Please wait... ' : 'Login'} </button>
                         </form>
                         <div className="auth-switch">
                             Don't have an account?{' '}
@@ -99,7 +107,7 @@ const handleLogin = async (e) => {
                                 onChange={handleRegisterChange}
                             />
                             {error && <p className="auth-error">{error}</p>}
-                            <button type="submit" className="auth-btn">Register</button>
+                            <button type="submit" className="auth-btn" disabled={loading} > {loading ? 'Creating account...':'Register'}</button>
                         </form>
                         <div className="auth-switch">
                             Already have an account?{' '}

@@ -25,3 +25,19 @@ export const getMemories = (scrapbookId) => API.get(`/memories?scrapbookId=${scr
 export const getMemory = (id) => API.get(`/memories/${id}`);
 export const updateMemory = (id, formData) => API.put(`/memories/${id}`, formData);
 export const deleteMemory = (id) => API.delete(`/memories/${id}`);
+
+export const uploadImage = async (file) => {
+    const formData = new FormData();
+    formData.append('image', file);
+
+    const user = JSON.parse(localStorage.getItem('user'));
+
+    const response = await API.post('/upload', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${user.token}`
+        }
+    });
+
+    return response.data.imageUrl; 
+};

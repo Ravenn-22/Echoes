@@ -15,6 +15,7 @@ const Home = () => {
     const [showForm, setShowForm] = useState(false);
     const { user, logout } = useAuth();
     const navigate = useNavigate();
+    
 const [loading, setLoading] = useState(false);
 const [ cover, setCover] = useState(null);
 
@@ -52,7 +53,7 @@ const [toast, setToast] = useState(null)
                 })
                 coverImage = data.imageUrl
             }
-            const { data } = await createScrapbook({ title, description });
+            const { data } = await createScrapbook({ title, description, coverImage });
             setScrapbooks([...scrapbooks, data]);
             setTitle('');
             setDescription('');

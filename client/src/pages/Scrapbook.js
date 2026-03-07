@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { getScrapbook, getMemories, createMemory, deleteMemory, inviteMember} from '../services/api';
 import axios from 'axios';
 import './Scrapbook.css';
+import Loader from '../components/Loader';
 import Toast from "../components/Toast";
 
 const ScrapbookPage = () => {
@@ -18,18 +19,22 @@ const ScrapbookPage = () => {
     const [deletingMemoryId, setDeletingMemoryId] = useState(null);
     const [inviting, setInviting] = useState(false);
     const [toast, setToast] = useState(null)
+    const [loading, setLoading] = useState(false);
+
     
     useEffect(() => {
          const fetchData = async () => {
             try {
+                setLoading(true);
                 const { data: scrapbookData } = await getScrapbook(id);
                 setScrapbook(scrapbookData);
 
                 const { data: memoriesData } = await getMemories(id);
                 setMemories(memoriesData);
+                 setLoading(false);
             } catch (error) {
                 console.log(error);
-            }
+            } setLoading(false);
         };
         fetchData();
     }, [id]);
@@ -171,7 +176,9 @@ const ScrapbookPage = () => {
      
             <div className="memories-section">
                 <h2>Memories</h2>
-                {memories.length === 0 ? (
+                 {loading ? (
+                     <Loader />
+                 )  : memories.length === 0 ? (
                     <div className="empty-state">
                         <p>No memories yet. Add your first one! 🌸</p>
                     </div>
@@ -185,6 +192,7 @@ const ScrapbookPage = () => {
                                     ) : (
                                         '🌸'
                                     )}
+                                  
                                 </div>
                                 <h3>{memory.title}</h3>
                                 <p>{memory.description}</p>

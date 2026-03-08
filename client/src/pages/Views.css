@@ -356,9 +356,11 @@ footer{
     .messy h1 { font-size: 2rem; width: 35rem; }
     .art-p { width: auto; margin-top: 2rem; }
     .art-p p { font-size: 1.2rem; }
-    footer { height: auto; padding: 1rem; }
+    footer { height: auto; padding: 1rem; 
+    
+    overflow: hidden;}
     .foot-deets { height: 35vh; justify-content: space-evenly; }
     .foot-img { opacity: 1; transform: rotate(-90deg); width: 15rem; height: 20rem; }
-    .foot-img-b { width: 18rem; height: 23rem; margin-top: -3rem; }
+    .foot-img-b { width: 18rem; max-height: 100%; object-fit: cover; margin-top: -3rem; }
     .footer-h { font-size: 2.5rem; margin-left: 2rem; }
 }

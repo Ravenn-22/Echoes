@@ -76,7 +76,8 @@ So take the pictures. Write the notes. Keep the ticket stubs. Because one day, t
                
                 <img src=" https://i.pinimg.com/736x/78/f7/40/78f740aa43990b255e0dc1400e1649cf.jpg" alt="" className="foot-img"></img> 
                 <h2 className="footer-h">PERFECTLY IMPERFECT MEMORIES  <br></br>ARE THE ART OUR EXPERIENCES<br></br> LEAVE BEHIND</h2>
-                  <img src=" https://i.pinimg.com/736x/fa/8a/20/fa8a2070803582d31e1471b365a944b7.jpg" alt="" className="foot-img-b"></img> 
+                  <img src=" https://i.pinimg.com/736x/fa/8a/20/fa8a2070803582d31e1471b365a944b7.jpg" 
+                  alt="" className="foot-img-b"></img> 
                    </div>
             </footer>
            <div className="copyright">

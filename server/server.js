@@ -1,9 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
+const http = require ("http")
 const { init } = require('./config/socket');
-const server = http.createServer(app);
-const io = init(server);
 require('dotenv').config();
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
@@ -13,6 +12,8 @@ const uploadRoutes = require('./routes/uploadRoutes');
 
 const app = express();
 connectDB();
+const server = http.createServer(app);
+const io = init(server);
 
 app.use(cors({ origin: '*', credentials: false }));
 app.use(express.json());
@@ -22,6 +23,8 @@ app.use('/api/scrapbooks', scrapbookRoutes);
 app.use('/api/memories', memoryRoutes);
 app.use('/uploads', express.static('uploads'));
 app.use('/api/upload', uploadRoutes);
+
+
 
 io.on('connection', (socket) => {
     console.log('User connected:', socket.id);

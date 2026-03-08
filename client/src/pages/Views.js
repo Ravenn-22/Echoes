@@ -67,7 +67,7 @@ So take the pictures. Write the notes. Keep the ticket stubs. Because one day, t
             
                     
                  
-  </div>
+           </div>
               
             </article>
             <footer>
@@ -79,6 +79,9 @@ So take the pictures. Write the notes. Keep the ticket stubs. Because one day, t
                   <img src=" https://i.pinimg.com/736x/fa/8a/20/fa8a2070803582d31e1471b365a944b7.jpg" alt="" className="foot-img-b"></img> 
                    </div>
             </footer>
+           <div className="copyright">
+    <p>© 2026 Echoes. Built by Temitayo. All rights reserved.</p>
+</div>
         </div>
     )
 }

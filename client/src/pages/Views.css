@@ -183,6 +183,20 @@ footer img{
     "MORF" 12;
 
 }
+.copyright {
+    background: #232020;
+    color: rgba(255, 242, 215, 0.5);
+    text-align: center;
+    padding: 20px;
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+}
+
+.copyright span {
+    color: #72011f;
+    font-weight: 600;
+}
 @media (max-width : 468px) {
     .top{
         height: 30vh;

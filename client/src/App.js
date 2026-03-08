@@ -7,6 +7,7 @@ import Scrapbook from './pages/Scrapbook';
 import Views from './pages/Views';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import { Analytics } from "@vercel/analytics/react"
 
 const PrivateRoute = ({ children }) => {
     const { user } = useAuth();
@@ -33,6 +34,7 @@ function App() {
                 } />
     
             </Routes>
+            <Analytics />
         </Router>
     );
 }

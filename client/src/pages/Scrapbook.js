@@ -23,6 +23,7 @@ const ScrapbookPage = () => {
     const [toast, setToast] = useState(null)
     const [loading, setLoading] = useState(false);
 
+
     
     useEffect(() => {
           const socket = io('https://echoes-j0mn.onrender.com', {
@@ -56,6 +57,7 @@ const ScrapbookPage = () => {
             } setLoading(false);
         };
         fetchData();
+        console.log('User opened Scrapbook')
 
     return () => {
         socket.disconnect();
@@ -110,6 +112,7 @@ const ScrapbookPage = () => {
             setDescription('');
             setImage(null);
           setShowForm(false);
+          console.log("User created Memory")
         setToast({ message: 'Memory added successfully! 🌸', type: 'success' });
 
         } catch (error) {

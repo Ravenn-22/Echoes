@@ -65,6 +65,7 @@ const [toast, setToast] = useState(null)
             setDescription('');
             setCover(null);
             setShowForm(false);
+            console.log("Scrapbook Created")
             setToast({ message: 'Scrapbook created successfully! 🎉', type: 'success' });
         } catch (error) {
             setToast({message: 'Failed to create Scrapbook', type:'error'});

@@ -14,6 +14,7 @@ const Home = () => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [showForm, setShowForm] = useState(false);
+     const [creatingScrap, setCreatingScrap] = useState(false);
     const { user } = useAuth();
     const navigate = useNavigate();
 
@@ -39,6 +40,7 @@ const [toast, setToast] = useState(null)
 
     const handleCreate = async (e) => {
         e.preventDefault();
+        setCreatingScrap(true)
         try {
             let coverImage = '';
             if(cover) {
@@ -65,7 +67,9 @@ const [toast, setToast] = useState(null)
         } catch (error) {
             setToast({message: 'Failed to create Scrapbook', type:'error'});
             console.log("Scrapbook creation error:", error.response?.data || error);
-        }
+        }finally {
+        setCreatingScrap(false);
+    }
     };
 const handleDelete = async (id) => {
         try {
@@ -123,7 +127,9 @@ const handleDelete = async (id) => {
                         accept='image/*'
                         onChange={(e)=> setCover(e.target.files[0])}
                         />
-                        <button type="submit">Create</button>
+                        <button type="submit" disabled={creatingScrap}>
+    {creatingScrap ? 'Creating Scrapbook...' : 'Create Scrapbook'}
+</button>
                     </form>
                 </div>
             )}

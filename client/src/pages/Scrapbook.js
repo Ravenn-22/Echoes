@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getScrapbook, getMemories, createMemory, deleteMemory, inviteMember} from '../services/api';
+import { getScrapbook, getMemories, createMemory, deleteMemory, inviteMember, updateMemory} from '../services/api';
 import axios from 'axios';
 import './Scrapbook.css';
 import Loader from '../components/Loader';
@@ -131,8 +131,51 @@ const ScrapbookPage = () => {
           setToast({ message: 'Failed to delete memory', type: 'error' });
     }finally {
         setDeletingMemoryId(null);
-    }
-};
+    }};
+
+    const [editingMemory,setEditingMemory] = useState(null)
+    const [editTitle,setEditTitle] = useState("")
+    const [editDescription,setEditDescription] = useState("")
+    const [editImage,setEditImage] = useState(null);
+
+
+    const handleEditClick = (memory) => {
+        setEditingMemory(memory._id);
+        setEditTitle(memory.title);
+        setEditDescription(memory.description);
+    };
+
+    const handleEditSubmit = async (e, id) => {
+        e.preventDefault();
+        try{
+            let imageUrl = editImage ? null : undefined;
+            if(editImage){
+                const formData = new FormData();
+                formData.append('image', editImage);
+
+                const user = JSON.parse(localStorage.getItem('user'));
+                const {data} = await axios.post('https://echoes-j0mn.onrender.com/api/upload', formData, {
+                    headers:{
+                        'Content-Type': 'multipart/form-data',
+                        Authorization: `Bearer ${user.token}`
+                    }
+                });
+                imageUrl = data.imageUrl
+            }
+            const updateData = {
+                title: editTitle,
+                description: editDescription,
+                ...(imageUrl && { image: imageUrl })
+            };
+            const { data } =await updateMemory(id, updateData);
+            setMemories(memories.map((m) => m._id === id ? data : m));
+            setEditingMemory(null);
+            setToast({ message: 'Memory updated!', type: 'success'})
+        }catch(error){
+            setToast({ message: 'Failed to update memory', type: 'error'})
+        }
+    };
+
     return (
         <div className='scrap-container'>
          
@@ -196,8 +239,6 @@ const ScrapbookPage = () => {
                     </form>
                 </div>
             )}
-
-     
             <div className="memories-section">
                 <h2>Memories</h2>
                  {loading ? (
@@ -211,8 +252,31 @@ const ScrapbookPage = () => {
                         {memories.map((memory) => (
                      
                             <div key={memory._id} className="memory-card">
-                               
-                                <div className="memory-card-image">
+                                {editingMemory === memory._id ? (
+                                <form onSubmit={(e) => handleEditSubmit(e, memory._id)}>
+                              <input
+                             type="text"
+                                   value={editTitle}
+                                onChange={(e) => setEditTitle(e.target.value)}
+                               placeholder="Title"
+                                 />
+                           <input
+                           type="text"
+                          value={editDescription}
+                            onChange={(e) => setEditDescription(e.target.value)}
+                         placeholder="Description"
+                         />
+                         <input
+                          type="file"
+                             accept="image/*"
+                           onChange={(e) => setEditImage(e.target.files[0])}
+                           />
+                             <button type="submit">Save</button>
+                          <button type="button" onClick={() => setEditingMemory(null)}>Cancel</button>
+                          </form>
+          ) : ( 
+            <>
+                               <div className="memory-card-image">
                                     {memory.image ? (
                                         <img 
                                         src={memory.image} alt={memory.title}
@@ -227,34 +291,39 @@ const ScrapbookPage = () => {
                                 </div>
                                 <h3>{memory.title}</h3>
                                 <p>{memory.description}</p>
-                               
-                                
-                                {/* <p className='memory-date'>
-                                     {new Date(memory.createdAt).toLocaleString()}
-                                    </p> */}
+                            
                                     <p className="memory-meta">
-  By {memory.createdBy?.username} • {new Date(memory.createdAt).toLocaleDateString()}
-</p>
-                                 <button className="delete-btn" onClick={() => handleDeleteMemory(memory._id)} disabled={deletingMemoryId === memory._id}>
-                                       {deletingMemoryId === memory._id ? 'Deleting...' : 'Delete'}
-</button>
+                                        By {memory.createdBy?.username} • {new Date(memory.createdAt).toLocaleDateString()}
+                                        </p>
+                              <div className="memory-actions">
+                                              <button className="edit-btn" onClick={() => handleEditClick(memory)}   >
+                                                          ✏️ Edit 
+                                                          </button>
+                                                          <button className="delete-btn" onClick={() => handleDeleteMemory(memory._id)} disabled={deletingMemoryId === memory._id}>
+                                                              {deletingMemoryId === memory._id ? 'Deleting...' : 'Delete'}
+                                                           </button>
                             </div>
-                        ))}
-                    </div>
+             </>
+          )}
+        </div>
+    ))}
+</div>
                 )}
             </div>
+
+            {lightbox && (
+                <div className="lightbox" onClick={() => setLightbox(null)}>
+                    <img src={lightbox} alt="full view" />
+                </div>
+            )}
+
             {toast && (
-    <Toast
-        message={toast.message}
-        type={toast.type}
-        onClose={() => setToast(null)}
-    />
-)}
-{lightbox && (
-    <div className="lightbox" onClick={() => setLightbox(null)}>
-        <img src={lightbox} alt="full view" />
-    </div>
-)}
+                <Toast
+                    message={toast.message}
+                    type={toast.type}
+                    onClose={() => setToast(null)}
+                />
+            )}
         </div>
     );
 };

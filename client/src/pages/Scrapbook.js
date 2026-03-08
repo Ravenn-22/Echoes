@@ -25,7 +25,12 @@ const ScrapbookPage = () => {
 
     
     useEffect(() => {
-        const socket = io('https://echoes-j0mn.onrender.com');
+          const socket = io('https://echoes-j0mn.onrender.com', {
+        reconnection: true,
+        reconnectionAttempts: 5,
+        reconnectionDelay: 1000,
+        transports: ['websocket', 'polling']
+    });
     
     socket.emit('joinScrapbook', id);
 

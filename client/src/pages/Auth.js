@@ -80,6 +80,9 @@ const handleLogin = async (e) => {
                             Don't have an account?{' '}
                            <span onClick={() => { setIsFlipped(true); setError(''); }}>Register</span>
                         </div>
+                        <div className="auth-switch" style={{ marginTop: '10px' }}>
+                            Forgot your password?{' '}<span onClick={() => navigate('/forgot-password')}>Reset it</span>
+                        </div>
                     </div>
 
                    

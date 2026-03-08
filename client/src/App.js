@@ -5,6 +5,8 @@ import Home from './pages/Home';
 import Auth from './pages/Auth';
 import Scrapbook from './pages/Scrapbook';
 import Views from './pages/Views';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 
 const PrivateRoute = ({ children }) => {
     const { user } = useAuth();
@@ -17,7 +19,8 @@ function App() {
             <Routes>
                 <Route path='/' element={<Views />} />
                  <Route path="/auth" element={<Auth />} />
-               
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/reset-password/:token" element={<ResetPassword />} />
                 <Route path="/home" element={
                     <PrivateRoute>
                         <Home />

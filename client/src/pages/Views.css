@@ -257,7 +257,9 @@ footer img{
     margin: .8rem ;
     border-radius: 22px;
     width: auto;
-}
+}.article-p{
+         font-size: 1rem;
+    }
 footer{
     display: flex;
    flex-wrap: wrap;
@@ -309,8 +311,8 @@ footer{
         width: auto;
         padding: .5rem;
         margin-top: 2.5rem;
-    }.article-p{
-         font-size: .7rem;
+    }article-p{
+         font-size: 1rem;
     }.messy h1{
         font-size: 1.2rem;
         width: 100%;

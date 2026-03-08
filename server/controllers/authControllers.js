@@ -67,4 +67,58 @@ const loginUser = async (req, res) =>{
     }
 }
 
-module.exports = {registerUser, loginUser}
+const crypto = require('crypto');
+const { sendResetEmail } = require('../config/email');
+
+const forgotPassword = async (req, res) => {
+    try {
+        const { email } = req.body;
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            return res.status(404).json({ message: 'No account with that email found' });
+        }
+
+        const resetToken = crypto.randomBytes(32).toString('hex');
+
+        user.resetPasswordToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+        user.resetPasswordExpire = Date.now() + 15 * 60 * 1000;
+
+        await user.save();
+
+        const resetUrl = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
+
+        await sendResetEmail(user.email, resetUrl);
+
+        res.status(200).json({ message: 'Reset email sent!' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+const resetPassword = async (req, res) => {
+    try {
+        const hashedToken = crypto.createHash('sha256').update(req.params.token).digest('hex');
+
+        const user = await User.findOne({
+            resetPasswordToken: hashedToken,
+            resetPasswordExpire: { $gt: Date.now() }
+        });
+
+        if (!user) {
+            return res.status(400).json({ message: 'Invalid or expired reset token' });
+        }
+
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(req.body.password, salt);
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpire = undefined;
+
+        await user.save();
+
+        res.status(200).json({ message: 'Password reset successful!' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+module.exports = {registerUser, loginUser , forgotPassword, resetPassword}

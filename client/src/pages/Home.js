@@ -18,6 +18,8 @@ const Home = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
 
+     const [deletingScrapId, setDeletingScrapId] = useState(null);
+
 const [loading, setLoading] = useState(false);
 const [ cover, setCover] = useState(null);
 
@@ -72,14 +74,20 @@ const [toast, setToast] = useState(null)
     }
     };
 const handleDelete = async (id) => {
+    setDeletingScrapId(id);
         try {
             await deleteScrapbook(id);
             setScrapbooks(scrapbooks.filter((s) => s._id !== id));
             setToast({ message: 'Scrapbook deleted!', type: 'success' });
         } catch (error) {
            setToast({ message: 'Failed to delete scrapbook', type: 'error' });
-        }
+        }finally {
+        setDeletingScrapId(null);
+    }
     };
+
+
+
     const handleLogout = () => {
         localStorage.removeItem("user");
         navigate('/', {replace: true });
@@ -170,8 +178,9 @@ const handleDelete = async (id) => {
                 e.stopPropagation();
                 handleDelete(scrapbook._id);
             }}
+            disabled={deletingScrapId === scrapbook._id}
         >
-             Delete
+             {deletingScrapId === scrapbook._id ? 'Deleting...' : 'Delete'}
         </button>
     </div>
     

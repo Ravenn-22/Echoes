@@ -326,6 +326,42 @@ margin-top:6px;
     color: white;
 }
 
+.scrap-edt-form{
+    padding: .5rem;
+}
+.scrap-edt-form input{
+      width: 100%;
+    padding: 12px 16px;
+    margin-bottom: 15px;
+    border: 1px solid rgba(201, 98, 125, 0.3);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.8);
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.95rem;
+    color: #3D2B1F;
+    outline: none;
+    transition: border 0.3s ease;
+}
+.scrap-edt-form input:focus{
+     border-color: #C9627D;
+}
+.scrap-edt-form button{
+    width: 30%;
+    padding: 12px;
+    background: linear-gradient(135deg, #ae2007, #290f04);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-family: 'Raleway', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+#save-btn{
+     width: 50%;
+     margin-right: 3rem;
+    background: linear-gradient(135deg, #0987c1, #cac7be);
+}
 @media (max-width: 768px) {
     .navbar {
         padding: 15px 20px;

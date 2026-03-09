@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { getScrapbooks, createScrapbook, deleteScrapbook} from '../services/api';
+import { getScrapbooks, createScrapbook, deleteScrapbook, updateScrapbook} from '../services/api';
 import { useNavigate } from 'react-router-dom';
 import './Home.css';
 import Loader from '../components/Loader'
@@ -87,13 +87,56 @@ const handleDelete = async (id) => {
     }
     };
 
-
-
     const handleLogout = () => {
         localStorage.removeItem("user");
         navigate('/', {replace: true });
        
     };
+
+    const [editingScrapbook,setEditingScrapbook] = useState(null)
+    const [editTitle,setEditTitle] = useState("")
+    const [editDescription,setEditDescription] = useState("")
+    const [editImage,setEditImage] = useState(null);
+
+    
+    const handleEditClick = (scrapbook) => {
+        setEditingScrapbook(scrapbook._id);
+        setEditTitle(scrapbook.title);
+        setEditDescription(scrapbook.description);
+    };
+
+     const handleEditSubmit = async (e, id) => {
+        e.preventDefault();
+        try{
+            let imageUrl = editImage ? null : undefined;
+            if(editImage){
+                const formData = new FormData();
+                formData.append('image', editImage);
+
+                const user = JSON.parse(localStorage.getItem('user'));
+                const {data} = await axios.post('https://echoes-j0mn.onrender.com/api/upload', formData, {
+                    headers:{
+                        'Content-Type': 'multipart/form-data',
+                        Authorization: `Bearer ${user.token}`
+                    }
+                });
+                imageUrl = data.imageUrl
+            }
+            const updateData = {
+                title: editTitle,
+                description: editDescription,
+                ...(imageUrl && { image: imageUrl })
+            };
+            const { data } =await updateScrapbook(id, updateData);
+            setScrapbooks(scrapbooks.map((m) => m._id === id ? data : m));
+            setEditingScrapbook(null);
+            setToast({ message: 'Scrapbook updated!', type: 'success'})
+        }catch(error){
+            setToast({ message: 'Failed to update scrapbook', type: 'error'})
+        }
+    };
+
+
     
     return (
         <div className='home-container'>
@@ -155,15 +198,39 @@ const handleDelete = async (id) => {
                 ) : (
                     <div className="scrapbooks-grid">
                        {scrapbooks.map((scrapbook) => (
-                         <div key={scrapbook._id}    className="scrapbook-card"  >
-        <div onClick={() => navigate(`/scrapbook/${scrapbook._id}`)}>
+                        <div key={scrapbook._id} className="scrapbook-card"  >
+                          {editingScrapbook === scrapbook._id ? (
+                            <form onSubmit={(e) => handleEditSubmit(e, scrapbook._id)} className='scrap-edt-form'>
+                             <input
+                             type="text"
+                                   value={editTitle}
+                                onChange={(e) => setEditTitle(e.target.value)}
+                               placeholder="Title"
+                                 />
+                           <input
+                           type="text"
+                          value={editDescription}
+                            onChange={(e) => setEditDescription(e.target.value)}
+                         placeholder="Description"
+                         />
+                         <input
+                          type="file"
+                             accept="image/*"
+                           onChange={(e) => setEditImage(e.target.files[0])}
+                           />
+                             <button type="submit" id='save-btn'>Save</button>
+                          <button type="button" onClick={() => setEditingScrapbook(null)}>Cancel</button>
+                          </form>
+          ) : ( 
+            <>
+       <div onClick={() => navigate(`/scrapbook/${scrapbook._id}`)}>
             <div className="scrapbook-card-image">
                 {scrapbook.coverImage ? (
                     <img src={scrapbook.coverImage} alt={scrapbook.title} className="scrapbook-cover"/>
                 ) : (
                     '📸'
                 )}
-    </div>
+         </div>
 
             <h3>{scrapbook.title}</h3>
             <p>{scrapbook.description}</p>
@@ -171,23 +238,30 @@ const handleDelete = async (id) => {
                 <span>👤 {scrapbook.owner?.username}</span>
                 <span>👥 {scrapbook.members?.length} members</span>
             </div>
-    
-        </div>
-        <button
+   
+         <div className="scrapook-actions">
+           <button className="edit-btn" onClick={(e) => {  e.stopPropagation(); handleEditClick(scrapbook)} }  > ✏️ Edit </button>
+
+             <button
             className="delete-btn"
             onClick={(e) => {
                 e.stopPropagation();
                 handleDelete(scrapbook._id);
             }}
             disabled={deletingScrapId === scrapbook._id}
-        >
+           >
              {deletingScrapId === scrapbook._id ? 'Deleting...' : 'Delete'}
-        </button>
-    </div>
-    
-))}
-                    </div>
-                )}
+            </button>
+           </div>
+        </div>
+         </>
+       )}
+       
+        </div>
+        
+    ))}
+</div>
+   )}
             </div>
             {toast && (
     <Toast

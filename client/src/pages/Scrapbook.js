@@ -256,7 +256,7 @@ const ScrapbookPage = () => {
                      
                             <div key={memory._id} className="memory-card">
                                 {editingMemory === memory._id ? (
-                                <form onSubmit={(e) => handleEditSubmit(e, memory._id)}>
+                                <form onSubmit={(e) => handleEditSubmit(e, memory._id)} className='scrap-edt-form'>
                               <input
                              type="text"
                                    value={editTitle}
@@ -274,7 +274,7 @@ const ScrapbookPage = () => {
                              accept="image/*"
                            onChange={(e) => setEditImage(e.target.files[0])}
                            />
-                             <button type="submit">Save</button>
+                             <button type="submit" id='save-btn'>Save</button>
                           <button type="button" onClick={() => setEditingMemory(null)}>Cancel</button>
                           </form>
           ) : ( 
@@ -306,13 +306,14 @@ const ScrapbookPage = () => {
                                                               {deletingMemoryId === memory._id ? 'Deleting...' : 'Delete'}
                                                            </button>
                             </div>
-             </>
-          )}
+                              </>
+                             )}
+                        </div>
+                    ))}
+                    
+                </div>
+             )}
         </div>
-    ))}
-</div>
-                )}
-            </div>
 
             {lightbox && (
                 <div className="lightbox" onClick={() => setLightbox(null)}>

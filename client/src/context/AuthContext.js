@@ -1,5 +1,5 @@
 import { createContext, useState, useContext } from 'react';
-import { registerUser, loginUser } from '../services/api';
+import { registerUser, loginUser, updateProfilePicture as updatePfp } from '../services/api';
 
 const AuthContext = createContext();
 
@@ -25,8 +25,15 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
     };
 
+    const updateProfilePicture = async (profilePicture) => {
+        const { data } = await updatePfp(profilePicture);
+        const updatedUser = { ...user, profilePicture: data.profilePicture };
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+        setUser(updatedUser);
+    };
+
     return (
-        <AuthContext.Provider value={{ user, register, login, logout }}>
+        <AuthContext.Provider value={{ user, register, login, logout, updateProfilePicture }}>
             {children}
         </AuthContext.Provider>
     );

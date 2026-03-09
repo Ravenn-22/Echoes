@@ -1,6 +1,9 @@
 const User = require ('../models/User');
 const bcrypt = require ('bcryptjs');
 const jwt = require ('jsonwebtoken');
+const crypto = require('crypto');
+const { sendResetEmail } = require('../config/email');
+
 
 const registerUser = async (req, res) => {
     try {
@@ -66,9 +69,19 @@ const loginUser = async (req, res) =>{
         res.status(500).json({message: error.message})
     }
 }
+const updateProfilePicture = async (req, res) => {
+    try {
+        const user = await User.findByIdAndUpdate(
+            req.user._id,
+            { profilePicture: req.body.profilePicture },
+            { new: true }
+        ).select('-password');
 
-const crypto = require('crypto');
-const { sendResetEmail } = require('../config/email');
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
 
 const forgotPassword = async (req, res) => {
     try {
@@ -121,4 +134,4 @@ const resetPassword = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
-module.exports = {registerUser, loginUser , forgotPassword, resetPassword}
+module.exports = {registerUser, loginUser , forgotPassword, resetPassword, updateProfilePicture}

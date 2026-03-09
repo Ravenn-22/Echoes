@@ -15,7 +15,7 @@ const Home = () => {
     const [description, setDescription] = useState('');
     const [showForm, setShowForm] = useState(false);
      const [creatingScrap, setCreatingScrap] = useState(false);
-    const { user } = useAuth();
+    const { user , updateProfilePicture} = useAuth();
     const navigate = useNavigate();
 
      const [deletingScrapId, setDeletingScrapId] = useState(null);
@@ -140,6 +140,28 @@ const handleDelete = async (id) => {
     }
     };
 
+    const handleProfilePicUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    try {
+        const formData = new FormData();
+        formData.append('image', file);
+
+        const storedUser = JSON.parse(localStorage.getItem('user'));
+        const { data } = await axios.post('https://echoes-j0mn.onrender.com/api/upload', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                Authorization: `Bearer ${storedUser.token}`
+            }
+        });
+
+        await updateProfilePicture(data.imageUrl);
+        setToast({ message: 'Profile picture updated! 🌸', type: 'success' });
+    } catch (error) {
+        setToast({ message: 'Failed to update profile picture', type: 'error' });
+    }
+};
+
 
     
     return (
@@ -148,8 +170,25 @@ const handleDelete = async (id) => {
             <nav className="navbar">
                 <div className="navbar-logo">ECHOES</div>
                 <div className="navbar-user">
-                    <span className="navbar-username">Hello, {user?.username} 🌸</span>
-                    {/* <div className="notification-icon">🔔 {notifications.length}</div> */}
+                    <span className="navbar-username">Hello, {user?.username}</span>
+                    <div className="profile-pic-container">
+            <label htmlFor="profile-upload" style={{ cursor: 'pointer' }}>
+                {user?.profilePicture ? (
+                    <img src={user.profilePicture} alt="profile" className="profile-pic" />
+                ) : (
+                    <div className="profile-pic-placeholder">
+                        {user?.username?.charAt(0).toUpperCase()}
+                    </div>
+                )}
+            </label>
+            <input
+                id="profile-upload"
+                type="file"
+                accept="image/*"
+                style={{ display: 'none' }}
+                onChange={handleProfilePicUpload}
+            />
+        </div>
                     <button className="logout-btn" onClick={handleLogout}>Logout</button>
                 </div>
             </nav>

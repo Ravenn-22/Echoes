@@ -346,7 +346,7 @@ margin-top:6px;
      border-color: #C9627D;
 }
 .scrap-edt-form button{
-    width: 30%;
+    width: 100%;
     padding: 12px;
     background: linear-gradient(135deg, #ae2007, #290f04);
     color: white;
@@ -357,8 +357,8 @@ margin-top:6px;
     cursor: pointer;
     transition: all 0.3s ease;
 }
-#save-btn{
-     width: 50%;
+.scrap-edt-form #save-btn{
+     width: 100%;
      margin-right: 3rem;
     background: linear-gradient(135deg, #0987c1, #cac7be);
 }

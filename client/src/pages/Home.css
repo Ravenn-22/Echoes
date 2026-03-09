@@ -316,8 +316,8 @@ border-radius:10px;
 .scrap-edt-form input:focus{
      border-color: #C9627D;
 }
-.scrap-edt-form button{
-    width: 30%;
+.scrapbooks-grid .scrap-edt-form button{
+    width: 100%;
     padding: 12px;
     background: linear-gradient(135deg, #ae2007, #290f04);
     color: white;
@@ -328,9 +328,10 @@ border-radius:10px;
     cursor: pointer;
     transition: all 0.3s ease;
 }
-#save-btn{
-     width: 50%;
-     margin-right: 3rem;
+.scrap-edt-form #save-btn{
+    display: block;
+    margin-bottom: 1.5rem;
+    width: 100%;
     background: linear-gradient(135deg, #0987c1, #cac7be);
 }
 @media (max-width: 768px) {

@@ -141,6 +141,7 @@ const ScrapbookPage = () => {
     const [editDescription,setEditDescription] = useState("")
     const [editImage,setEditImage] = useState(null);
 
+     const [saveMemoryEdit, setSaveMemoryEdit] = useState(null);
 
     const handleEditClick = (memory) => {
         setEditingMemory(memory._id);
@@ -149,6 +150,7 @@ const ScrapbookPage = () => {
     };
 
     const handleEditSubmit = async (e, id) => {
+         setSaveMemoryEdit(id);
         e.preventDefault();
         try{
             let imageUrl = editImage ? null : undefined;
@@ -176,7 +178,9 @@ const ScrapbookPage = () => {
             setToast({ message: 'Memory updated!', type: 'success'})
         }catch(error){
             setToast({ message: 'Failed to update memory', type: 'error'})
-        }
+        }finally {
+        setSaveMemoryEdit(null);
+    }
     };
 
     return (
@@ -274,7 +278,8 @@ const ScrapbookPage = () => {
                              accept="image/*"
                            onChange={(e) => setEditImage(e.target.files[0])}
                            />
-                             <button type="submit" id='save-btn'>Save</button>
+                              <button type="submit" id='save-btn'disabled={saveMemoryEdit === memory._id}
+           > {saveMemoryEdit === memory._id ? 'Saving....' : 'Save'}</button>
                           <button type="button" onClick={() => setEditingMemory(null)}>Cancel</button>
                           </form>
           ) : ( 

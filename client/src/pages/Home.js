@@ -19,6 +19,7 @@ const Home = () => {
     const navigate = useNavigate();
 
      const [deletingScrapId, setDeletingScrapId] = useState(null);
+     const [saveScrapEdit, setSaveScrapEdit] = useState(null);
 
 const [loading, setLoading] = useState(false);
 const [ cover, setCover] = useState(null);
@@ -106,6 +107,7 @@ const handleDelete = async (id) => {
     };
 
      const handleEditSubmit = async (e, id) => {
+       setSaveScrapEdit(id)
         e.preventDefault();
         try{
             let imageUrl = editImage ? null : undefined;
@@ -133,7 +135,9 @@ const handleDelete = async (id) => {
             setToast({ message: 'Scrapbook updated!', type: 'success'})
         }catch(error){
             setToast({ message: 'Failed to update scrapbook', type: 'error'})
-        }
+        }finally {
+        setSaveScrapEdit(null);
+    }
     };
 
 
@@ -218,7 +222,8 @@ const handleDelete = async (id) => {
                              accept="image/*"
                            onChange={(e) => setEditImage(e.target.files[0])}
                            />
-                             <button type="submit" id='save-btn'>Save</button>
+                             <button type="submit" id='save-btn'disabled={saveScrapEdit === scrapbook._id}
+           > {saveScrapEdit === scrapbook._id ? 'Saving....' : 'Save'}</button>
                           <button type="button" onClick={() => setEditingScrapbook(null)}>Cancel</button>
                           </form>
           ) : ( 

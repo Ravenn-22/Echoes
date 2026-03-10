@@ -5,7 +5,7 @@ const sendResetEmail = async (to, resetUrl) => {
         apiKey: process.env.BREVO_API_KEY
     });
 
-    await client.sendTransacEmail({
+    await client.transactionalEmails.sendTransacEmail({
         to: [{ email: to }],
         sender: { name: 'Echoes', email: process.env.BREVO_SMTP_USER },
         subject: 'Password Reset Request',

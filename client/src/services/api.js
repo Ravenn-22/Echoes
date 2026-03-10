@@ -41,7 +41,7 @@ export const uploadImage = async (file) => {
 
     return response.data.imageUrl; 
 };
-
+export const removeMember = (scrapbookId, memberId) => API.delete(`/scrapbooks/${scrapbookId}/members/${memberId}`);
 export const forgotPassword = (email) => API.post('/auth/forgot-password', { email });
 export const resetPassword = (token, password) => API.put(`/auth/reset-password/${token}`, { password });
 export const updateProfilePicture = (profilePicture) => API.put('/auth/update-profile-picture', { profilePicture });

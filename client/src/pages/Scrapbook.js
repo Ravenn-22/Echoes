@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getScrapbook, getMemories, createMemory, deleteMemory, inviteMember, updateMemory} from '../services/api';
+import { getScrapbook, getMemories, createMemory, deleteMemory, inviteMember, updateMemory, removeMember} from '../services/api';
 import axios from 'axios';
 import './Scrapbook.css';
 import Loader from '../components/Loader';
 import Toast from "../components/Toast";
 import {io} from 'socket.io-client';
+import { useAuth } from '../context/AuthContext';
 
 
 const ScrapbookPage = () => {
@@ -19,10 +20,20 @@ const ScrapbookPage = () => {
     const navigate = useNavigate();
     const [creatingMemory, setCreatingMemory] = useState(false);
     const [deletingMemoryId, setDeletingMemoryId] = useState(null);
+    const [removeMemberId, setRemoveMemoryId] = useState(null);
     const [inviting, setInviting] = useState(false);
     const [toast, setToast] = useState(null)
     const [loading, setLoading] = useState(false);
+     const [inviteEmail, setInviteEmail] = useState('');
+     const [showInvite, setShowInvite] = useState(false);
+     const [lightbox, setLightbox] = useState(null);
+      const [editingMemory,setEditingMemory] = useState(null)
+    const [editTitle,setEditTitle] = useState("")
+    const [editDescription,setEditDescription] = useState("")
+    const [editImage,setEditImage] = useState(null);
 
+     const [saveMemoryEdit, setSaveMemoryEdit] = useState(null);
+     const { user } = useAuth();
 
     
     useEffect(() => {
@@ -64,13 +75,6 @@ const ScrapbookPage = () => {
     };
     }, [id]);
     
-
-
-     const [inviteEmail, setInviteEmail] = useState('');
-     const [showInvite, setShowInvite] = useState(false);
-
-     const [lightbox, setLightbox] = useState(null);
-
     const handleInvite = async (e) => {
     e.preventDefault();
     setInviting(true);
@@ -136,12 +140,7 @@ const ScrapbookPage = () => {
         setDeletingMemoryId(null);
     }};
 
-    const [editingMemory,setEditingMemory] = useState(null)
-    const [editTitle,setEditTitle] = useState("")
-    const [editDescription,setEditDescription] = useState("")
-    const [editImage,setEditImage] = useState(null);
-
-     const [saveMemoryEdit, setSaveMemoryEdit] = useState(null);
+   
 
     const handleEditClick = (memory) => {
         setEditingMemory(memory._id);
@@ -183,6 +182,22 @@ const ScrapbookPage = () => {
     }
     };
 
+const handleRemoveMember = async (memberId) => {
+    setRemoveMemoryId(id)
+    try {
+        await removeMember(id, memberId);
+        setScrapbook((prev) => ({
+            ...prev,
+            members: prev.members.filter((m) => m._id !== memberId)
+        }));
+        setToast({ message: 'Member removed!', type: 'success' });
+    } catch (error) {
+        setToast({ message: 'Failed to remove member', type: 'error' });
+    }finally {
+       setRemoveMemoryId(null);
+
+    }
+};
     return (
         <div className='scrap-container'>
          
@@ -212,6 +227,26 @@ const ScrapbookPage = () => {
     {inviting ? 'Inviting...' : 'Invite'}
 </button>
         </form>
+        {scrapbook?.members?.length > 0 && (
+            
+    <div className="members-list">{console.log(scrapbook?.members)}
+        <h3>Members</h3>
+        
+        {scrapbook.members.map((member) => (
+            <div key={member._id} className="member-item">
+                <span>👤 {member.username}</span>
+                {scrapbook.owner?._id === user?._id && (
+                    <button
+                        className="remove-member-btn" id="remove-member-btn"
+                        onClick={() => handleRemoveMember(member._id)} 
+                        disabled={removeMemberId === member._id}>
+                             {removeMemberId === member._id ? 'Removing...' : 'Remove Member'}{member.username}
+                          </button>
+                )}
+            </div>
+        ))}
+    </div>
+)}
     </div>
 )}
                 <button className="add-memory-btn" onClick={() => setShowForm(!showForm)}>

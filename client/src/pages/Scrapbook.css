@@ -362,6 +362,49 @@ margin-top:6px;
      margin-right: 3rem;
     background: linear-gradient(135deg, #0987c1, #cac7be);
 }
+.members-list {
+    background: rgba(255, 242, 215, 0.1);
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 15px;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.members-list h3 {
+    color: #72011f;
+    font-family: 'Playfair Display', serif;
+    margin-bottom: 10px;
+    font-size: 1rem;
+}
+
+.member-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 242, 215, 0.1);
+    color: #fff2d7;
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.9rem;
+}
+
+#remove-member-btn {
+  background: linear-gradient(135deg, #ae2007, #290f04);
+    padding: 14px 35px;
+    border-radius: 20px;
+    font-size: 1rem;
+    font-family: 'Raleway', sans-serif;
+    cursor: pointer;
+    font-family: 'Raleway', sans-serif;
+    transition: all 0.3s ease;
+}
+
+.remove-member-btn:hover {
+    background: #ae2007;
+    color: white;
+}
 @media (max-width: 768px) {
     .navbar {
         padding: 15px 20px;

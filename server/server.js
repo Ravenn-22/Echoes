@@ -24,7 +24,13 @@ app.use('/api/memories', memoryRoutes);
 app.use('/uploads', express.static('uploads'));
 app.use('/api/upload', uploadRoutes);
 
-
+setInterval(() => {
+    https.get('https://echoes-j0mn.onrender.com', (res) => {
+        console.log('Keep alive ping sent');
+    }).on('error', (err) => {
+        console.log("Keep alive error:", err.message)
+    });
+}, 10 * 60 * 1000)
 
 io.on('connection', (socket) => {
     console.log('User connected:', socket.id);

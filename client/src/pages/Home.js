@@ -123,11 +123,10 @@ const handleDelete = async (id) => {
                     }
                 });
                 imageUrl = data.imageUrl
-            }
-            const updateData = {
+            }  const updateData = {
                 title: editTitle,
                 description: editDescription,
-                ...(imageUrl && { image: imageUrl })
+                ...(imageUrl && { coverImage: imageUrl })
             };
             const { data } =await updateScrapbook(id, updateData);
             setScrapbooks(scrapbooks.map((m) => m._id === id ? data : m));

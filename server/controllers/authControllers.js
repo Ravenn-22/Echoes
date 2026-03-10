@@ -2,6 +2,7 @@ const User = require ('../models/User');
 const bcrypt = require ('bcryptjs');
 const jwt = require ('jsonwebtoken');
 const crypto = require('crypto');
+
 const { sendResetEmail } = require('../config/email');
 
 
@@ -63,6 +64,7 @@ const loginUser = async (req, res) =>{
             _id: user._id,
             username: user.username,
             email: user.email,
+            profilePicture: user.profilePicture,
             token
         })
     } catch(error){
@@ -125,7 +127,7 @@ const resetPassword = async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         user.password = await bcrypt.hash(req.body.password, salt);
         user.resetPasswordToken = undefined;
-        user.resetPasswordExpire = undefined;
+        user.resetPasswordExpire = Date.now() + 60 * 60 * 1000;
 
         await user.save();
 

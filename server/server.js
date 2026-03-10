@@ -27,13 +27,6 @@ app.use('/api/upload', uploadRoutes);
 
 
 
-setInterval(() => {
-    https.get('https://echoes-j0mn.onrender.com', (res) => {
-        console.log('Keep alive ping sent');
-    }).on('error', (err) => {
-        console.log('Keep alive error:', err.message);
-    });
-}, 10 * 60 * 1000);
 
 io.on('connection', (socket) => {
     console.log('User connected:', socket.id);
@@ -56,4 +49,12 @@ const PORT = process.env.PORT || 3007;
 server.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${PORT}`);
 });
+
+setInterval(() => {
+    https.get('https://echoes-j0mn.onrender.com', (res) => {
+        console.log('Keep alive ping sent');
+    }).on('error', (err) => {
+        console.log('Keep alive error:', err.message);
+    });
+}, 5 * 60 * 1000);
 

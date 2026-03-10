@@ -162,8 +162,8 @@
     animation: fadeIn 0.3s ease-in-out; 
 }
 .auth-success {
-    color: #D4AF37;
-    font-size: 0.85rem;
+    color: #37d46b;
+    font-size: 0.9rem;
     text-align: center;
     margin-bottom: 10px;
     font-family: 'Raleway', sans-serif;

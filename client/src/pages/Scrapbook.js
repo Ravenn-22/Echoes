@@ -34,6 +34,7 @@ const ScrapbookPage = () => {
 
      const [saveMemoryEdit, setSaveMemoryEdit] = useState(null);
      const { user } = useAuth();
+     const [search, setSearch] = useState('');
 
     
     useEffect(() => {
@@ -198,6 +199,13 @@ const handleRemoveMember = async (memberId) => {
 
     }
 };
+
+
+const filteredMemories = memories.filter((memory) =>
+    memory.title.toLowerCase().includes(search.toLowerCase()) ||
+    memory.description.toLowerCase().includes(search.toLowerCase())
+);
+
     return (
         <div className='scrap-container'>
          
@@ -283,7 +291,14 @@ const handleRemoveMember = async (memberId) => {
                 </div>
             )}
             <div className="memories-section">
-                <h2>Memories</h2>
+               <h2>Memories</h2>
+    <input
+        type="text"
+        className="search-input"
+        placeholder="Search memories..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        />
                  {loading ? (
                      <Loader />
                  )  : memories.length === 0 ? (
@@ -291,8 +306,9 @@ const handleRemoveMember = async (memberId) => {
                         <p>No memories yet. Add your first one! 🌸</p>
                     </div>
                 ) : (
+                    
                     <div className="memories-grid">
-                        {memories.map((memory) => (
+                        {filteredMemories.map((memory) => (
                      
                             <div key={memory._id} className="memory-card">
                                 {editingMemory === memory._id ? (

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { resetPassword } from '../services/api';
 import { useNavigate, useParams } from 'react-router-dom';
 import './Auth.css';
@@ -12,6 +12,10 @@ const ResetPassword = () => {
     const { token } = useParams();
     const navigate = useNavigate();
 
+useEffect(() => {
+    fetch('https://echoes-j0mn.onrender.com/api/auth/login', {method: 'POST'})
+    .catch(() => {});
+}, [])
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (password !== confirmPassword) {

@@ -22,7 +22,7 @@ const scrapbookSchema = new mongoose.Schema({
     },
     members: [{
          type: mongoose.Schema.Types.ObjectId,
-        required: true
+        ref: 'User'
     }],
     isPrivate: {
         type: Boolean,

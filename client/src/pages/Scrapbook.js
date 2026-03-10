@@ -240,7 +240,8 @@ const handleRemoveMember = async (memberId) => {
                         className="remove-member-btn" id="remove-member-btn"
                         onClick={() => handleRemoveMember(member._id)} 
                         disabled={removeMemberId === member._id}>
-                             {removeMemberId === member._id ? 'Removing...' : 'Remove Member'}{member.username}
+                            {member.username}
+                             {removeMemberId === member._id ? 'Removing...' : 'Remove Member'}
                           </button>
                 )}
             </div>

@@ -1,7 +1,7 @@
-const { Brevo } = require('@getbrevo/brevo');
+const { BrevoClient } = require('@getbrevo/brevo');
 
 const sendResetEmail = async (to, resetUrl) => {
-    const client = new Brevo({
+    const client = new BrevoClient({
         apiKey: process.env.BREVO_API_KEY
     });
 

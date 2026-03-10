@@ -7,7 +7,7 @@ const sendResetEmail = async (to, resetUrl) => {
 
     await client.transactionalEmails.sendTransacEmail({
         to: [{ email: to }],
-        sender: { name: 'Echoes', email: process.env.BREVO_SMTP_USER },
+        sender: { name: 'Echoes', email: 'echoesmemo.noreply@gmail.com' },
         subject: 'Password Reset Request',
         htmlContent: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #232020; color: #fff2d7;">

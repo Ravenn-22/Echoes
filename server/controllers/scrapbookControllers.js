@@ -1,7 +1,7 @@
 const User = require('../models/User');
 const Scrapbook = require('../models/Scrapbook');
 const { sendInviteEmail } = require('../config/email')
-
+const Memory = require('../models/Memory');
 
 const createScrapbook = async (req, res) => {
     try {

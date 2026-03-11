@@ -88,49 +88,34 @@ const deleteScrapbook = async (req, res) => {
 };
 const inviteMember = async (req, res) => {
     try {
-        const scrapbook = await Scrapbook.findById(req.params.id);
-        const userToInvite = await user.findById({ email: req.body.email.toLowerCase() });
+        const scrapbook = await Scrapbook.findById(req.params.id).populate('owner', 'username');
 
-        if (!userToInvite){
-            return res.status(404).json({ message: 'User not found'})
+        if (!scrapbook) {
+            return res.status(404).json({ message: 'Scrapbook not found' });
         }
+
+        const userToInvite = await User.findOne({ email: req.body.email.toLowerCase() });
+
+        if (!userToInvite) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
         if (scrapbook.members.includes(userToInvite._id)) {
             return res.status(400).json({ message: 'User is already a member' });
         }
 
         scrapbook.members.push(userToInvite._id);
         await scrapbook.save();
-        try{
-              await sendInviteEmail(userToInvite.email, scrapbook.owner.username, scrapbook.title )
-        }catch(error){
-            console.error('Invite email error:', emailError)
-             res.status(500).json({ message: error.message });
-        }
-       
-        if (!scrapbook) {
-            return res.status(404).json({ message: 'Scrapbook not found' });
-        }
 
-        if (scrapbook.owner.toString() !== req.user._id.toString()) {
-            return res.status(401).json({ message: 'Not authorized' });
+        try {
+            await sendInviteEmail(userToInvite.email, scrapbook.owner.username, scrapbook.title);
+        } catch (emailError) {
+            console.error('Invite email error:', emailError);
         }
-
-        const { email } = req.body;
-
-        const invitedUser = await User.findOne({ email });
-        if (!invitedUser) {
-            return res.status(404).json({ message: 'User not found' });
-        }
-
-        if (scrapbook.members.includes(invitedUser._id)) {
-            return res.status(400).json({ message: 'User is already a member' });
-        }
-
-        scrapbook.members.push(invitedUser._id);
-        await scrapbook.save();
 
         res.status(200).json({ message: 'Member invited successfully' });
     } catch (error) {
+        console.error('Invite member error:', error);
         res.status(500).json({ message: error.message });
     }
 };

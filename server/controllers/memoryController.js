@@ -15,9 +15,9 @@ const createMemory = async (req, res) => {
             date,
             scrapbook,
             createdBy: req.user._id
-        });
-
-        const populatedMemory = await Memory.findById(memory._id).populate('createdBy', 'username');
+        });  
+        try{
+ const populatedMemory = await Memory.findById(memory._id).populate('createdBy', 'username');
         const io = getIO();
         io.to(scrapbook).emit('newMemory', populatedMemory);
 
@@ -33,11 +33,16 @@ const createMemory = async (req, res) => {
                 scrapbookData.title
             );
         }
+    }catch (emailError) {
+        console.errorr('Email notification Error:', emailError)
+    }
+   
         res.status(201).json(populatedMemory);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
+
 
 
 const getMemories = async (req, res) => {

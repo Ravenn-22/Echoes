@@ -100,7 +100,7 @@ const inviteMember = async (req, res) => {
         scrapbook.members.push(userToInvite._id);
         await scrapbook.save();
         
-        await sendInviteEmail(userToInvite.email, scrapbook.owner.username, scrapbook.title)
+        await sendInviteEmail(userToInvite.email, scrapbook.owner.username, scrapbook.title )
 
        
         if (!scrapbook) {

@@ -104,6 +104,7 @@ const inviteMember = async (req, res) => {
               await sendInviteEmail(userToInvite.email, scrapbook.owner.username, scrapbook.title )
         }catch(error){
             console.error('Invite email error:', emailError)
+             res.status(500).json({ message: error.message });
         }
        
         if (!scrapbook) {

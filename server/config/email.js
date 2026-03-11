@@ -27,7 +27,8 @@ const sendInviteEmail = async (to, inviteUsername, scrapbookTitle) => {
     const client = new BrevoClient({
          apiKey: process.env.BREVO_API_KEY
     })
-    await client.sendTransacEmail({
+   
+    await client.transactionalEmails.sendTransacEmail({
         to: [{ email: to }],
         sender: { name: 'Echoes', email: 'echoesmemo.noreply@gmail.com' },
         subject: `${inviteUsername} invited you to a scrapbook on Echoes🌸`,
@@ -51,7 +52,7 @@ const sendNewMemoryEmail = async (to, uploaderUsername, memoryTitle, scrapbookTi
         apiKey: process.env.BREVO_API_KEY
     });
 
-    await client.sendTransacEmail({
+    await client.transactionalEmails.sendTransacEmail({
         to: [{ email: to }],
         sender: { name: 'Echoes', email: 'echoesmemo.noreply@gmail.com' },
         subject: `${uploaderUsername} added a new memory to ${scrapbookTitle} 🌸`,

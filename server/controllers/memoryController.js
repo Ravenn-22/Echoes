@@ -4,6 +4,8 @@ const User = require('../models/User');
 const { getIO } = require('../config/socket');
 const { sendNewMemoryEmail } = require('../config/email');
 
+
+
 const createMemory = async (req, res) => {
     try {
         const { title, description, image, date, scrapbook } = req.body;
@@ -15,34 +17,35 @@ const createMemory = async (req, res) => {
             date,
             scrapbook,
             createdBy: req.user._id
-        });  
-        try{
- const populatedMemory = await Memory.findById(memory._id).populate('createdBy', 'username');
-        const io = getIO();
-        io.to(scrapbook).emit('newMemory', populatedMemory);
+        });
 
-        const scrapbookData = await Scrapbook.findById(scrapbook).populate('members', 'email username');
-        const otherMembers = scrapbookData.members.filter(
-            (member) => member._id.toString() !== req.user._id.toString()
-        );
-        for (const member of otherMembers) {
-            await sendNewMemoryEmail(
-                member.email,
-                populatedMemory.createdBy.username,
-                title,
-                scrapbookData.title
+        const populatedMemory = await Memory.findById(memory._id).populate('createdBy', 'username');
+
+        try {
+            const io = getIO();
+            io.to(scrapbook).emit('newMemory', populatedMemory);
+
+            const scrapbookData = await Scrapbook.findById(scrapbook).populate('members', 'email username');
+            const otherMembers = scrapbookData.members.filter(
+                (member) => member._id.toString() !== req.user._id.toString()
             );
+            for (const member of otherMembers) {
+                await sendNewMemoryEmail(
+                    member.email,
+                    populatedMemory.createdBy.username,
+                    title,
+                    scrapbookData.title
+                );
+            }
+        } catch (emailError) {
+            console.error('Email notification Error:', emailError);
         }
-    }catch (emailError) {
-        console.errorr('Email notification Error:', emailError)
-    }
-   
+
         res.status(201).json(populatedMemory);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
-
 
 
 const getMemories = async (req, res) => {

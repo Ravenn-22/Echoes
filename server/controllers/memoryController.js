@@ -3,7 +3,7 @@ const Scrapbook = require('../models/Scrapbook');
 const User = require('../models/User');
 const { getIO } = require('../config/socket');
 const { sendNewMemoryEmail } = require('../config/email');
-
+const Memory = require('../models/Memory');
 
 
 const createMemory = async (req, res) => {

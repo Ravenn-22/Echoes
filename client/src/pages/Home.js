@@ -27,6 +27,7 @@ const [ cover, setCover] = useState(null);
     const [editTitle,setEditTitle] = useState("")
     const [editDescription,setEditDescription] = useState("")
     const [editImage,setEditImage] = useState(null);
+    const [sortBy, setSortBy] = useState("newest")
 
 
 const [toast, setToast] = useState(null)
@@ -168,6 +169,12 @@ const handleDelete = async (id) => {
     scrapbook.title.toLowerCase().includes(search.toLowerCase()) ||
     scrapbook.description.toLowerCase().includes(search.toLowerCase())
 );
+const sortedScrapbook = [...filteredScrapbook].sort((a, b) => {
+    if (sortBy === 'newest') return new Date(b.createdAt) - new Date(a.createdAt)
+    if (sortBy === 'oldest') return new Date(a.createdAt) - new Date(b.createdAt)
+    if (sortBy === 'author') return a.createdBy?.username.localCompare(b.createdBy?.username);
+    return 0;
+})
 
 
 
@@ -243,12 +250,22 @@ const handleDelete = async (id) => {
             
             <div className="scrapbooks-section">
                 <h2>Your Scrapbooks</h2>
+                  <div className='scrapbooks-controls'>
                   <input 
                 type='text' className='search-input'
                 placeholder='Search Scrapbook...'
                 value={search} onChange={(e) => setSearch(e.target.value)}
  
-                />
+                /> <select 
+                className='sort-select' value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                > 
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+                <option value="author">By Author</option>
+
+                </select>
+                </div>
             {loading ? (
                 <Loader />
             ) : filteredScrapbook.length === 0 ? (
@@ -257,7 +274,7 @@ const handleDelete = async (id) => {
                     </div>
                 ) : (
                     <div className="scrapbooks-grid">
-                       {filteredScrapbook.map((scrapbook) => (
+                       {sortedScrapbook.map((scrapbook) => (
                         <div key={scrapbook._id} className="scrapbook-card"  >
                           {editingScrapbook === scrapbook._id ? (
                             <form onSubmit={(e) => handleEditSubmit(e, scrapbook._id)} className='scrap-edt-form'>

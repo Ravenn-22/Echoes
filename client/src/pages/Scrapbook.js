@@ -35,6 +35,7 @@ const ScrapbookPage = () => {
      const [saveMemoryEdit, setSaveMemoryEdit] = useState(null);
      const { user } = useAuth();
      const [search, setSearch] = useState('');
+         const [sortBy, setSortBy] = useState("newest")
 
     
     useEffect(() => {
@@ -204,7 +205,14 @@ const handleRemoveMember = async (memberId) => {
 const filteredMemories = memories.filter((memory) =>
     memory.title.toLowerCase().includes(search.toLowerCase()) ||
     memory.description.toLowerCase().includes(search.toLowerCase())
-);
+); 
+const sortedMemory = [...filteredMemories].sort((a, b) => {
+    if (sortBy === 'newest') return new Date(b.createdAt) - new Date(a.createdAt)
+    if (sortBy === 'oldest') return new Date(a.createdAt) - new Date(b.createdAt)
+    if (sortBy === 'author') return a.createdBy?.username.localCompare(b.createdBy?.username);
+    return 0;
+})
+
 
     return (
         <div className='scrap-container'>
@@ -292,6 +300,7 @@ const filteredMemories = memories.filter((memory) =>
             )}
             <div className="memories-section">
                <h2>Memories</h2>
+                <div className='memories-controls'>
     <input
         type="text"
         className="search-input"
@@ -299,6 +308,16 @@ const filteredMemories = memories.filter((memory) =>
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         />
+        <select 
+                className='sort-select' value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                > 
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+                <option value="author">By Author</option>
+
+                </select>
+        </div>
                  {loading ? (
                      <Loader />
                  )  : memories.length === 0 ? (
@@ -308,7 +327,7 @@ const filteredMemories = memories.filter((memory) =>
                 ) : (
                     
                     <div className="memories-grid">
-                        {filteredMemories.map((memory) => (
+                        {sortedMemory.map((memory) => (
                      
                             <div key={memory._id} className="memory-card">
                                 {editingMemory === memory._id ? (

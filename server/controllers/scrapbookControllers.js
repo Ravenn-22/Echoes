@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const Scrapbook = require('../models/Scrapbook');
+const { sendInviteEmail } = require('../config/email')
 
 
 const createScrapbook = async (req, res) => {
@@ -88,7 +89,20 @@ const deleteScrapbook = async (req, res) => {
 const inviteMember = async (req, res) => {
     try {
         const scrapbook = await Scrapbook.findById(req.params.id);
+        const userToInvite = await user.findById({ email: req.body.email.toLowerCase() });
+        if (!userToInvite){
+            return res.status(404).json({ message: 'User not found'})
+        }
+        if (scrapbook.members.includes(userToInvite._id)) {
+            return res.status(400).json({ message: 'User is already a member' });
+        }
 
+        scrapbook.members.push(userToInvite._id);
+        await scrapbook.save();
+        
+        await sendInviteEmail(userToInvite.email, scrapbook.owner.username, scrapbook.title)
+
+       
         if (!scrapbook) {
             return res.status(404).json({ message: 'Scrapbook not found' });
         }

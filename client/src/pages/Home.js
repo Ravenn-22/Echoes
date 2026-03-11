@@ -23,8 +23,14 @@ const Home = () => {
 
 const [loading, setLoading] = useState(false);
 const [ cover, setCover] = useState(null);
+  const [editingScrapbook,setEditingScrapbook] = useState(null)
+    const [editTitle,setEditTitle] = useState("")
+    const [editDescription,setEditDescription] = useState("")
+    const [editImage,setEditImage] = useState(null);
+
 
 const [toast, setToast] = useState(null)
+const [search, setSearch] = useState("")
 
     useEffect(() => {
         const fetchScrapbooks = async () => {
@@ -94,11 +100,7 @@ const handleDelete = async (id) => {
        
     };
 
-    const [editingScrapbook,setEditingScrapbook] = useState(null)
-    const [editTitle,setEditTitle] = useState("")
-    const [editDescription,setEditDescription] = useState("")
-    const [editImage,setEditImage] = useState(null);
-
+  
     
     const handleEditClick = (scrapbook) => {
         setEditingScrapbook(scrapbook._id);
@@ -161,6 +163,13 @@ const handleDelete = async (id) => {
     }
 };
 
+        
+ const filteredScrapbook = scrapbooks.filter((scrapbook) =>
+    scrapbook.title.toLowerCase().includes(search.toLowerCase()) ||
+    scrapbook.description.toLowerCase().includes(search.toLowerCase())
+);
+
+
 
     
     return (
@@ -194,10 +203,13 @@ const handleDelete = async (id) => {
 
             <div className="hero">
                 <h1>Your Memories </h1>
+
                 <p>Capture and cherish every beautiful moment</p>
+              
                 <button className="create-btn" onClick={() => setShowForm(!showForm)}>
                     + Create Scrapbook
                 </button>
+
             </div>
 
          
@@ -231,15 +243,21 @@ const handleDelete = async (id) => {
             
             <div className="scrapbooks-section">
                 <h2>Your Scrapbooks</h2>
+                  <input 
+                type='text' className='search-input'
+                placeholder='Search Scrapbook...'
+                value={search} onChange={(e) => setSearch(e.target.value)}
+ 
+                />
             {loading ? (
                 <Loader />
-            ) : scrapbooks.length === 0 ? (
+            ) : filteredScrapbook.length === 0 ? (
                     <div className="empty-state">
                         <p>No scrapbooks yet. Create your first one! 🌷</p>
                     </div>
                 ) : (
                     <div className="scrapbooks-grid">
-                       {scrapbooks.map((scrapbook) => (
+                       {filteredScrapbook.map((scrapbook) => (
                         <div key={scrapbook._id} className="scrapbook-card"  >
                           {editingScrapbook === scrapbook._id ? (
                             <form onSubmit={(e) => handleEditSubmit(e, scrapbook._id)} className='scrap-edt-form'>

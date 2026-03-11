@@ -369,9 +369,9 @@ margin-top:6px;
     border-radius: 25px;
     border: 1px solid rgba(201, 98, 125, 0.3);
     background: rgba(255, 242, 215, 0.1);
-    color: #fff2d7;
+    color: #72011f;
     font-family: 'Raleway', sans-serif;
-    font-size: 0.9rem;
+    font-size: 1rem;
     margin-bottom: 20px;
     outline: none;
     display: block;
@@ -380,7 +380,7 @@ margin-top:6px;
 }
 
 .search-input::placeholder {
-    color: rgba(255, 242, 215, 0.4);
+    color: rgba(48, 37, 15, 0.4);
 }
 
 .search-input:focus {

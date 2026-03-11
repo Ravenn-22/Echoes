@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const Scrapbook = require('../models/Scrapbook');
 const { sendInviteEmail } = require('../config/email')
+const Memory = require('../models/Memory');
 
 
 const createScrapbook = async (req, res) => {
@@ -23,27 +24,19 @@ const createScrapbook = async (req, res) => {
 };
 
 const getScrapbooks = async (req, res) => {
-      try {
+    try {
         const scrapbooks = await Scrapbook.find({ members: req.user._id })
             .populate('owner', 'username')
             .populate('members', 'username');
-        res.status(200).json(scrapbooks);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
 
-const getScrapbook = async (req, res) => {
-   try {
-        const scrapbook = await Scrapbook.findById(req.params.id)
-            .populate('owner', 'username')
-            .populate('members', 'username');
+        const scrapbooksWithCount = await Promise.all(
+            scrapbooks.map(async (scrapbook) => {
+                const memoryCount = await Memory.countDocuments({ scrapbook: scrapbook._id });
+                return { ...scrapbook.toObject(), memoryCount };
+            })
+        );
 
-        if (!scrapbook) {
-            return res.status(404).json({ message: 'Scrapbook not found' });
-        }
-
-        res.status(200).json(scrapbook);
+        res.status(200).json(scrapbooksWithCount);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

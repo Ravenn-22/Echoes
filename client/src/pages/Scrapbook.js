@@ -26,6 +26,7 @@ const ScrapbookPage = () => {
     const [loading, setLoading] = useState(false);
      const [inviteEmail, setInviteEmail] = useState('');
      const [showInvite, setShowInvite] = useState(false);
+     const [downloading, setDownloading] = useState(false);
      const [lightbox, setLightbox] = useState(null);
       const [editingMemory,setEditingMemory] = useState(null)
     const [editTitle,setEditTitle] = useState("")
@@ -36,6 +37,7 @@ const ScrapbookPage = () => {
      const { user } = useAuth();
      const [search, setSearch] = useState('');
          const [sortBy, setSortBy] = useState("newest")
+
 
     
     useEffect(() => {
@@ -198,6 +200,22 @@ const handleRemoveMember = async (memberId) => {
     }finally {
        setRemoveMemoryId(null);
 
+    }
+};
+const handleDownload = async (e, url) => {
+    e.stopPropagation();
+    setDownloading(true);
+    try {
+        const response = await fetch(url);
+        const blob = await response.blob();
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'echoes-memory.jpg';
+        link.click();
+    } catch (error) {
+        setToast({ message: 'Failed to download image', type: 'error' });
+    } finally {
+        setDownloading(false);
     }
 };
 
@@ -392,10 +410,17 @@ const sortedMemory = [...filteredMemories].sort((a, b) => {
         </div>
 
             {lightbox && (
-                <div className="lightbox" onClick={() => setLightbox(null)}>
-                    <img src={lightbox} alt="full view" />
-                </div>
-            )}
+    <div className="lightbox" onClick={() => setLightbox(null)}>
+        <img src={lightbox} alt="full view" />
+        <button
+            className="download-btn"
+            onClick={(e) => handleDownload(e, lightbox)}
+            disabled={downloading}
+        >
+            {downloading ? 'Downloading...' : ' Download'}
+        </button>
+    </div>
+)}
 
             {toast && (
                 <Toast

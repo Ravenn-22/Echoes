@@ -452,6 +452,24 @@ margin-top:6px;
     background: #ae2007;
     color: white;
 }
+.download-btn {
+    position: absolute;
+    bottom: 20px;
+    background: rgba(201, 98, 125, 0.8);
+    color: #fff2d7;
+    padding: 10px 25px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    cursor: pointer;
+}
+
+.download-btn:hover {
+    background: #C9627D;
+}
 @media (max-width: 768px) {
     .navbar {
         padding: 15px 20px;

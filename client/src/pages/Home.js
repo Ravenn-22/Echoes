@@ -314,8 +314,8 @@ const sortedScrapbook = [...filteredScrapbook].sort((a, b) => {
             <p>{scrapbook.description}</p>
             <div className="scrapbook-meta">
                 <span>👤 {scrapbook.owner?.username}</span>
-    <span>👥 {scrapbook.members?.length} members</span>
-    <span>📸 {scrapbook.memoryCount} memories</span>
+                <span>👥 {scrapbook.members?.length} members</span>
+                <span>📸 {scrapbook.memoryCount} memories</span>
             </div>
    
          <div className="scrapook-actions">

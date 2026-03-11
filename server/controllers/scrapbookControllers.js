@@ -90,6 +90,7 @@ const inviteMember = async (req, res) => {
     try {
         const scrapbook = await Scrapbook.findById(req.params.id);
         const userToInvite = await user.findById({ email: req.body.email.toLowerCase() });
+
         if (!userToInvite){
             return res.status(404).json({ message: 'User not found'})
         }
@@ -99,9 +100,11 @@ const inviteMember = async (req, res) => {
 
         scrapbook.members.push(userToInvite._id);
         await scrapbook.save();
-        
-        await sendInviteEmail(userToInvite.email, scrapbook.owner.username, scrapbook.title )
-
+        try{
+              await sendInviteEmail(userToInvite.email, scrapbook.owner.username, scrapbook.title )
+        }catch(error){
+            console.error('Invite email error:', emailError)
+        }
        
         if (!scrapbook) {
             return res.status(404).json({ message: 'Scrapbook not found' });

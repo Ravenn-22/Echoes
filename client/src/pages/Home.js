@@ -196,8 +196,24 @@ const sortedScrapbook = [...filteredScrapbook].sort((a, b) => {
             <nav className="navbar">
                 <div className="navbar-logo">ECHOES</div>
                 <div className="navbar-user">
-                    <span className="navbar-username">Hello, {user?.username}</span>
-                    <div className="profile-pic-container">
+        {editingUsername ? (
+        <form onSubmit={handleUpdateUsername} style={{ display: 'flex', gap: '5px' }}>
+            <input
+                type="text"
+                placeholder="New username"
+                value={newUsername}
+                onChange={(e) => setNewUsername(e.target.value)}
+                className="username-input"
+            />
+            <button type="submit" className="save-username-btn">Save</button>
+            <button type="button" className="cancel-username-btn" onClick={() => setEditingUsername(false)}>Cancel</button>
+        </form>
+    ) : (
+        <span className="navbar-username" onClick={() => { setEditingUsername(true); setNewUsername(user?.username); }} style={{ cursor: 'pointer' }}>
+            Hello, {user?.username}
+        </span>
+    )}
+        <div className="profile-pic-container">
             <label htmlFor="profile-upload" style={{ cursor: 'pointer' }}>
                 {user?.profilePicture ? (
                     <img src={user.profilePicture} alt="profile" className="profile-pic" />
@@ -214,24 +230,7 @@ const sortedScrapbook = [...filteredScrapbook].sort((a, b) => {
                 style={{ display: 'none' }}
                 onChange={handleProfilePicUpload}
             />
-        </div>
-        {editingUsername ? (
-        <form onSubmit={handleUpdateUsername} style={{ display: 'flex', gap: '5px' }}>
-            <input
-                type="text"
-                placeholder="New username"
-                value={newUsername}
-                onChange={(e) => setNewUsername(e.target.value)}
-                className="username-input"
-            />
-            <button type="submit" className="save-username-btn">Save</button>
-            <button type="button" className="cancel-username-btn" onClick={() => setEditingUsername(false)}>Cancel</button>
-        </form>
-    ) : (
-        <span className="navbar-username" onClick={() => { setEditingUsername(true); setNewUsername(user?.username); }} style={{ cursor: 'pointer' }}>
-            Hello, {user?.username} ✏️
-        </span>
-    )}
+            </div>
     
                     <button className="logout-btn" onClick={handleLogout}>Logout</button>
                 </div>

@@ -46,3 +46,4 @@ export const removeMember = (scrapbookId, memberId) => API.delete(`/scrapbooks/$
 export const forgotPassword = (email) => API.post('/auth/forgot-password', { email });
 export const resetPassword = (token, password) => API.put(`/auth/reset-password/${token}`, { password });
 export const updateProfilePicture = (profilePicture) => API.put('/auth/update-profile-picture', { profilePicture });
+export const changePassword = (currentPassword, newPassword) => API.put('/auth/change-password', { currentPassword, newPassword });

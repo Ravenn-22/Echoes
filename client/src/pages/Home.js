@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { getScrapbooks, createScrapbook, deleteScrapbook, updateScrapbook} from '../services/api';
+import { getScrapbooks, createScrapbook, deleteScrapbook, updateScrapbook, changePassword} from '../services/api';
 import { useNavigate } from 'react-router-dom';
 import './Home.css';
 import Loader from '../components/Loader'
@@ -30,7 +30,10 @@ const [ cover, setCover] = useState(null);
     const [sortBy, setSortBy] = useState("newest")
     const [editingUsername, setEditingUsername] = useState(false);
 const [newUsername, setNewUsername] = useState('');
-
+const [showChangePassword, setShowChangePassword] = useState(false);
+const [currentPassword, setCurrentPassword] = useState('');
+const [newPassword, setNewPassword] = useState('');
+const [changingPassword, setChangingPassword] = useState(false);
 
 const [toast, setToast] = useState(null)
 const [search, setSearch] = useState("")
@@ -187,6 +190,22 @@ const sortedScrapbook = [...filteredScrapbook].sort((a, b) => {
     return 0;
 })
 
+const handleChangePassword = async (e) => {
+    e.preventDefault();
+    setChangingPassword(true);
+    try {
+        await changePassword(currentPassword, newPassword);
+        setCurrentPassword('');
+        setNewPassword('');
+        setShowChangePassword(false);
+        setToast({ message: 'Password changed successfully! 🌸', type: 'success' });
+    } catch (error) {
+        setToast({ message: error.response?.data?.message || 'Failed to change password', type: 'error' });
+    } finally {
+        setChangingPassword(false);
+    }
+};
+
 
 
     
@@ -197,7 +216,7 @@ const sortedScrapbook = [...filteredScrapbook].sort((a, b) => {
                 <div className="navbar-logo">ECHOES</div>
                 <div className="navbar-user">
         {editingUsername ? (
-        <form onSubmit={handleUpdateUsername} style={{ display: 'flex', gap: '5px' }}>
+        <form onSubmit={handleUpdateUsername} className='change-username-form'>
             <input
                 type="text"
                 placeholder="New username"
@@ -233,7 +252,33 @@ const sortedScrapbook = [...filteredScrapbook].sort((a, b) => {
             </div>
     
                     <button className="logout-btn" onClick={handleLogout}>Logout</button>
+                       <button className="change-password-btn" onClick={() => setShowChangePassword(!showChangePassword)}>
+    🔒 Password
+</button>
+
+{showChangePassword && (
+    <div className="change-password-form">
+        <form onSubmit={handleChangePassword}>
+            <input
+                type="password"
+                placeholder="Current password"
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+            />
+            <input
+                type="password"
+                placeholder="New password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+            />
+            <button type="submit" disabled={changingPassword}>
+                {changingPassword ? 'Changing...' : 'Change Password'}
+            </button>
+        </form>
+    </div>
+)}
                 </div>
+             
             </nav>
 
             <div className="hero">

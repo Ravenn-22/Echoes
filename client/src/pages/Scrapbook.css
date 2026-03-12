@@ -472,16 +472,24 @@ margin-top:6px;
 }
 .member-info {
     display: flex;
+    flex-direction: column;
     align-items: center;
     gap: 8px;
 }
 
 .member-avatar {
-    width: 30px;
-    height: 30px;
+    width: 3.5rem;
+    height: 3.5rem;
     border-radius: 50%;
     object-fit: cover;
     border: 2px solid #C9627D;
+}
+#inv-user{
+   font-size: .95rem;
+   text-align: center;
+   color: #72011f;
+    margin: 5px;
+    font-family: 'playfair display',sans-serif;
 }
 
 .member-avatar-placeholder {

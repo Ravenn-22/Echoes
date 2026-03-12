@@ -276,7 +276,7 @@ const sortedMemory = [...filteredMemories].sort((a, b) => {
                     {member.username?.charAt(0).toUpperCase()}
                 </div>
             )}
-            <span>👤 {member.username}</span>
+            <span id='inv-user'>{member.username}</span>
         </div>
         {scrapbook.owner?._id === user?._id && (
             <button

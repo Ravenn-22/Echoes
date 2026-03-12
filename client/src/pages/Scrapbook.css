@@ -506,6 +506,28 @@ margin-top:6px;
     font-weight: 600;
     border: 2px solid #C9627D;
 }
+.pin-btn {
+    background: transparent;
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    color: #D4AF37;
+    padding: 6px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-family: 'Raleway', sans-serif;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.pin-btn:hover {
+    background: #D4AF37;
+    color: white;
+}
+
+.pin-btn.pinned {
+    background: #D4AF37;
+    color: white;
+}
 @media (max-width: 768px) {
     .navbar {
         padding: 15px 20px;

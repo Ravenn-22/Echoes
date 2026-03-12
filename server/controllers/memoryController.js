@@ -109,5 +109,21 @@ const deleteMemory = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+const pinMemory = async (req, res) => {
+    try {
+        const memory = await Memory.findById(req.params.id);
 
-module.exports = { createMemory, getMemories, getMemory, updateMemory, deleteMemory };
+        if (!memory) {
+            return res.status(404).json({ message: 'Memory not found' });
+        }
+
+        memory.pinned = !memory.pinned;
+        await memory.save();
+
+        res.status(200).json(memory);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+module.exports = { createMemory, getMemories, getMemory, updateMemory, deleteMemory , pinMemory };

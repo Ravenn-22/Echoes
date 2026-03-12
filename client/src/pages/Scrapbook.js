@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getScrapbook, getMemories, createMemory, deleteMemory, inviteMember, updateMemory, removeMember} from '../services/api';
+import { getScrapbook, getMemories, createMemory, deleteMemory, inviteMember, updateMemory, removeMember, pinMemory} from '../services/api';
 import axios from 'axios';
 import './Scrapbook.css';
 import Loader from '../components/Loader';
@@ -219,12 +219,23 @@ const handleDownload = async (e, url) => {
     }
 };
 
+const handlePin = async (memoryId) => {
+    try {
+        const { data } = await pinMemory(memoryId);
+        setMemories(memories.map((m) => m._id === memoryId ? data : m));
+        setToast({ message: data.pinned ? 'Memory pinned! 📌' : 'Memory unpinned!', type: 'success' });
+    } catch (error) {
+        setToast({ message: 'Failed to pin memory', type: 'error' });
+    }
+};
+
 
 const filteredMemories = memories.filter((memory) =>
     memory.title.toLowerCase().includes(search.toLowerCase()) ||
     memory.description.toLowerCase().includes(search.toLowerCase())
 ); 
 const sortedMemory = [...filteredMemories].sort((a, b) => {
+    if (b.pinned !== a.pinned) return b.pinned - a.pinned;
     if (sortBy === 'newest') return new Date(b.createdAt) - new Date(a.createdAt)
     if (sortBy === 'oldest') return new Date(a.createdAt) - new Date(b.createdAt)
     if (sortBy === 'author') return a.createdBy?.username.localCompare(b.createdBy?.username);
@@ -402,6 +413,9 @@ const sortedMemory = [...filteredMemories].sort((a, b) => {
                                         By {memory.createdBy?.username} • {new Date(memory.createdAt).toLocaleDateString()}
                                         </p>
                               <div className="memory-actions">
+                                <button className={`pin-btn ${memory.pinned ? 'pinned' : ''}`}onClick={() => handlePin(memory._id)} >
+                                    {memory.pinned ? '📌 Pinned' : '📌 Pin'}
+    </button>
                                               <button className="edit-btn" onClick={() => handleEditClick(memory)}   >
                                                           ✏️ Edit 
                                                           </button>

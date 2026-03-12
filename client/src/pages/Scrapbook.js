@@ -267,19 +267,28 @@ const sortedMemory = [...filteredMemories].sort((a, b) => {
         <h3>Members</h3>
         
         {scrapbook.members.map((member) => (
-            <div key={member._id} className="member-item">
-                <span>👤 {member.username}</span>
-                {scrapbook.owner?._id === user?._id && (
-                    <button
-                        className="remove-member-btn" id="remove-member-btn"
-                        onClick={() => handleRemoveMember(member._id)} 
-                        disabled={removeMemberId === member._id}>
-                            
-                             {removeMemberId === member._id ? 'Removing...' : `Remove ${member.username}` }
-                          </button>
-                )}
-            </div>
-        ))}
+    <div key={member._id} className="member-item">
+        <div className="member-info">
+            {member.profilePicture ? (
+                <img src={member.profilePicture} alt={member.username} className="member-avatar" />
+            ) : (
+                <div className="member-avatar-placeholder">
+                    {member.username?.charAt(0).toUpperCase()}
+                </div>
+            )}
+            <span>👤 {member.username}</span>
+        </div>
+        {scrapbook.owner?._id === user?._id && (
+            <button
+                className="remove-member-btn"
+                onClick={() => handleRemoveMember(member._id)}
+                disabled={removeMemberId === member._id}
+            >
+                {removeMemberId === member._id ? 'Removing...' : `Remove ${member.username}`}
+            </button>
+        )}
+    </div>
+))}
     </div>
 )}
     </div>

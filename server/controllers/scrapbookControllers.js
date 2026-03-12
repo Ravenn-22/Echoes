@@ -42,10 +42,10 @@ const getScrapbooks = async (req, res) => {
 };
 
 const getScrapbook = async (req, res) => {
-   try {
+    try {
         const scrapbook = await Scrapbook.findById(req.params.id)
-            .populate('owner', 'username')
-            .populate('members', 'username');
+            .populate('owner', 'username profilePicture')
+            .populate('members', 'username profilePicture');
 
         if (!scrapbook) {
             return res.status(404).json({ message: 'Scrapbook not found' });

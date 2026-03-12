@@ -455,7 +455,7 @@ margin-top:6px;
 .download-btn {
     position: absolute;
     bottom: 20px;
-    background: rgba(201, 98, 125, 0.8);
+    background: rgba(114, 1, 31, 0.736);
     color: #fff2d7;
     padding: 10px 25px;
     border-radius: 25px;
@@ -468,7 +468,7 @@ margin-top:6px;
 }
 
 .download-btn:hover {
-    background: #C9627D;
+    background: #72011f;
 }
 @media (max-width: 768px) {
     .navbar {

@@ -15,7 +15,7 @@ const Home = () => {
     const [description, setDescription] = useState('');
     const [showForm, setShowForm] = useState(false);
      const [creatingScrap, setCreatingScrap] = useState(false);
-    const { user , updateProfilePicture} = useAuth();
+    const { user , updateProfilePicture, updateUsername} = useAuth();
     const navigate = useNavigate();
 
      const [deletingScrapId, setDeletingScrapId] = useState(null);
@@ -28,6 +28,8 @@ const [ cover, setCover] = useState(null);
     const [editDescription,setEditDescription] = useState("")
     const [editImage,setEditImage] = useState(null);
     const [sortBy, setSortBy] = useState("newest")
+    const [editingUsername, setEditingUsername] = useState(false);
+const [newUsername, setNewUsername] = useState('');
 
 
 const [toast, setToast] = useState(null)
@@ -100,7 +102,16 @@ const handleDelete = async (id) => {
         navigate('/', {replace: true });
        
     };
-
+    const handleUpdateUsername = async (e) => {
+    e.preventDefault();
+    try {
+        await updateUsername(newUsername);
+        setEditingUsername(false);
+        setToast({ message: 'Username updated! 🌸', type: 'success' });
+    } catch (error) {
+        setToast({ message: error.response?.data?.message || 'Failed to update username', type: 'error' });
+    }
+};
   
     
     const handleEditClick = (scrapbook) => {
@@ -204,6 +215,24 @@ const sortedScrapbook = [...filteredScrapbook].sort((a, b) => {
                 onChange={handleProfilePicUpload}
             />
         </div>
+        {editingUsername ? (
+        <form onSubmit={handleUpdateUsername} style={{ display: 'flex', gap: '5px' }}>
+            <input
+                type="text"
+                placeholder="New username"
+                value={newUsername}
+                onChange={(e) => setNewUsername(e.target.value)}
+                className="username-input"
+            />
+            <button type="submit" className="save-username-btn">Save</button>
+            <button type="button" className="cancel-username-btn" onClick={() => setEditingUsername(false)}>Cancel</button>
+        </form>
+    ) : (
+        <span className="navbar-username" onClick={() => { setEditingUsername(true); setNewUsername(user?.username); }} style={{ cursor: 'pointer' }}>
+            Hello, {user?.username} ✏️
+        </span>
+    )}
+    
                     <button className="logout-btn" onClick={handleLogout}>Logout</button>
                 </div>
             </nav>

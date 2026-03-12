@@ -404,6 +404,38 @@ border-radius:10px;
 .search-input::placeholder {
     color: rgba(48, 37, 15, 0.4);
 }
+.username-input {
+    padding: 5px 10px;
+    border-radius: 15px;
+    border: 1px solid rgba(201, 98, 125, 0.3);
+    background: rgba(253, 246, 236, 0.1);
+    color: #3D2B1F;
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.85rem;
+    outline: none;
+}
+
+.save-username-btn {
+    background: #C9627D;
+    color: white;
+    border: none;
+    padding: 5px 12px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.85rem;
+}
+
+.cancel-username-btn {
+    background: transparent;
+    color: #3D2B1F;
+    border: 1px solid rgba(61, 43, 31, 0.3);
+    padding: 5px 12px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.85rem;
+}
 .search-input:focus {
     border-color: #C9627D;
 }

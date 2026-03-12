@@ -25,6 +25,7 @@ export const getMemories = (scrapbookId) => API.get(`/memories?scrapbookId=${scr
 export const getMemory = (id) => API.get(`/memories/${id}`);
 export const updateMemory = (id, formData) => API.put(`/memories/${id}`, formData);
 export const deleteMemory = (id) => API.delete(`/memories/${id}`);
+export const updateUsername = (username) => API.put('/auth/update-username', { username });
 
 export const uploadImage = async (file) => {
     const formData = new FormData();

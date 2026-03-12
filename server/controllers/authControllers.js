@@ -137,4 +137,24 @@ const resetPassword = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
-module.exports = {registerUser, loginUser , forgotPassword, resetPassword, updateProfilePicture}
+const updateUsername = async (req, res) => {
+    try {
+        const { username } = req.body;
+
+        const usernameExists = await User.findOne({ username });
+        if (usernameExists) {
+            return res.status(400).json({ message: 'Username already taken' });
+        }
+
+        const user = await User.findByIdAndUpdate(
+            req.user._id,
+            { username },
+            { new: true }
+        ).select('-password');
+
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+module.exports = {registerUser, loginUser , forgotPassword, resetPassword, updateProfilePicture, updateUsername}

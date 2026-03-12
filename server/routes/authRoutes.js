@@ -9,3 +9,6 @@ router.post('/login', loginUser);
 router.post('/forgot-password', forgotPassword);
 router.put('/reset-password/:token', resetPassword);
 router.put('/update-profile-picture', protect, updateProfilePicture);
+router.put('/update-username', protect, updateUsername);
+
+module.exports = router;

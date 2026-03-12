@@ -34,6 +34,7 @@ const [showChangePassword, setShowChangePassword] = useState(false);
 const [currentPassword, setCurrentPassword] = useState('');
 const [newPassword, setNewPassword] = useState('');
 const [changingPassword, setChangingPassword] = useState(false);
+const [menuOpen, setMenuOpen] = useState(false);
 
 const [toast, setToast] = useState(null)
 const [search, setSearch] = useState("")
@@ -213,25 +214,26 @@ const handleChangePassword = async (e) => {
         <div className='home-container'>
            
             <nav className="navbar">
-                <div className="navbar-logo">ECHOES</div>
-                <div className="navbar-user">
+    <div className="navbar-logo">ECHOES</div>
+    <div className="navbar-user">
+        
         {editingUsername ? (
-        <form onSubmit={handleUpdateUsername} className='change-username-form'>
-            <input
-                type="text"
-                placeholder="New username"
-                value={newUsername}
-                onChange={(e) => setNewUsername(e.target.value)}
-                className="username-input"
-            />
-            <button type="submit" className="save-username-btn">Save</button>
-            <button type="button" className="cancel-username-btn" onClick={() => setEditingUsername(false)}>Cancel</button>
-        </form>
-    ) : (
-        <span className="navbar-username" onClick={() => { setEditingUsername(true); setNewUsername(user?.username); }} style={{ cursor: 'pointer' }}>
-            Hello, {user?.username}
-        </span>
-    )}
+            <form onSubmit={handleUpdateUsername} className='change-username-form'>
+                <input
+                    type="text"
+                    placeholder="New username"
+                    value={newUsername}
+                    onChange={(e) => setNewUsername(e.target.value)}
+                    className="username-input"
+                />
+                <button type="submit" className="save-username-btn">Save</button>
+                <button type="button" className="cancel-username-btn" onClick={() => setEditingUsername(false)}>Cancel</button>
+            </form>
+        ) : (
+            <span className="navbar-username" onClick={() => { setEditingUsername(true); setNewUsername(user?.username); }} style={{ cursor: 'pointer' }}>
+              Hello,  {user?.username} 
+            </span>
+        )}
         <div className="profile-pic-container">
             <label htmlFor="profile-upload" style={{ cursor: 'pointer' }}>
                 {user?.profilePicture ? (
@@ -249,12 +251,22 @@ const handleChangePassword = async (e) => {
                 style={{ display: 'none' }}
                 onChange={handleProfilePicUpload}
             />
+        </div>
+        <div className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        {menuOpen && (
+            <div className="hamburger-menu">
+                <button className="logout-btn" onClick={handleLogout}>🚪 Logout</button>
+                <button className="change-password-btn" 
+                onClick={() => { setShowChangePassword(!showChangePassword); 
+                setMenuOpen(false); }}>🔒 Change Password</button>
             </div>
-    
-                    <button className="logout-btn" onClick={handleLogout}>Logout</button>
-                       <button className="change-password-btn" onClick={() => setShowChangePassword(!showChangePassword)}>
-    🔒 Password
-</button>
+        )}
+    </div>
+</nav>
 
 {showChangePassword && (
     <div className="change-password-form">
@@ -274,12 +286,10 @@ const handleChangePassword = async (e) => {
             <button type="submit" disabled={changingPassword}>
                 {changingPassword ? 'Changing...' : 'Change Password'}
             </button>
+            <button type="button" className="cancel-password-btn" onClick={() => setShowChangePassword(false)}>Cancel</button>
         </form>
     </div>
 )}
-                </div>
-             
-            </nav>
 
             <div className="hero">
                 <h1>Your Memories </h1>

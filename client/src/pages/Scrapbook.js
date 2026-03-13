@@ -3,11 +3,11 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { getScrapbook, getMemories, createMemory, deleteMemory, inviteMember, updateMemory, removeMember, pinMemory} from '../services/api';
 import axios from 'axios';
 import './Scrapbook.css';
-import Loader from '../components/Loader';
 import Toast from "../components/Toast";
 import {io} from 'socket.io-client';
 import { useAuth } from '../context/AuthContext';
 import Skeleton from '../components/Skeletonn';
+import compressImage from '../compressImage';
 
 
 const ScrapbookPage = () => {
@@ -102,8 +102,9 @@ const ScrapbookPage = () => {
             let imageUrl = '';
 
             if (image) {
+                const compressed = await compressImage(image);
                 const formData = new FormData();
-                formData.append('image', image);
+                formData.append('image', compressed);
 
                 const user = JSON.parse(localStorage.getItem('user'));
                 const { data } = await axios.post('https://echoes-j0mn.onrender.com/api/upload', formData, {
@@ -159,8 +160,9 @@ const ScrapbookPage = () => {
         try{
             let imageUrl = editImage ? null : undefined;
             if(editImage){
-                const formData = new FormData();
-                formData.append('image', editImage);
+                 const compressed = await compressImage(editImage);
+                 const formData = new FormData();
+                 formData.append('image', compressed);
 
                 const user = JSON.parse(localStorage.getItem('user'));
                 const {data} = await axios.post('https://echoes-j0mn.onrender.com/api/upload', formData, {

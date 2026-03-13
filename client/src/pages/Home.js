@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { getScrapbooks, createScrapbook, deleteScrapbook, updateScrapbook, changePassword, getMemories} from '../services/api';
 import { useNavigate } from 'react-router-dom';
 import './Home.css';
-import Loader from '../components/Loader'
+import compressImage from '../compressImage';
 import Toast from '../components/Toast'
 import axios from 'axios';
 import WelcomeModal from '../components/WelcomeModal';
@@ -74,8 +74,9 @@ const [search, setSearch] = useState("")
         try {
             let coverImage = '';
             if(cover) {
-                const formData =new FormData();
-                formData.append('image', cover);
+                const compressed = await compressImage(cover);
+                const formData = new FormData();
+                formData.append('image', compressed);
 
                 const user =JSON.parse(localStorage.getItem('user'));
                 const { data } =await axios.post('https://echoes-j0mn.onrender.com/api/upload', formData, {
@@ -188,8 +189,10 @@ const handleDelete = async (id) => {
     const file = e.target.files[0];
     if (!file) return;
     try {
-        const formData = new FormData();
-        formData.append('image', file);
+        const compressed = await compressImage(file);
+                const formData = new FormData();
+                formData.append('image', compressed);
+        
 
         const storedUser = JSON.parse(localStorage.getItem('user'));
         const { data } = await axios.post('https://echoes-j0mn.onrender.com/api/upload', formData, {

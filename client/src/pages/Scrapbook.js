@@ -7,6 +7,7 @@ import Loader from '../components/Loader';
 import Toast from "../components/Toast";
 import {io} from 'socket.io-client';
 import { useAuth } from '../context/AuthContext';
+import Skeleton from '../components/Skeletonn';
 
 
 const ScrapbookPage = () => {
@@ -357,7 +358,7 @@ const sortedMemory = [...filteredMemories].sort((a, b) => {
                 </select>
         </div>
                  {loading ? (
-                     <Loader />
+                     <Skeleton count={6} />
                  )  : memories.length === 0 ? (
                     <div className="empty-state">
                         <p>No memories yet. Add your first one! 🌸</p>

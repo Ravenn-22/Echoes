@@ -7,7 +7,8 @@ import Loader from '../components/Loader'
 import Toast from '../components/Toast'
 import axios from 'axios';
 import WelcomeModal from '../components/WelcomeModal';
-import polaroidImg from "../assets/fonts/undraw_polaroid_qqdz.svg"
+import polaroidImg from "../assets/fonts/undraw_polaroid_qqdz.svg";
+import Skeleton from '../components/Skeletonn';
 
 
 const Home = () => {
@@ -370,7 +371,7 @@ const handleChangePassword = async (e) => {
                 </select>
                 </div>
             {loading ? (
-                <Loader />
+               <Skeleton count={6} />
             ) : filteredScrapbook.length === 0 ? (
                    <div className="empty-state">
     <img src={polaroidImg} alt="No scrapbooks yet" className="empty-state-img" />

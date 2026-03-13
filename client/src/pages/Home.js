@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { getScrapbooks, createScrapbook, deleteScrapbook, updateScrapbook, changePassword} from '../services/api';
+import { getScrapbooks, createScrapbook, deleteScrapbook, updateScrapbook, changePassword, getMemories} from '../services/api';
 import { useNavigate } from 'react-router-dom';
 import './Home.css';
 import Loader from '../components/Loader'
@@ -35,6 +35,8 @@ const [currentPassword, setCurrentPassword] = useState('');
 const [newPassword, setNewPassword] = useState('');
 const [changingPassword, setChangingPassword] = useState(false);
 const [menuOpen, setMenuOpen] = useState(false);
+const [scrapbookMemories, setScrapbookMemories] = useState([]);
+const [showMemoryPicker, setShowMemoryPicker] = useState(false);
 
 const [toast, setToast] = useState(null)
 const [search, setSearch] = useState("")
@@ -121,41 +123,54 @@ const handleDelete = async (id) => {
     const handleEditClick = (scrapbook) => {
         setEditingScrapbook(scrapbook._id);
         setEditTitle(scrapbook.title);
-        setEditDescription(scrapbook.description);
+       setEditDescription(scrapbook.description);
+    setShowMemoryPicker(false);
+    
+    getMemories(scrapbook._id).then(({ data }) => {
+        setScrapbookMemories(data.filter((m) => m.image));
+    }).catch(() => {});
     };
 
      const handleEditSubmit = async (e, id) => {
-       setSaveScrapEdit(id)
-        e.preventDefault();
-        try{
-            let imageUrl = editImage ? null : undefined;
-            if(editImage){
+    setSaveScrapEdit(id);
+    e.preventDefault();
+    try {
+        let coverImage = undefined;
+
+        if (editImage) {
+            if (typeof editImage === 'string') {
+                coverImage = editImage;
+            } else {
                 const formData = new FormData();
                 formData.append('image', editImage);
 
                 const user = JSON.parse(localStorage.getItem('user'));
-                const {data} = await axios.post('https://echoes-j0mn.onrender.com/api/upload', formData, {
-                    headers:{
+                const { data } = await axios.post('https://echoes-j0mn.onrender.com/api/upload', formData, {
+                    headers: {
                         'Content-Type': 'multipart/form-data',
                         Authorization: `Bearer ${user.token}`
                     }
                 });
-                imageUrl = data.imageUrl
-            }  const updateData = {
-                title: editTitle,
-                description: editDescription,
-                ...(imageUrl && { coverImage: imageUrl })
-            };
-            const { data } =await updateScrapbook(id, updateData);
-            setScrapbooks(scrapbooks.map((m) => m._id === id ? data : m));
-            setEditingScrapbook(null);
-            setToast({ message: 'Scrapbook updated!', type: 'success'})
-        }catch(error){
-            setToast({ message: 'Failed to update scrapbook', type: 'error'})
-        }finally {
+                coverImage = data.imageUrl;
+            }
+        }
+
+        const updateData = {
+            title: editTitle,
+            description: editDescription,
+            ...(coverImage && { coverImage })
+        };
+
+        const { data } = await updateScrapbook(id, updateData);
+        setScrapbooks(scrapbooks.map((m) => m._id === id ? data : m));
+        setEditingScrapbook(null);
+        setToast({ message: 'Scrapbook updated!', type: 'success' });
+    } catch (error) {
+        setToast({ message: 'Failed to update scrapbook', type: 'error' });
+    } finally {
         setSaveScrapEdit(null);
     }
-    };
+};
 
     const handleProfilePicUpload = async (e) => {
     const file = e.target.files[0];
@@ -300,10 +315,7 @@ const handleChangePassword = async (e) => {
                     + Create Scrapbook
                 </button>
 
-            </div>
-
-         
-            {showForm && (
+            </div>  {showForm && (
                 <div className="create-form">
                     <form onSubmit={handleCreate}>
                         <input
@@ -328,10 +340,7 @@ const handleChangePassword = async (e) => {
 </button>
                     </form>
                 </div>
-            )}
-
-            
-            <div className="scrapbooks-section">
+            )} <div className="scrapbooks-section">
                 <h2>Your Scrapbooks</h2>
                   <div className='scrapbooks-controls'>
                   <input 
@@ -361,27 +370,41 @@ const handleChangePassword = async (e) => {
                         <div key={scrapbook._id} className="scrapbook-card"  >
                           {editingScrapbook === scrapbook._id ? (
                             <form onSubmit={(e) => handleEditSubmit(e, scrapbook._id)} className='scrap-edt-form'>
-                             <input
-                             type="text"
-                                   value={editTitle}
-                                onChange={(e) => setEditTitle(e.target.value)}
-                               placeholder="Title"
-                                 />
-                           <input
-                           type="text"
-                          value={editDescription}
-                            onChange={(e) => setEditDescription(e.target.value)}
-                         placeholder="Description"
-                         />
-                         <input
-                          type="file"
-                             accept="image/*"
-                           onChange={(e) => setEditImage(e.target.files[0])}
-                           />
-                             <button type="submit" id='save-btn'disabled={saveScrapEdit === scrapbook._id}
-           > {saveScrapEdit === scrapbook._id ? 'Saving....' : 'Save'}</button>
-                          <button type="button" onClick={() => setEditingScrapbook(null)}>Cancel</button>
-                          </form>
+                                   <input
+                                   type="text"
+                                    value={editTitle} onChange={(e) => setEditTitle(e.target.value)} placeholder="Title"
+                                     />
+                                     <input type="text" value={editDescription}  onChange={(e) => setEditDescription(e.target.value)}
+                                      placeholder="Description" />
+                                     <input type="file" accept="image/*"  onChange={(e) => setEditImage(e.target.files[0])} />
+                                     <button  type="button" className="pick-memory-btn" id='pick-memory-btn' onClick={() => setShowMemoryPicker(!showMemoryPicker)} >
+                                         🖼️ Pick from memories
+                                     </button>
+          {showMemoryPicker && (
+             <div className="memory-picker" id='memory-picker'>
+                {scrapbookMemories.length === 0 ? (
+                    <p>No memories with images yet</p>
+                ) : (
+                scrapbookMemories.map((memory) => (
+                    <img
+                        key={memory._id}
+                        src={memory.image}
+                        alt={memory.title}
+                        className={`memory-picker-img ${editImage === memory.image ? 'selected' : ''}`}
+                        onClick={() => {
+                            setEditImage(memory.image);
+                            setShowMemoryPicker(false);
+                        }}
+                    />
+                ))
+            )}
+        </div>
+    )}
+    <button type="submit" id='save-btn' disabled={saveScrapEdit === scrapbook._id}>
+        {saveScrapEdit === scrapbook._id ? 'Saving....' : 'Save'}
+    </button>
+    <button type="button" onClick={() => setEditingScrapbook(null)}>Cancel</button>
+</form>
           ) : ( 
             <>
        <div onClick={() => navigate(`/scrapbook/${scrapbook._id}`)}>
@@ -392,8 +415,7 @@ const handleChangePassword = async (e) => {
                     '📸'
                 )}
          </div>
-
-            <h3>{scrapbook.title}</h3>
+          <h3>{scrapbook.title}</h3>
             <p>{scrapbook.description}</p>
             <div className="scrapbook-meta">
                 <span>👤 {scrapbook.owner?.username}</span>

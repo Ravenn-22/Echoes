@@ -6,6 +6,7 @@ import './Home.css';
 import Loader from '../components/Loader'
 import Toast from '../components/Toast'
 import axios from 'axios';
+import WelcomeModal from '../components/WelcomeModal';
 
 
 
@@ -17,6 +18,7 @@ const Home = () => {
      const [creatingScrap, setCreatingScrap] = useState(false);
     const { user , updateProfilePicture, updateUsername} = useAuth();
     const navigate = useNavigate();
+    const [showWelcome, setShowWelcome] = useState(false);
 
      const [deletingScrapId, setDeletingScrapId] = useState(null);
      const [saveScrapEdit, setSaveScrapEdit] = useState(null);
@@ -48,6 +50,10 @@ const [search, setSearch] = useState("")
         const { data } = await getScrapbooks();
         setScrapbooks(data);
         setLoading(false);
+        const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
+            if (!hasSeenWelcome && data.length === 0) {
+                setShowWelcome(true);
+            }
     } catch (error) {
         console.log(error);
         setLoading(false);
@@ -55,6 +61,11 @@ const [search, setSearch] = useState("")
 };
         fetchScrapbooks();
     }, []);
+
+    const handleCloseWelcome = () => {
+    localStorage.setItem('hasSeenWelcome', 'true');
+    setShowWelcome(false);
+};
 
     const handleCreate = async (e) => {
         e.preventDefault();
@@ -447,6 +458,12 @@ const handleChangePassword = async (e) => {
 </div>
    )}
             </div>
+            {showWelcome && (
+    <WelcomeModal
+        username={user?.username}
+        onClose={handleCloseWelcome}
+    />
+)}
             {toast && (
     <Toast
         message={toast.message}

@@ -8,6 +8,8 @@ import Views from './pages/Views';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import { Analytics } from "@vercel/analytics/react"
+import NotFound from './pages/NotFound';
+
 
 const PrivateRoute = ({ children }) => {
     const { user } = useAuth();
@@ -32,7 +34,7 @@ function App() {
                         <Scrapbook />
                     </PrivateRoute>
                 } />
-    
+    <Route path="*" element={<NotFound />} />
             </Routes>
             <Analytics />
         </Router>

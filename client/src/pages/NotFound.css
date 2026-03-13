@@ -1,0 +1,64 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Raleway:wght@300;400;600&display=swap');
+
+.notfound-container {
+    min-height: 100vh;
+    background: #C9627D;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+}
+
+.notfound-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.notfound-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 8rem;
+    color: #72011f;
+    margin: 0;
+    line-height: 1;
+}
+
+.notfound-subtitle {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    color: #fff2d7;
+    margin: 0;
+}
+
+.notfound-text {
+    font-family: 'Raleway', sans-serif;
+    font-size: 1rem;
+    color: rgba(255, 242, 215, 0.6);
+    max-width: 400px;
+    margin: 0;
+}
+
+.notfound-btn {
+    background: #72011f;
+    color: #fff2d7;
+    border: none;
+    padding: 14px 35px;
+    border-radius: 30px;
+    font-family: 'Raleway', sans-serif;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.notfound-btn:hover {
+    background: #ad435f;
+    transform: translateY(-2px);
+}
+.notfound-img {
+    width: 100%;
+    max-width: 350px;
+    margin-bottom: 10px;
+}

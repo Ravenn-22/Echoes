@@ -7,7 +7,7 @@ import Loader from '../components/Loader'
 import Toast from '../components/Toast'
 import axios from 'axios';
 import WelcomeModal from '../components/WelcomeModal';
-
+import polaroidImg from "../assets/fonts/undraw_polaroid_qqdz.svg"
 
 
 const Home = () => {
@@ -372,9 +372,14 @@ const handleChangePassword = async (e) => {
             {loading ? (
                 <Loader />
             ) : filteredScrapbook.length === 0 ? (
-                    <div className="empty-state">
-                        <p>No scrapbooks yet. Create your first one! 🌷</p>
-                    </div>
+                   <div className="empty-state">
+    <img src={polaroidImg} alt="No scrapbooks yet" className="empty-state-img" />
+    <h2>Your story starts here 🌸</h2>
+    <p>Create your first scrapbook and start capturing the moments that matter most.</p>
+    <button className="create-btn" onClick={() => setShowForm(true)}>
+        + Create your first scrapbook
+    </button>
+</div>
                 ) : (
                     <div className="scrapbooks-grid">
                        {sortedScrapbook.map((scrapbook) => (

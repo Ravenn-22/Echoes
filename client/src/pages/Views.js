@@ -1,18 +1,19 @@
 import { Link } from "react-router-dom";
 import "./Views.css"
-
+import pell from "../assets/fonts/pexels-ballet-1840427_1920.jpg"
 
 const Views = ( ) => {
 
     return(
         <div className="views-container">
+            
             <div className="top">
                 <div className="imgg-top">
                     <img src="https://images.unsplash.com/photo-1568849676085-51415703900f?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="first-image" className="first"/>
                     <img src="https://images.unsplash.com/photo-1481841580057-e2b9927a05c6?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTl8fGNvdXBsZXxlbnwwfHwwfHx8MA%3D%3D" alt=""className="mid"></img>
-                    <img src="https://i.pinimg.com/736x/82/37/2e/82372e6afb91bda755015f173c1a0236.jpg" alt=""className="end"></img>
+                    <img src="https://images.unsplash.com/photo-1615574147326-99d907ca408c?q=80&w=777&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt=""className="end"></img>
                 </div>
-                <h1 className="top-header">FOR THE LOVERS AND THE FEELERS</h1>
+                <h1 className="top-header"> FOR THE LOVERS AND THE FEELERS </h1>
             </div>
             <section>
                 <div className="left">
@@ -27,13 +28,13 @@ const Views = ( ) => {
                      
                 </div>
                 <div className="right">
-                    <img src="https://i.pinimg.com/1200x/6a/c7/85/6ac78566a0b4e09c94a0e3e5d10353bf.jpg" alt="" className="sec-img"></img>
+                    <img src="https://images.unsplash.com/photo-1755976264282-dea1f8dd443d?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="" className="sec-img"></img>
                 </div>
             </section>
             <article>
                 <div className="article-left">
                     <div className="article-img">
-                        <img className="bee" src="https://i.pinimg.com/1200x/83/b9/e3/83b9e35b46abb69da56b02a0c323505c.jpg" alt="" />
+                        <img className="bee" src={pell} alt="" />
                      <div className="messy">
 
                         <span><img src="/images/pyjamas.png" alt="" className="icons"/></span>
@@ -61,7 +62,7 @@ So take the pictures. Write the notes. Keep the ticket stubs. Because one day, t
 
             <div className="art-img">
 
-                        <img className="cee" src="https://i.pinimg.com/736x/67/3a/95/673a95b2075c971c469e1226d05b2928.jpg" alt="" />
+                        <img className="cee" src="https://images.unsplash.com/photo-1603234924544-526ab57f77d9?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="" />
             </div>
                     
             
@@ -74,9 +75,9 @@ So take the pictures. Write the notes. Keep the ticket stubs. Because one day, t
                 <div className="foot-deets">
 
                
-                <img src=" https://i.pinimg.com/736x/78/f7/40/78f740aa43990b255e0dc1400e1649cf.jpg" alt="" className="foot-img"></img> 
+                <img src="https://images.unsplash.com/photo-1755810114356-8bc11c67c409?q=80&w=1440&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="" className="foot-img"></img> 
                 <h2 className="footer-h">PERFECTLY IMPERFECT MEMORIES  <br></br>ARE THE ART OUR EXPERIENCES<br></br> LEAVE BEHIND</h2>
-                  <img src=" https://i.pinimg.com/736x/fa/8a/20/fa8a2070803582d31e1471b365a944b7.jpg" 
+                  <img src="https://images.unsplash.com/photo-1584018344977-1785e2aab7fe?q=80&w=735&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
                   alt="" className="foot-img-b"></img> 
                    </div>
             </footer>

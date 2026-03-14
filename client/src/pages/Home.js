@@ -9,7 +9,7 @@ import axios from 'axios';
 import WelcomeModal from '../components/WelcomeModal';
 import polaroidImg from "../assets/fonts/undraw_polaroid_qqdz.svg";
 import Skeleton from '../components/Skeletonn';
-
+import logo from '../assets/fonts/Echoes-img.png'
 
 const Home = () => {
     const [scrapbooks, setScrapbooks] = useState([]);
@@ -261,7 +261,9 @@ const handleChangePassword = async (e) => {
         <div className='home-container'>
            
             <nav className="navbar">
-    <div className="navbar-logo">ECHOES</div>
+    <div className="navbar-logo">
+        <img src={logo} alt='Echoes' className='navbar-logo-img'
+ />        ECHOES</div>
     <div className="navbar-user">
         
         {editingUsername ? (

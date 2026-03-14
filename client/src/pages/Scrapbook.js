@@ -8,6 +8,7 @@ import {io} from 'socket.io-client';
 import { useAuth } from '../context/AuthContext';
 import Skeleton from '../components/Skeletonn';
 import compressImage from '../compressImage';
+import logo from '../assets/fonts/Echoes-img.png'
 
 
 const ScrapbookPage = () => {
@@ -258,7 +259,10 @@ const sortedMemory = [...filteredMemories].sort((a, b) => {
         <div className='scrap-container'>
          
             <nav className="navbar">
-                <div className="navbar-logo" onClick={() => navigate('/home')}>ECHOES</div>
+                <div className="navbar-logo" onClick={() => navigate('/home')}>
+                     <img src={logo} alt='Echoes' className='navbar-logo-img'
+                     />        ECHOES</div>
+                   
                 <button className="back-btn" onClick={() => navigate('/home')}>← Back</button>
             </nav>
 

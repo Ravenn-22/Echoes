@@ -7,6 +7,7 @@
 .views-container{
      background: #fff2d7;
 }
+
 .top{
     background: #232020;
     height: 60vh;
@@ -37,10 +38,11 @@
     font-style: italic;
     font-size: 2.5em;
     margin-top: -6.25rem;
-    color: #fff2d7;
+    color: #e0cba1;
   font-family: "Dancing Script", cursive;
   font-optical-sizing: auto;
 }
+
 section{
     background: #fff2d7;
     display: grid;
@@ -104,7 +106,6 @@ article{
 }
 .article-left{
     padding: 1.2rem;
-
 }
 .bee{
     width: 250px;
@@ -162,7 +163,6 @@ footer img{
     height: 32vh;
 }
 .foot-img{
-    transform: rotate(-90deg);
     width: 250px;
     height: 330px;
     margin-top: 10px;
@@ -199,7 +199,7 @@ footer img{
 }
 @media (max-width : 468px) {
     .top{
-        height: 30vh;
+        height: 24vh;
     }
     .mid{
         opacity: 0;
@@ -213,19 +213,20 @@ footer img{
     }
     .top-header{
         font-size: 1.5em;
-         margin-top: -2.5em;
-         color: #fff2d7;
+         margin-top: -1.1em;
+         color: #b8ae9cea;
     }
     section{
         display: block;
         height: auto;
+    }.left-details{
+         margin: 1rem auto;
+    padding: .5rem;
     }
-    .left-details,.right{
-    margin: 2rem auto;
+   .right{
+    margin: 1rem auto;
     padding-top: .5rem;
-    padding-left: 2rem;
-    padding-right: .5rem;
-
+    }
 .sec-img{
    max-width: 100%;
    height: auto;
@@ -236,13 +237,10 @@ footer img{
     margin-top: -2.3rem;
     height: auto;
 }.article-left{
-    margin-top: 4.5rem;
-    /* margin-left: -.5rem; */
-
+    margin-top: 3.5rem;
 }.bee{
     max-width: 100%;
     height: auto;
-    /* padding: .2rem; */
 }.messy h1{
     font-size: 1rem;
     width: 100%;
@@ -253,12 +251,12 @@ footer img{
 }.art-p{
     width: auto;
 }.cee{
-    height:28rem;
+    height:29rem;
     margin: .8rem ;
     border-radius: 22px;
     width: auto;
 }.article-p{
-         font-size: 1rem;
+         font-size: 1.2rem;
     }
 footer{
     display: flex;
@@ -266,7 +264,7 @@ footer{
    flex-direction: column;
    gap: 20px;
     padding: 1.2rem;
-    /* height: 30vh; */
+
     border: none;
 }
 .foot-img{
@@ -280,7 +278,7 @@ footer{
     height: auto;
     margin-top: -1.2rem;
 }
-}
+
 @media (min-width:469px) and (max-width:1019px) {
     .top{
         height: 40vh;
@@ -303,21 +301,28 @@ footer{
         height: auto;
     }.left-details{
         padding-left: 3rem;
+        font-size: 1.5rem;
+    }.left-details p{
+        font-size: 1.2rem;
     }
     .sec-img{
         height: auto;
         max-width: 100%;
-    }.art-p{
+        width: 63rem;
+    }.article-bottom { display: grid;
+         grid-template-columns: 1.5fr 1fr; 
+         padding: 1rem; }
+    .art-p{
         width: auto;
         padding: .5rem;
         margin-top: 2.5rem;
-    }article-p{
+    }.article-p{
          font-size: 1rem;
     }.messy h1{
         font-size: 1.2rem;
         width: 100%;
     }.cee{
-    height: 25rem;
+    height: 26rem;
     border-radius: 22px;
     width: auto;
     margin-top: .5rem;
@@ -338,7 +343,7 @@ footer{
 
 
 @media (min-width: 1024px) {
-    .top { height: 55vh; }
+    .top { height: 35vh; }
     .first { margin: 2rem 10px -10px 25px; 
         width: 20%; height: 18.75rem; }
     .mid { width: 10%; height: 11rem; margin-top: 2.75rem; border: .3rem solid; opacity: 1; }
@@ -362,7 +367,9 @@ footer{
     
     overflow: hidden;}
     .foot-deets { height: 35vh; justify-content: space-evenly; }
-    .foot-img { opacity: 1; transform: rotate(-90deg); width: 15rem; height: 20rem; }
+    .foot-img { opacity: 1; 
+         width: 20rem;
+          height: 15rem; }
     .foot-img-b { width: 18rem; max-height: 100%; object-fit: cover; margin-top: -3rem; }
     .footer-h { font-size: 2.5rem; margin-left: 2rem; }
 }

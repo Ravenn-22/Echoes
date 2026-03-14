@@ -281,15 +281,16 @@ footer{
 
 @media (min-width:469px) and (max-width:1019px) {
     .top{
-        height: 40vh;
+        height: 45vh;
     }
     .mid{
         opacity: 0;
     }.first{
         width: 30%;
-        height: 20rem;
+        height: 17rem;
+        margin-top: -2rem;
     }.end{
-        height: 24rem;
+        height: 15rem;
         width: 45%;
     }
     .top-header{
@@ -319,7 +320,7 @@ footer{
     }.article-p{
          font-size: 1rem;
     }.messy h1{
-        font-size: 1.2rem;
+        font-size: 1.8rem;
         width: 100%;
     }.cee{
     height: 26rem;
@@ -343,17 +344,17 @@ footer{
 
 
 @media (min-width: 1024px) {
-    .top { height: 35vh; }
+    .top { height: 55vh; }
     .first { margin: 2rem 10px -10px 25px; 
         width: 20%; height: 18.75rem; }
     .mid { width: 10%; height: 11rem; margin-top: 2.75rem; border: .3rem solid; opacity: 1; }
-    .end { height: 22rem; width: 40%; }
+    .end { height: 18rem; width: 35%; }
     .top-header { font-size: 2.5rem; margin-top: -5rem; }
     section { display: grid; grid-template-columns: 3fr 1fr; gap: 1.5rem; height: auto; margin-bottom: 1rem; }
     .left { padding: 2rem; }
     .left-details { padding-left: 6rem; }
     .left-details p { font-size: 1.3rem; }
-    .sec-img { height: 35rem; width: 100%; }
+    .sec-img { height: 32.3rem; width: 100%; }
     article { height: auto; margin-top: -2rem; }
     .article-left { margin-top: 3rem; }
     .bee { width: 18rem; height: auto; }
@@ -363,13 +364,14 @@ footer{
     .messy h1 { font-size: 2rem; width: 35rem; }
     .art-p { width: auto; margin-top: 2rem; }
     .art-p p { font-size: 1.2rem; }
-    footer { height: auto; padding: 1rem; 
+    footer { height: auto; 
+        padding: 1rem; 
     
     overflow: hidden;}
     .foot-deets { height: 35vh; justify-content: space-evenly; }
     .foot-img { opacity: 1; 
          width: 20rem;
           height: 15rem; }
-    .foot-img-b { width: 18rem; max-height: 100%; object-fit: cover; margin-top: -3rem; }
-    .footer-h { font-size: 2.5rem; margin-left: 2rem; }
+    .foot-img-b { width: 18rem; max-height: 100%; object-fit: cover;  }
+    .footer-h { font-size: 2.2rem; margin-left: 2rem; }
 }

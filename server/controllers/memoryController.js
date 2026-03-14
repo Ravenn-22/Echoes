@@ -49,10 +49,23 @@ const createMemory = async (req, res) => {
 
 
 const getMemories = async (req, res) => {
-     try {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 12;
+        const skip = (page - 1) * limit;
+
+        const total = await Memory.countDocuments({ scrapbook: req.query.scrapbookId });
+
         const memories = await Memory.find({ scrapbook: req.query.scrapbookId })
-            .populate('createdBy', 'username');
-        res.status(200).json(memories);
+            .populate('createdBy', 'username')
+            .skip(skip)
+            .limit(limit);
+
+        res.status(200).json({
+            memories,
+            totalPages: Math.ceil(total / limit),
+            currentPage: page
+        });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

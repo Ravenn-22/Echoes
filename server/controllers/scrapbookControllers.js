@@ -23,10 +23,27 @@ const createScrapbook = async (req, res) => {
 };
 
 const getScrapbooks = async (req, res) => {
+    console.log('Query params:',req.query)
+    console.log('Page:',req.query.page)
     try {
-        const scrapbooks = await Scrapbook.find({ members: req.user._id })
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 9;
+        const skip = (page - 1) * limit;
+
+        const query = {
+            $or: [
+                {owner: req.user._id},
+                {members: req.user._id}
+            ]
+        }
+
+        const total = await Scrapbook.countDocuments(query);
+
+        const scrapbooks = await Scrapbook.find(query)
             .populate('owner', 'username')
-            .populate('members', 'username');
+            .populate('members', 'username profilePicture')
+            .skip(skip)
+            .limit(limit);
 
         const scrapbooksWithCount = await Promise.all(
             scrapbooks.map(async (scrapbook) => {
@@ -35,7 +52,11 @@ const getScrapbooks = async (req, res) => {
             })
         );
 
-        res.status(200).json(scrapbooksWithCount);
+        res.status(200).json({
+            scrapbooks: scrapbooksWithCount,
+            totalPages: Math.ceil(total / limit),
+            currentPage: page
+        });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

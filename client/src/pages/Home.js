@@ -40,18 +40,37 @@ const [changingPassword, setChangingPassword] = useState(false);
 const [menuOpen, setMenuOpen] = useState(false);
 const [scrapbookMemories, setScrapbookMemories] = useState([]);
 const [showMemoryPicker, setShowMemoryPicker] = useState(false);
+const [currentPage, setCurrentPage] = useState(1);
+const [totalPages, setTotalPages] = useState(1);
 
 const [toast, setToast] = useState(null)
 const [search, setSearch] = useState("")
 
     useEffect(() => {
-        const fetchScrapbooks = async () => {
+        fetchScrapbooks();
+    }, []);
+
+     const fetchScrapbooks = async ( page = 1 ) => {
     try {
         setLoading(true);
-        const { data } = await getScrapbooks();
-        setScrapbooks(data);
+        const { data } = await getScrapbooks(page);
+        console.log('scrapbook data:', data)
+        if(Array.isArray(data)){
+            setScrapbooks(data);
+        setTotalPages(1);
+        setCurrentPage(1);
+
+        } else{
+
+        
+        setScrapbooks(data.scrapbooks || []);
+        setTotalPages(data.totalPages);
+        setCurrentPage(data.currentPage);
+        }
         setLoading(false);
+
         const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
+        const scrapbookList = Array.isArray(data) ? data : data.scrapbooks || []
             if (!hasSeenWelcome && data.length === 0) {
                 setShowWelcome(true);
             }
@@ -60,9 +79,7 @@ const [search, setSearch] = useState("")
         setLoading(false);
     }
 };
-        fetchScrapbooks();
-    }, []);
-
+    
     const handleCloseWelcome = () => {
     localStorage.setItem('hasSeenWelcome', 'true');
     setShowWelcome(false);
@@ -384,104 +401,131 @@ const handleChangePassword = async (e) => {
         + Create your first scrapbook
     </button>
 </div>
-                ) : (
-                    <div className="scrapbooks-grid">
-                       {sortedScrapbook.map((scrapbook) => (
-                        <div key={scrapbook._id} className="scrapbook-card"  >
-                          {editingScrapbook === scrapbook._id ? (
-                            <form onSubmit={(e) => handleEditSubmit(e, scrapbook._id)} className='scrap-edt-form'>
-                                   <input
-                                   type="text"
-                                    value={editTitle} onChange={(e) => setEditTitle(e.target.value)} placeholder="Title"
-                                     />
-                                     <input type="text" value={editDescription}  onChange={(e) => setEditDescription(e.target.value)}
-                                      placeholder="Description" />
-                                     <input type="file" accept="image/*"  onChange={(e) => setEditImage(e.target.files[0])} />
-                                     <button  type="button" className="pick-memory-btn" id='pick-memory-btn' onClick={() => setShowMemoryPicker(!showMemoryPicker)} >
-                                         🖼️ Pick from memories
-                                     </button>
-          {showMemoryPicker && (
-             <div className="memory-picker" id='memory-picker'>
-                {scrapbookMemories.length === 0 ? (
-                    <p>No memories with images yet</p>
-                ) : (
-                scrapbookMemories.map((memory) => (
-                    <img
-                        key={memory._id}
-                        src={memory.image}
-                        alt={memory.title}
-                        className={`memory-picker-img ${editImage === memory.image ? 'selected' : ''}`}
-                        onClick={() => {
-                            setEditImage(memory.image);
-                            setShowMemoryPicker(false);
-                        }}
-                    />
-                ))
-            )}
+) : (
+    <>
+        <div className="scrapbooks-grid">
+            {sortedScrapbook.map((scrapbook) => (
+                <div key={scrapbook._id} className="scrapbook-card">
+                    {editingScrapbook === scrapbook._id ? (
+                        <form onSubmit={(e) => handleEditSubmit(e, scrapbook._id)} className='scrap-edt-form'>
+                            <input
+                                type="text"
+                                value={editTitle}
+                                onChange={(e) => setEditTitle(e.target.value)}
+                                placeholder="Title"
+                            />
+                            <input
+                                type="text"
+                                value={editDescription}
+                                onChange={(e) => setEditDescription(e.target.value)}
+                                placeholder="Description"
+                            />
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) => setEditImage(e.target.files[0])}
+                            />
+                            <button type="button" className="pick-memory-btn" id='pick-memory-btn' onClick={() => setShowMemoryPicker(!showMemoryPicker)}>
+                                🖼️ Pick from memories
+                            </button>
+                            {showMemoryPicker && (
+                                <div className="memory-picker" id='memory-picker'>
+                                    {scrapbookMemories.length === 0 ? (
+                                        <p>No memories with images yet</p>
+                                    ) : (
+                                        scrapbookMemories.map((memory) => (
+                                            <img
+                                                key={memory._id}
+                                                src={memory.image}
+                                                alt={memory.title}
+                                                className={`memory-picker-img ${editImage === memory.image ? 'selected' : ''}`}
+                                                onClick={() => {
+                                                    setEditImage(memory.image);
+                                                    setShowMemoryPicker(false);
+                                                }}
+                                            />
+                                        ))
+                                    )}
+                                </div>
+                            )}
+                            <button type="submit" id='save-btn' disabled={saveScrapEdit === scrapbook._id}>
+                                {saveScrapEdit === scrapbook._id ? 'Saving....' : 'Save'}
+                            </button>
+                            <button type="button" onClick={() => setEditingScrapbook(null)}>Cancel</button>
+                        </form>
+                    ) : (
+                        <>
+                            <div onClick={() => navigate(`/scrapbook/${scrapbook._id}`)}>
+                                <div className="scrapbook-card-image">
+                                    {scrapbook.coverImage ? (
+                                        <img src={scrapbook.coverImage} alt={scrapbook.title} className="scrapbook-cover" />
+                                    ) : (
+                                        '📸'
+                                    )}
+                                </div>
+                                <h3>{scrapbook.title}</h3>
+                                <p>{scrapbook.description}</p>
+                                <div className="scrapbook-meta">
+                                    <span>👤 {scrapbook.owner?.username}</span>
+                                    <span>👥 {scrapbook.members?.length} members</span>
+                                    <span>📸 {scrapbook.memoryCount} memories</span>
+                                </div>
+                            </div>
+                            <div className="scrapook-actions">
+                                <button className="edit-btn" onClick={(e) => { e.stopPropagation(); handleEditClick(scrapbook); }}>✏️ Edit</button>
+                                <button
+                                    className="delete-btn"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleDelete(scrapbook._id);
+                                    }}
+                                    disabled={deletingScrapId === scrapbook._id}
+                                >
+                                    {deletingScrapId === scrapbook._id ? 'Deleting...' : 'Delete'}
+                                </button>
+                            </div>
+                        </>
+                    )}
+                </div>
+            ))}
         </div>
-    )}
-    <button type="submit" id='save-btn' disabled={saveScrapEdit === scrapbook._id}>
-        {saveScrapEdit === scrapbook._id ? 'Saving....' : 'Save'}
-    </button>
-    <button type="button" onClick={() => setEditingScrapbook(null)}>Cancel</button>
-</form>
-          ) : ( 
-            <>
-       <div onClick={() => navigate(`/scrapbook/${scrapbook._id}`)}>
-            <div className="scrapbook-card-image">
-                {scrapbook.coverImage ? (
-                    <img src={scrapbook.coverImage} alt={scrapbook.title} className="scrapbook-cover"/>
-                ) : (
-                    '📸'
-                )}
-         </div>
-          <h3>{scrapbook.title}</h3>
-            <p>{scrapbook.description}</p>
-            <div className="scrapbook-meta">
-                <span>👤 {scrapbook.owner?.username}</span>
-                <span>👥 {scrapbook.members?.length} members</span>
-                <span>📸 {scrapbook.memoryCount} memories</span>
+        {totalPages > 1 && (
+            <div className="pagination">
+                <button
+                    className="page-btn"
+                    disabled={currentPage === 1}
+                    onClick={() => fetchScrapbooks(currentPage - 1)}
+                >
+                    ← Prev
+                </button>
+                <span className="page-info">{currentPage} of {totalPages}</span>
+                <button
+                    className="page-btn"
+                    disabled={currentPage === totalPages}
+                    onClick={() => fetchScrapbooks(currentPage + 1)}
+                >
+                    Next →
+                </button>
             </div>
-   
-         <div className="scrapook-actions">
-           <button className="edit-btn" onClick={(e) => {  e.stopPropagation(); handleEditClick(scrapbook)} }  > ✏️ Edit </button>
-
-             <button
-            className="delete-btn"
-            onClick={(e) => {
-                e.stopPropagation();
-                handleDelete(scrapbook._id);
-            }}
-            disabled={deletingScrapId === scrapbook._id}
-           >
-             {deletingScrapId === scrapbook._id ? 'Deleting...' : 'Delete'}
-            </button>
-           </div>
-        </div>
-         </>
-       )}
-       
-        </div>
-        
-    ))}
+        )}
+    </>
+)}
 </div>
-   )}
-            </div>
-            {showWelcome && (
+
+{showWelcome && (
     <WelcomeModal
         username={user?.username}
         onClose={handleCloseWelcome}
     />
 )}
-            {toast && (
+{toast && (
     <Toast
         message={toast.message}
         type={toast.type}
         onClose={() => setToast(null)}
     />
 )}
-        </div>
-        
+</div>
     );
 };
 

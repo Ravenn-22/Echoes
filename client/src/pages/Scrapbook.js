@@ -38,17 +38,36 @@ const ScrapbookPage = () => {
      const { user } = useAuth();
      const [search, setSearch] = useState('');
          const [sortBy, setSortBy] = useState("newest")
+         const [currentPage, setCurrentPage] = useState(1);
+const [totalPages, setTotalPages] = useState(1);
 
 
     
-    useEffect(() => {
-          const socket = io('https://echoes-j0mn.onrender.com', {
+  const fetchData = async (page = 1) => {
+    try {
+        setLoading(true);
+        const { data: scrapbookData } = await getScrapbook(id);
+        setScrapbook(scrapbookData);
+
+        const { data: memoriesData } = await getMemories(id, page);
+        setMemories(memoriesData.memories || []);
+        setTotalPages(memoriesData.totalPages || 1);
+        setCurrentPage(memoriesData.currentPage || 1);
+        setLoading(false);
+    } catch (error) {
+        console.log(error);
+        setLoading(false);
+    }
+};
+
+useEffect(() => {
+    const socket = io('https://echoes-j0mn.onrender.com', {
         reconnection: true,
         reconnectionAttempts: 5,
         reconnectionDelay: 1000,
         transports: ['websocket', 'polling']
     });
-    
+
     socket.emit('joinScrapbook', id);
 
     socket.on('newMemory', (memory) => {
@@ -59,26 +78,15 @@ const ScrapbookPage = () => {
             return [...prev, memory];
         });
     });
-         const fetchData = async () => {
-            try {
-                setLoading(true);
-                const { data: scrapbookData } = await getScrapbook(id);
-                setScrapbook(scrapbookData);
 
-                const { data: memoriesData } = await getMemories(id);
-                setMemories(memoriesData);
-                 setLoading(false);
-            } catch (error) {
-                console.log(error);
-            } setLoading(false);
-        };
-        fetchData();
-        console.log('User opened Scrapbook')
+    fetchData();
 
     return () => {
         socket.disconnect();
     };
-    }, [id]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [id]);
+
     
     const handleInvite = async (e) => {
     e.preventDefault();
@@ -359,103 +367,80 @@ const sortedMemory = [...filteredMemories].sort((a, b) => {
 
                 </select>
         </div>
-                 {loading ? (
-                     <Skeleton count={6} />
-                 )  : memories.length === 0 ? (
-                    <div className="empty-state">
-                        <p>No memories yet. Add your first one! 🌸</p>
-                    </div>
-                ) : (
-                    
-                    <div className="memories-grid">
-                        {sortedMemory.map((memory) => (
-                     
-                            <div key={memory._id} className="memory-card">
-                                {editingMemory === memory._id ? (
-                                <form onSubmit={(e) => handleEditSubmit(e, memory._id)} className='scrap-edt-form'>
-                              <input
-                             type="text"
-                                   value={editTitle}
-                                onChange={(e) => setEditTitle(e.target.value)}
-                               placeholder="Title"
-                                 />
-                           <input
-                           type="text"
-                          value={editDescription}
-                            onChange={(e) => setEditDescription(e.target.value)}
-                         placeholder="Description"
-                         />
-                         <input
-                          type="file"
-                             accept="image/*"
-                           onChange={(e) => setEditImage(e.target.files[0])}
-                           />
-                              <button type="submit" id='save-btn'disabled={saveMemoryEdit === memory._id}
-           > {saveMemoryEdit === memory._id ? 'Saving....' : 'Save'}</button>
-                          <button type="button" onClick={() => setEditingMemory(null)}>Cancel</button>
-                          </form>
-          ) : ( 
-            <>
-                               <div className="memory-card-image">
-                                    {memory.image ? (
-                                        <img 
-                                        src={memory.image} alt={memory.title}
-                                        onClick={() => setLightbox(memory.image)}
-                                            style={{cursor: 'pointer'}}
-                                        
-                                        />
-                                    ) : (
-                                        '🌸'
-                                    )}
-                                 
-                                </div>
-                                <h3>{memory.title}</h3>
-                                <p>{memory.description}</p>
-                            
-                                    <p className="memory-meta">
-                                        By {memory.createdBy?.username} • {new Date(memory.createdAt).toLocaleDateString()}
-                                        </p>
-                              <div className="memory-actions">
-                                <button className={`pin-btn ${memory.pinned ? 'pinned' : ''}`}onClick={() => handlePin(memory._id)} >
-                                    {memory.pinned ? '📌 Pinned' : '📌 Pin'}
-    </button>
-                                              <button className="edit-btn" onClick={() => handleEditClick(memory)}   >
-                                                          ✏️ Edit 
-                                                          </button>
-                                                          <button className="delete-btn" onClick={() => handleDeleteMemory(memory._id)} disabled={deletingMemoryId === memory._id}>
-                                                              {deletingMemoryId === memory._id ? 'Deleting...' : 'Delete'}
-                                                           </button>
+               {loading ? (
+    <Skeleton count={6} />
+) : memories.length === 0 ? (
+    <div className="empty-state">
+        <p>No memories yet. Add your first one! 🌸</p>
+    </div>
+) : (
+    <>
+        <div className="memories-grid">
+            {sortedMemory.map((memory) => (
+                <div key={memory._id} className="memory-card">
+                    {editingMemory === memory._id ? (
+                        <form onSubmit={(e) => handleEditSubmit(e, memory._id)} className='scrap-edt-form'>
+                            <input type="text" value={editTitle} onChange={(e) => setEditTitle(e.target.value)} placeholder="Title" />
+                            <input type="text" value={editDescription} onChange={(e) => setEditDescription(e.target.value)} placeholder="Description" />
+                            <input type="file" accept="image/*" onChange={(e) => setEditImage(e.target.files[0])} />
+                            <button type="submit" id='save-btn' disabled={saveMemoryEdit === memory._id}>
+                                {saveMemoryEdit === memory._id ? 'Saving....' : 'Save'}
+                            </button>
+                            <button type="button" onClick={() => setEditingMemory(null)}>Cancel</button>
+                        </form>
+                    ) : (
+                        <>
+                            <div className="memory-card-image">
+                                {memory.image ? (
+                                    <img src={memory.image} alt={memory.title} onClick={() => setLightbox(memory.image)} style={{ cursor: 'pointer' }} />
+                                ) : (
+                                    '🌸'
+                                )}
                             </div>
-                              </>
-                             )}
-                        </div>
-                    ))}
-                    
+                            <h3>{memory.title}</h3>
+                            <p>{memory.description}</p>
+                            <p className="memory-meta">
+                                By {memory.createdBy?.username} • {new Date(memory.createdAt).toLocaleDateString()}
+                            </p>
+                            <div className="memory-actions">
+                                <button className={`pin-btn ${memory.pinned ? 'pinned' : ''}`} onClick={() => handlePin(memory._id)}>
+                                    {memory.pinned ? '📌 Pinned' : '📌 Pin'}
+                                </button>
+                                <button className="edit-btn" onClick={() => handleEditClick(memory)}>✏️ Edit</button>
+                                <button className="delete-btn" onClick={() => handleDeleteMemory(memory._id)} disabled={deletingMemoryId === memory._id}>
+                                    {deletingMemoryId === memory._id ? 'Deleting...' : 'Delete'}
+                                </button>
+                            </div>
+                        </>
+                    )}
                 </div>
-             )}
+            ))}
         </div>
+        {totalPages > 1 && (
+            <div className="pagination">
+                <button className="page-btn" disabled={currentPage === 1} onClick={() => fetchData(currentPage - 1)}>← Prev</button>
+                <span className="page-info">{currentPage} of {totalPages}</span>
+                <button className="page-btn" disabled={currentPage === totalPages} onClick={() => fetchData(currentPage + 1)}>Next →</button>
+            </div>
+        )}
+    </>
+)}
+</div>
 
-            {lightbox && (
+
+{lightbox && (
     <div className="lightbox" onClick={() => setLightbox(null)}>
         <img src={lightbox} alt="full view" />
-        <button
-            className="download-btn"
-            onClick={(e) => handleDownload(e, lightbox)}
-            disabled={downloading}
-        >
-            {downloading ? 'Downloading...' : ' Download'}
+        <button className="download-btn" onClick={(e) => handleDownload(e, lightbox)} disabled={downloading}>
+            {downloading ? 'Downloading...' : 'Download'}
         </button>
     </div>
 )}
 
-            {toast && (
-                <Toast
-                    message={toast.message}
-                    type={toast.type}
-                    onClose={() => setToast(null)}
-                />
-            )}
-        </div>
+{toast && (
+    <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />
+)}
+</div>
     );
 };
 

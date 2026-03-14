@@ -528,6 +528,42 @@ margin-top:6px;
     background: #D4AF37;
     color: white;
 }
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    padding: 30px 20px;
+}
+
+.page-btn {
+    background: transparent;
+    border: 1px solid rgba(201, 98, 125, 0.4);
+    color: #fff2d7;
+    padding: 8px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.page-btn:hover:not(:disabled) {
+    background: #C9627D;
+    color: white;
+    border-color: #C9627D;
+}
+
+.page-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.page-info {
+    font-family: 'Raleway', sans-serif;
+    color: rgba(255, 242, 215, 0.6);
+    font-size: 0.9rem;
+}
 @media (max-width: 768px) {
     .navbar {
         padding: 15px 20px;

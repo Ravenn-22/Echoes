@@ -357,11 +357,11 @@ footer{
     .sec-img { height: 32.3rem; width: 100%; }
     article { height: auto; margin-top: -2rem; }
     .article-left { margin-top: 3rem; }
-    .bee { width: 18rem; height: auto; }
-    .cee { width: 18rem; height: 28rem; margin-top: -8rem; }
+    .bee { width: 18rem; height: auto; margin-top: .7rem; }
+    .cee { width: 26rem; height: 28rem; margin-top: -8rem; }
     .icons { opacity: 1; width: 100px; height: 100px; }
     .article-bottom { display: grid; grid-template-columns: 2fr 1fr; padding: 1rem; }
-    .messy h1 { font-size: 2rem; width: 35rem; }
+    .messy h1 { font-size: 2.5rem; width: 35rem; }
     .art-p { width: auto; margin-top: 2rem; }
     .art-p p { font-size: 1.2rem; }
     footer { height: auto; 

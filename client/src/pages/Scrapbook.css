@@ -536,10 +536,10 @@ margin-top:6px;
     padding: 30px 20px;
 }
 
-.page-btn {
+.pagination .page-btn {
     background: transparent;
     border: 1px solid rgba(201, 98, 125, 0.4);
-    color: #fff2d7;
+    color: #635f57;
     padding: 8px 20px;
     border-radius: 20px;
     cursor: pointer;
@@ -554,7 +554,7 @@ margin-top:6px;
     border-color: #C9627D;
 }
 
-.page-btn:disabled {
+.pagination .page-btn:disabled {
     opacity: 0.4;
     cursor: not-allowed;
 }

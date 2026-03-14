@@ -418,7 +418,7 @@ const sortedMemory = [...filteredMemories].sort((a, b) => {
         </div>
         {totalPages > 1 && (
             <div className="pagination">
-                <button className="page-btn" disabled={currentPage === 1} onClick={() => fetchData(currentPage - 1)}>← Prev</button>
+                <button className="page-btn"  disabled={currentPage === 1} onClick={() => fetchData(currentPage - 1)}>← Prev</button>
                 <span className="page-info">{currentPage} of {totalPages}</span>
                 <button className="page-btn" disabled={currentPage === totalPages} onClick={() => fetchData(currentPage + 1)}>Next →</button>
             </div>

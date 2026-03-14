@@ -15,13 +15,13 @@ export const registerUser = (formData) => API.post('/auth/register', formData);
 export const loginUser = (formData) => API.post('/auth/login', formData);
 
 export const createScrapbook = (formData) => API.post('/scrapbooks', formData);
-export const getScrapbooks = (page = 1) => API.get(`/scrapbooks?page=${page}&limit=2`);
+export const getScrapbooks = (page = 1) => API.get(`/scrapbooks?page=${page}&limit=4`);
 export const getScrapbook = (id) => API.get(`/scrapbooks/${id}`);
 export const updateScrapbook = (id, formData) => API.put(`/scrapbooks/${id}`, formData);
 export const deleteScrapbook = (id) => API.delete(`/scrapbooks/${id}`);
 
 export const createMemory = (formData) => API.post('/memories', formData);
-export const getMemories = (scrapbookId, page = 1) => API.get(`/memories?scrapbookId=${scrapbookId}&page=${page}&limit=12`);
+export const getMemories = (scrapbookId, page = 1) => API.get(`/memories?scrapbookId=${scrapbookId}&page=${page}&limit=6`);
 export const updateMemory = (id, formData) => API.put(`/memories/${id}`, formData);
 export const deleteMemory = (id) => API.delete(`/memories/${id}`);
 export const updateUsername = (username) => API.put('/auth/update-username', { username });

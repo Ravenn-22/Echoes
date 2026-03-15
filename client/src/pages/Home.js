@@ -279,10 +279,11 @@ const handleChangePassword = async (e) => {
                 <button type="button" className="cancel-username-btn" onClick={() => setEditingUsername(false)}>Cancel</button>
             </form>
         ) : (
-            <span className="navbar-username" onClick={() => { setEditingUsername(true); setNewUsername(user?.username); }} style={{ cursor: 'pointer' }}>
-              Hello,  {user?.username} 
-            </span>
+           <span className="navbar-username" onClick={() => { setEditingUsername(true); setNewUsername(user?.username); }} style={{ cursor: 'pointer' }}>
+                Hello, {user?.username}
+           </span>
         )}
+                  {user?.isPro && <span className="pro-badge-nav">⭐ Pro</span>}
         <div className="profile-pic-container">
             <label htmlFor="profile-upload" style={{ cursor: 'pointer' }}>
                 {user?.profilePicture ? (

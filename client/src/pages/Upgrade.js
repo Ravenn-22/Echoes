@@ -52,7 +52,7 @@ const Upgrade = () => {
                     <div className="plan-card pro">
                         <div className="pro-badge">Most Popular</div>
                         <h2>Pro</h2>
-                        <p className="plan-price">₦2,000<span>/month</span></p>
+                        <p className="plan-price">$3<span>/month</span></p>
                         <ul className="plan-features">
                             <li>✅ Unlimited scrapbooks</li>
                             <li>✅ Unlimited members</li>
@@ -63,7 +63,7 @@ const Upgrade = () => {
                         </ul>
                         <button
                             className="plan-btn upgrade"
-                            onClick={() => handlePayment('monthly', 2000, setMonthLoading)}
+                            onClick={() => handlePayment('monthly', 3, setMonthLoading)}
                             disabled={monthLoading}
                         >
                             {monthLoading ? 'Processing...' : 'Upgrade Monthly'}
@@ -71,9 +71,9 @@ const Upgrade = () => {
                     </div>
 
                     <div className="plan-card pro-yearly">
-                        <div className="pro-badge save">Save ₦4,000</div>
+                        <div className="pro-badge save">Save $11</div>
                         <h2>Pro Yearly</h2>
-                        <p className="plan-price">₦20,000<span>/year</span></p>
+                        <p className="plan-price">$25<span>/year</span></p>
                         <ul className="plan-features">
                             <li>✅ Everything in Pro</li>
                             <li>✅ 2 months free</li>
@@ -82,7 +82,7 @@ const Upgrade = () => {
                         </ul>
                         <button
                             className="plan-btn upgrade"
-                            onClick={() => handlePayment('yearly', 20000,setYearLoading)}
+                            onClick={() => handlePayment('yearly', 25,setYearLoading)}
                             disabled={yearLoading}
                         >
                             {yearLoading ? 'Processing...' : 'Upgrade Yearly'}

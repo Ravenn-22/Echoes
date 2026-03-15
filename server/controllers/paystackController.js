@@ -9,7 +9,8 @@ const initializePayment = async (req, res) => {
             'https://api.paystack.co/transaction/initialize',
             {
                 email,
-                amount: amount * 100, // Paystack uses kobo
+                amount: amount * 100, 
+                currency: 'USD',
                 metadata: {
                     userId: req.user._id,
                     plan

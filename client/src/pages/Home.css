@@ -95,7 +95,15 @@
 .upgrade-menu-btn:hover {
     opacity: 0.9;
 }
-
+.pro-badge-nav {
+    background: linear-gradient(135deg, #72011f, #C9627D);
+    color: #fff2d7;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
 .hero {
     text-align: center;
     padding: 60px 20px 40px;

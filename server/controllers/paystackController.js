@@ -20,7 +20,8 @@ const initializePayment = async (req, res) => {
                 headers: {
                     Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
                     'Content-Type': 'application/json'
-                }
+                },
+                timeout: 10000
             }
         );
 
@@ -49,7 +50,7 @@ const verifyPayment = async (req, res) => {
         if (status === 'success') {
             const { userId, plan } = metadata;
 
-            // Set pro expiry based on plan
+            
             const expiryDate = new Date();
             if (plan === 'monthly') {
                 expiryDate.setMonth(expiryDate.getMonth() + 1);

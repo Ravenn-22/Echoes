@@ -10,6 +10,7 @@ const scrapbookRoutes = require('./routes/scrapBookRoutes');
 const memoryRoutes = require('./routes/memoryRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
 const https = require('https');
+const paystackRoutes = require('./routes/paystackRoutes');
 
 const app = express();
 connectDB();
@@ -24,8 +25,7 @@ app.use('/api/scrapbooks', scrapbookRoutes);
 app.use('/api/memories', memoryRoutes);
 app.use('/uploads', express.static('uploads'));
 app.use('/api/upload', uploadRoutes);
-
-
+app.use('/api/paystack', paystackRoutes);
 
 
 io.on('connection', (socket) => {

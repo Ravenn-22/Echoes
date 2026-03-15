@@ -1,0 +1,148 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Raleway:wght@300;400;600&display=swap');
+
+.upgrade-container {
+    min-height: 100vh;
+    background: #FDF6EC;
+}
+
+.upgrade-content {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.upgrade-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    color: #3D2B1F;
+    margin-bottom: 10px;
+}
+
+.upgrade-subtitle {
+    font-family: 'Raleway', sans-serif;
+    color: #8B6F61;
+    font-size: 1.1rem;
+    margin-bottom: 50px;
+}
+
+.plans-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    align-items: start;
+}
+
+.plan-card {
+    background: white;
+    border-radius: 20px;
+    padding: 35px 25px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    position: relative;
+    text-align: left;
+}
+
+.plan-card.pro {
+    border: 2px solid #C9627D;
+    transform: scale(1.03);
+}
+
+.plan-card.pro-yearly {
+    border: 2px solid #D4AF37;
+}
+
+.pro-badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #C9627D;
+    color: white;
+    padding: 4px 16px;
+    border-radius: 20px;
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.pro-badge.save {
+    background: #D4AF37;
+}
+
+.plan-card h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: #3D2B1F;
+    margin-bottom: 10px;
+}
+
+.plan-price {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: #72011f;
+    margin-bottom: 20px;
+}
+
+.plan-price span {
+    font-size: 1rem;
+    color: #8B6F61;
+    font-family: 'Raleway', sans-serif;
+}
+
+.plan-features {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.plan-features li {
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.9rem;
+    color: #3D2B1F;
+}
+
+.plan-btn {
+    width: 100%;
+    padding: 12px;
+    border-radius: 25px;
+    border: none;
+    cursor: pointer;
+    font-family: 'Raleway', sans-serif;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.plan-btn.current {
+    background: #f0f0f0;
+    color: #8B6F61;
+    cursor: not-allowed;
+}
+
+.plan-btn.upgrade {
+    background: #72011f;
+    color: #fff2d7;
+}
+
+.plan-btn.upgrade:hover:not(:disabled) {
+    background: #C9627D;
+    transform: translateY(-2px);
+}
+
+.plan-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+    .plan-card.pro {
+        transform: scale(1);
+    }
+
+    .upgrade-title {
+        font-size: 1.8rem;
+    }
+}

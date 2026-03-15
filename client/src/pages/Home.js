@@ -312,6 +312,11 @@ const handleChangePassword = async (e) => {
                 <button className="change-password-btn" 
                 onClick={() => { setShowChangePassword(!showChangePassword); 
                 setMenuOpen(false); }}>🔒 Change Password</button>
+                {!user?.isPro && (
+        <button className="upgrade-menu-btn" onClick={() => navigate('/upgrade')}>
+            ⭐ Upgrade to Pro
+        </button>
+    )}
             </div>
         )}
     </div>

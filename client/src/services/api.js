@@ -25,6 +25,8 @@ export const getMemories = (scrapbookId, page = 1) => API.get(`/memories?scrapbo
 export const updateMemory = (id, formData) => API.put(`/memories/${id}`, formData);
 export const deleteMemory = (id) => API.delete(`/memories/${id}`);
 export const updateUsername = (username) => API.put('/auth/update-username', { username });
+export const initializePayment = (email, amount, plan) => API.post('/paystack/initialize', { email, amount, plan });
+export const verifyPayment = (reference) => API.get(`/paystack/verify/${reference}`);
 
 export const uploadImage = async (file) => {
     const formData = new FormData();

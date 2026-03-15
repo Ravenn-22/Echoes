@@ -9,6 +9,8 @@ import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import { Analytics } from "@vercel/analytics/react"
 import NotFound from './pages/NotFound';
+import Upgrade from './pages/Upgrade';
+import PaymentVerify from './pages/PaymentVerify';
 
 
 const PrivateRoute = ({ children }) => {
@@ -33,6 +35,16 @@ function App() {
                     <PrivateRoute>
                         <Scrapbook />
                     </PrivateRoute>
+                } />
+                <Route path="/upgrade" element={
+                     <PrivateRoute>
+                         <Upgrade />
+                     </PrivateRoute>
+                } />
+                <Route path="/payment/verify" element={
+                       <PrivateRoute>
+                          <PaymentVerify />
+                      </PrivateRoute>
                 } />
     <Route path="*" element={<NotFound />} />
             </Routes>

@@ -78,7 +78,23 @@
     background: #72011f;
     color: white;
 }
+.upgrade-menu-btn {
+    width: 100%;
+    text-align: left;
+    padding: 10px 15px;
+    border-radius: 10px;
+    border: none;
+    background: linear-gradient(135deg, #72011f, #C9627D);
+    cursor: pointer;
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.9rem;
+    color: #fff2d7;
+    transition: all 0.3s ease;
+}
 
+.upgrade-menu-btn:hover {
+    opacity: 0.9;
+}
 
 .hero {
     text-align: center;

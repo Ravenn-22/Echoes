@@ -26,7 +26,8 @@ const initializePayment = async (req, res) => {
 
         res.status(200).json(response.data);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error('Paystack Error:', error.response?.data || error.message)
+        res.status(500).json({ message:  error.response?.data || error.message });
     }
 };
 
@@ -66,7 +67,8 @@ const verifyPayment = async (req, res) => {
             res.status(400).json({ message: 'Payment failed' });
         }
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error('Paystack Error:', error.response?.data || error.message)
+        res.status(500).json({ message:  error.response?.data || error.message });
     }
 };
 

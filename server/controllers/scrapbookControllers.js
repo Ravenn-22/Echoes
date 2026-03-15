@@ -5,13 +5,22 @@ const Memory = require('../models/Memory');
 
 const createScrapbook = async (req, res) => {
     try {
-        const { title, description, coverImage, isPrivate } = req.body;
+        const { title, description, coverImage } = req.body;
+
+        if (!req.user.isPro) {
+            const scrapbookCount = await Scrapbook.countDocuments({ owner: req.user._id });
+            if (scrapbookCount >= 3) {
+                return res.status(403).json({
+                    message: 'Free plan limit reached. Upgrade to Pro to create unlimited scrapbooks!',
+                    limitReached: true
+                });
+            }
+        }
 
         const scrapbook = await Scrapbook.create({
             title,
             description,
             coverImage,
-            isPrivate,
             owner: req.user._id,
             members: [req.user._id]
         });
@@ -118,11 +127,6 @@ const deleteScrapbook = async (req, res) => {
 const inviteMember = async (req, res) => {
     try {
         const scrapbook = await Scrapbook.findById(req.params.id).populate('owner', 'username');
-
-        if (!scrapbook) {
-            return res.status(404).json({ message: 'Scrapbook not found' });
-        }
-
         const userToInvite = await User.findOne({ email: req.body.email.toLowerCase() });
 
         if (!userToInvite) {
@@ -133,18 +137,23 @@ const inviteMember = async (req, res) => {
             return res.status(400).json({ message: 'User is already a member' });
         }
 
+        if (!req.user.isPro && scrapbook.members.length >= 5) {
+            return res.status(403).json({
+                message: 'Free plan limit reached. Upgrade to Pro for unlimited members!',
+                limitReached: true
+            });
+        }
+
         scrapbook.members.push(userToInvite._id);
         await scrapbook.save();
 
         try {
-            console.log('Sending invite email to:', userToInvite.email)
             await sendInviteEmail(userToInvite.email, scrapbook.owner.username, scrapbook.title);
-            console.log('Invite email sent successfully')
         } catch (emailError) {
             console.error('Invite email error:', emailError);
         }
 
-        res.status(200).json({ message: 'Member invited successfully' });
+        res.status(200).json(scrapbook);
     } catch (error) {
         console.error('Invite member error:', error);
         res.status(500).json({ message: error.message });

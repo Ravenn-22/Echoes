@@ -98,8 +98,13 @@ useEffect(() => {
         setShowInvite(false);
         setToast({ message: 'Member invited successfully! 🎉', type: 'success' });
     } catch (error) {
+    if (error.response?.data?.limitReached) {
+        setToast({ message: error.response.data.message, type: 'error' });
+        setTimeout(() => navigate('/upgrade'), 2000);
+    } else {
         setToast({ message: 'User not found or already a member!', type: 'error' });
-    }finally {
+    }
+}finally {
         setInviting(false);
     }
     };
@@ -134,10 +139,13 @@ useEffect(() => {
           console.log("User created Memory")
         setToast({ message: 'Memory added successfully! 🌸', type: 'success' });
 
-        } catch (error) {
-            console.log(error);
-            setToast({ message: 'Failed to add memory', type: 'error' });
-        }finally {
+       } catch (error) {
+    if (error.response?.data?.limitReached) {
+        setToast({ message: error.response.data.message, type: 'error' });
+        setTimeout(() => navigate('/upgrade'), 2000);
+    } else {
+        setToast({ message: 'Failed to add memory', type: 'error' });
+    }}finally {
         setCreatingMemory(false);
 
     };}

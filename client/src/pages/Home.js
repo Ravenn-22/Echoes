@@ -84,42 +84,42 @@ const [search, setSearch] = useState("")
     localStorage.setItem('hasSeenWelcome', 'true');
     setShowWelcome(false);
 };
-
-    const handleCreate = async (e) => {
-        e.preventDefault();
-        setCreatingScrap(true)
-        try {
-            let coverImage = '';
-            if(cover) {
-                const compressed = await compressImage(cover);
-                const formData = new FormData();
-                formData.append('image', compressed);
-
-                const user =JSON.parse(localStorage.getItem('user'));
-                const { data } =await axios.post('https://echoes-j0mn.onrender.com/api/upload', formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                        Authorization: `Bearer ${user.token}`
-                    }
-                })
-                coverImage = data.imageUrl
-                
-            }
-            const { data } = await createScrapbook({ title, description, coverImage });
-            setScrapbooks([...scrapbooks, data]);
-            setTitle('');
-            setDescription('');
-            setCover(null);
-            setShowForm(false);
-            console.log("Scrapbook Created")
-            setToast({ message: 'Scrapbook created successfully! 🎉', type: 'success' });
-        } catch (error) {
-            setToast({message: 'Failed to create Scrapbook', type:'error'});
-            console.log("Scrapbook creation error:", error.response?.data || error);
-        }finally {
+const handleCreate = async (e) => {
+    e.preventDefault();
+    try {
+        setCreatingScrap(true);
+        let coverImage = '';
+        if (cover) {
+            const compressed = await compressImage(cover);
+            const formData = new FormData();
+            formData.append('image', compressed);
+            const storedUser = JSON.parse(localStorage.getItem('user'));
+            const { data } = await axios.post('https://echoes-j0mn.onrender.com/api/upload', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: `Bearer ${storedUser.token}`
+                }
+            });
+            coverImage = data.imageUrl;
+        }
+        const { data } = await createScrapbook({ title, description, coverImage });
+        setScrapbooks([...scrapbooks, data]);
+        setTitle('');
+        setDescription('');
+        setCover(null);
+        setShowForm(false);
+        setToast({ message: 'Scrapbook created successfully! 🎉', type: 'success' });
+    } catch (error) {
+        if (error.response?.data?.limitReached) {
+            setToast({ message: error.response.data.message, type: 'error' });
+            setTimeout(() => navigate('/upgrade'), 2000);
+        } else {
+            setToast({ message: 'Failed to create Scrapbook', type: 'error' });
+        }
+    } finally {
         setCreatingScrap(false);
     }
-    };
+};
 const handleDelete = async (id) => {
     setDeletingScrapId(id);
         try {
@@ -283,7 +283,7 @@ const handleChangePassword = async (e) => {
                 Hello, {user?.username}
            </span>
         )}
-                  {user?.isPro && <span className="pro-badge-nav">⭐ Pro</span>}
+                  {user?.isPro && <span className="pro-badge-nav">⭐</span>}
         <div className="profile-pic-container">
             <label htmlFor="profile-upload" style={{ cursor: 'pointer' }}>
                 {user?.profilePicture ? (

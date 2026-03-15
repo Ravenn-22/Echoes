@@ -11,6 +11,8 @@ const memoryRoutes = require('./routes/memoryRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
 const https = require('https');
 const paystackRoutes = require('./routes/paystackRoutes');
+const checkProExpiry = require('./middleware/checkProExpiry');
+
 
 const app = express();
 connectDB();
@@ -26,6 +28,7 @@ app.use('/api/memories', memoryRoutes);
 app.use('/uploads', express.static('uploads'));
 app.use('/api/upload', uploadRoutes);
 app.use('/api/paystack', paystackRoutes);
+app.use(checkProExpiry);
 
 
 io.on('connection', (socket) => {

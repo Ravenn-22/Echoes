@@ -10,6 +10,16 @@ const createMemory = async (req, res) => {
     try {
         const { title, description, image, date, scrapbook } = req.body;
 
+        if (!req.user.isPro) {
+            const memoryCount = await Memory.countDocuments({ scrapbook });
+            if (memoryCount >= 20) {
+                return res.status(403).json({
+                    message: 'Free plan limit reached. Upgrade to Pro for unlimited memories!',
+                    limitReached: true
+                });
+            }
+        }
+
         const memory = await Memory.create({
             title,
             description,

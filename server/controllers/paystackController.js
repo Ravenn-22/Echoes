@@ -54,11 +54,12 @@ const verifyPayment = async (req, res) => {
        
 
        if (status === 'success') {
-    const { plan } = metadata;
-    const email = customer.email;
+    const plan  = metadata?.plan;
+    const userId = metadata?.userId;
     
-    console.log('Customer email:', email);
     console.log('Plan:', plan);
+    console.log('User Id:', userId);
+    console.log('User Id type:', typeof userId);
 
     const expiryDate = new Date();
     if (plan === 'monthly') {
@@ -66,8 +67,8 @@ const verifyPayment = async (req, res) => {
     } else if (plan === 'yearly') {
         expiryDate.setFullYear(expiryDate.getFullYear() + 1);
     }
-    console.log("Searching for email:", email.toLowerCase());
-    const existingUser = await User.findOne({email: email.toLowerCase()});
+    // console.log("Searching for email:", email.toLowerCase());
+    const existingUser = await User.findById(String(userId));
     console.log("Found User:", existingUser?._id, existingUser?.email)
 
     existingUser.isPro = true;

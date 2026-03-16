@@ -45,13 +45,6 @@ const verifyPayment = async (req, res) => {
                 }
             }
         );
-         console.log('Full payment data:', JSON.stringify(response.data,null,2))
-
-        const { status, metadata, customer } = response.data.data;
-        console.log ('Payment Status:', status)
-        console.log ('Metadata:', metadata);
-        console.log ('Customer:', customer);
-       
 
        if (status === 'success') {
     const {plan } = metadata;
@@ -67,10 +60,6 @@ const verifyPayment = async (req, res) => {
         {_id:req.user._id},
         {$set: {isPro: true, proExpiresAt: expiryDate}}
     )
-
-    const updatedUser = await User.findById(req.user._id);
-    console.log('Updated user isPro:', updatedUser?.isPro);
-    console.log('Updated user proExpiresAt:', updatedUser?.proExpiresAt);
 
     res.status(200).json({ message: 'Payment successful!', 
         isPro: true ,

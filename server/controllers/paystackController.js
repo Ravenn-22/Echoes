@@ -1,5 +1,6 @@
 const axios = require('axios');
 const User = require('../models/User');
+const mongoose = requre('mongoose')
 
 const initializePayment = async (req, res) => {
     try {
@@ -11,7 +12,7 @@ const initializePayment = async (req, res) => {
                 email,
                 amount: amount * 100, 
                 metadata: {
-                    userId: req.user._id,
+                    userId: req.user._id.toString(),
                     plan
                 },
                 callback_url: `${process.env.CLIENT_URL}/payment/verify`
@@ -61,7 +62,8 @@ const verifyPayment = async (req, res) => {
                 expiryDate.setFullYear(expiryDate.getFullYear() + 1);
             }
 
-            const updatedUser = await User.findByIdAndUpdate(userId, {
+            const updatedUser = await User.findByIdAndUpdate(
+                new mongoose.Types.ObjectId(userId), {
                 isPro: true,
                 proExpiresAt: expiryDate
             },{new:true});

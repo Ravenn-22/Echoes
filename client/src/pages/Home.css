@@ -96,7 +96,8 @@
     opacity: 0.9;
 }
 .pro-badge-nav {
-    background: linear-gradient(135deg, #72011f, #C9627D);
+    background: transparent;
+    border: 2px solid #D4AF37;
     color: #fff2d7;
     padding: 3px 10px;
     border-radius: 20px;

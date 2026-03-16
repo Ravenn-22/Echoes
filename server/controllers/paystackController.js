@@ -46,6 +46,9 @@ const verifyPayment = async (req, res) => {
         );
 
         const { status, metadata } = response.data.data;
+        console.log ('Payment Status:', status)
+        console.log ('Metadata:', metadata);
+        console.log ('User ID from metadata:', metadata?.userId);
 
         if (status === 'success') {
             const { userId, plan } = metadata;

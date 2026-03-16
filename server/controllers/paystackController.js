@@ -10,7 +10,6 @@ const initializePayment = async (req, res) => {
             {
                 email,
                 amount: amount * 100, 
-                currency: 'USD',
                 metadata: {
                     userId: req.user._id,
                     plan

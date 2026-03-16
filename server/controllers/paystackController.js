@@ -51,24 +51,33 @@ const verifyPayment = async (req, res) => {
         console.log ('Metadata:', metadata);
         console.log ('User ID from metadata:', metadata?.userId);
 
-        if (status === 'success') {
-            const { userId, plan } = metadata;
+       if (status === 'success') {
+    const { plan } = metadata;
+    const email = response.data.data.customer.email;
+    
+    console.log('Customer email:', email);
+    console.log('Plan:', plan);
 
-            
-            const expiryDate = new Date();
-            if (plan === 'monthly') {
-                expiryDate.setMonth(expiryDate.getMonth() + 1);
-            } else if (plan === 'yearly') {
-                expiryDate.setFullYear(expiryDate.getFullYear() + 1);
-            }
+    const expiryDate = new Date();
+    if (plan === 'monthly') {
+        expiryDate.setMonth(expiryDate.getMonth() + 1);
+    } else if (plan === 'yearly') {
+        expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+    }
 
-            const updatedUser = await User.findByIdAndUpdate(
-                new mongoose.Types.ObjectId(userId), {
-                isPro: true,
-                proExpiresAt: expiryDate
-            },{new:true});
-            console.log('Updated user:', updatedUser?.isPro, updatedUser?.proExpiresAt)
-            res.status(200).json({ message: 'Payment successful!', isPro: true });
+    const updatedUser = await User.findOneAndUpdate(
+        { email: email.toLowerCase() },
+        {
+            isPro: true,
+            proExpiresAt: expiryDate
+        },
+        { new: true }
+    );
+
+    console.log('Updated user:', updatedUser?.isPro, updatedUser?.email);
+
+    res.status(200).json({ message: 'Payment successful!', isPro: true });
+
         } else {
             res.status(400).json({ message: 'Payment failed' });
         }

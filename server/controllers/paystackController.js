@@ -1,6 +1,6 @@
 const axios = require('axios');
 const User = require('../models/User');
-const mongoose = requre('mongoose')
+const mongoose = require('mongoose')
 
 const initializePayment = async (req, res) => {
     try {

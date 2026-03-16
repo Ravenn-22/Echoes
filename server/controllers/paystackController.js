@@ -54,12 +54,12 @@ const verifyPayment = async (req, res) => {
        
 
        if (status === 'success') {
-    const plan  = metadata?.plan;
-    const userId = metadata?.userId;
+    const {plan } = metadata;
+    // const userId = metadata?.userId;
     
-    console.log('Plan:', plan);
-    console.log('User Id:', userId);
-    console.log('User Id type:', typeof userId);
+    // console.log('Plan:', plan);
+    // console.log('User Id:', userId);
+    // console.log('User Id type:', typeof userId);
 
     const expiryDate = new Date();
     if (plan === 'monthly') {
@@ -68,14 +68,14 @@ const verifyPayment = async (req, res) => {
         expiryDate.setFullYear(expiryDate.getFullYear() + 1);
     }
     // console.log("Searching for email:", email.toLowerCase());
-    const existingUser = await User.findById(String(userId));
-    console.log("Found User:", existingUser?._id, existingUser?.email)
+    // const existingUser = await User.findById(String(userId));
+    // console.log("Found User:", existingUser?._id, existingUser?.email)
 
-    existingUser.isPro = true;
-    existingUser.proExpiresAt= expiryDate;
-    await existingUser.save();
+    req.user.isPro = true;
+    req.user.proExpiresAt= expiryDate;
+    await req.user.save();
 
-    console.log('Updated user:', updatedUser?.isPro, updatedUser?.email);
+    console.log('Updated user:', req.user.isPro, req.user.email);
 
     res.status(200).json({ message: 'Payment successful!', isPro: true });
 

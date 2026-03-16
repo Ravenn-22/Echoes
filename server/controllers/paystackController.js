@@ -66,6 +66,9 @@ const verifyPayment = async (req, res) => {
     } else if (plan === 'yearly') {
         expiryDate.setFullYear(expiryDate.getFullYear() + 1);
     }
+    console.log("Searching for email:", email.toLowerCase());
+    const existingUser = await User.findOne({email: email.toLowerCase()});
+    console.log("Found User:", existingUser?._id, existingUser?.email)
 
     const updatedUser = await User.findOneAndUpdate(
         { email: email.toLowerCase() },

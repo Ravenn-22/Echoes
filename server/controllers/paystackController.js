@@ -45,16 +45,17 @@ const verifyPayment = async (req, res) => {
                 }
             }
         );
+         console.log('Full payment data:', JSON.stringify(response.data,null,2))
 
-        const { status, metadata } = response.data.data;
+        const { status, metadata, customer } = response.data.data;
         console.log ('Payment Status:', status)
         console.log ('Metadata:', metadata);
-        console.log ('User ID from metadata:', metadata?.userId);
-        console.log('Full payment data:', JSON.stringify(response.data.data,null,2))
+        console.log ('Customer:', customer);
+       
 
        if (status === 'success') {
     const { plan } = metadata;
-    const email = response.data.data.customer.email;
+    const email = customer.email;
     
     console.log('Customer email:', email);
     console.log('Plan:', plan);

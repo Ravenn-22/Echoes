@@ -11,6 +11,7 @@ import { Analytics } from "@vercel/analytics/react"
 import NotFound from './pages/NotFound';
 import Upgrade from './pages/Upgrade';
 import PaymentVerify from './pages/PaymentVerify';
+import PrintCustomize from './pages/PrintCustomize';
 
 
 const PrivateRoute = ({ children }) => {
@@ -46,6 +47,11 @@ function App() {
                           <PaymentVerify />
                       </PrivateRoute>
                 } />
+                <Route path="/scrapbook/:id/print" element={
+    <PrivateRoute>
+        <PrintCustomize />
+    </PrivateRoute>
+} />
     <Route path="*" element={<NotFound />} />
             </Routes>
             <Analytics />

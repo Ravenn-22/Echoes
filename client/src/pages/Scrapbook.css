@@ -575,6 +575,23 @@ margin-top:6px;
     color: rgba(255, 242, 215, 0.6);
     font-size: 0.9rem;
 }
+.print-btn {
+    background: linear-gradient(135deg, #2c1d0a, #3b0e06);
+    color: #fff2d7;
+    border: none;
+    padding: 15px 25px;
+    border-radius: 25px;
+    font-family: 'Agu display', sans-serif;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.print-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
 @media (max-width: 768px) {
     .navbar {
         padding: 15px 20px;

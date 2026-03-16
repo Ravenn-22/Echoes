@@ -282,6 +282,7 @@ const sortedMemory = [...filteredMemories].sort((a, b) => {
     + Invite Member
 </button>
 
+
 {showInvite && (
     <div className="memory-form">
         <form onSubmit={handleInvite}>
@@ -330,6 +331,11 @@ const sortedMemory = [...filteredMemories].sort((a, b) => {
                 <button className="add-memory-btn" onClick={() => setShowForm(!showForm)}>
                     + Add Memory
                 </button>
+                {user?.isPro && (
+    <button className="print-btn" onClick={() => navigate(`/scrapbook/${id}/print`)}>
+        📖 Print this Scrapbook
+    </button>
+)}
             </div>
 
           
@@ -379,6 +385,7 @@ const sortedMemory = [...filteredMemories].sort((a, b) => {
 
                 </select>
         </div>
+        
                {loading ? (
     <Skeleton count={6} />
 ) : memories.length === 0 ? (

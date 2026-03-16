@@ -61,11 +61,11 @@ const verifyPayment = async (req, res) => {
                 expiryDate.setFullYear(expiryDate.getFullYear() + 1);
             }
 
-            await User.findByIdAndUpdate(userId, {
+            const updatedUser = await User.findByIdAndUpdate(userId, {
                 isPro: true,
                 proExpiresAt: expiryDate
-            });
-
+            },{new:true});
+            console.log('Updated user:', updatedUser?.isPro, updatedUser?.proExpiresAt)
             res.status(200).json({ message: 'Payment successful!', isPro: true });
         } else {
             res.status(400).json({ message: 'Payment failed' });

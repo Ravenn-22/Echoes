@@ -50,6 +50,7 @@ const verifyPayment = async (req, res) => {
         console.log ('Payment Status:', status)
         console.log ('Metadata:', metadata);
         console.log ('User ID from metadata:', metadata?.userId);
+        console.log('Full payment data:', JSON.stringify(response.data.data,null,2))
 
        if (status === 'success') {
     const { plan } = metadata;

@@ -20,7 +20,7 @@ const PaymentVerify = () => {
             try {
                 const { data } = await verifyPayment(reference);
                 if (data.isPro) {
-                    const updatedUser = { ...user, isPro: true };
+                    const updatedUser = { ...user, isPro: true, proExpiresAt: data.proExpiresAt };
                     localStorage.setItem('user', JSON.stringify(updatedUser));
                     setUser(updatedUser);
                     setStatus('success');

@@ -27,6 +27,14 @@ const userSchema = new mongoose.Schema({
     },
     resetPasswordExpire:{
         type: Date
+    },
+    isPro:{
+        type:Boolean,
+        default:false
+    },
+    proExpiresAt:{
+        type:Date,
+        default:null
     }
 },{timestamps: true} )
 

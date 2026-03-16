@@ -70,14 +70,9 @@ const verifyPayment = async (req, res) => {
     const existingUser = await User.findOne({email: email.toLowerCase()});
     console.log("Found User:", existingUser?._id, existingUser?.email)
 
-    const updatedUser = await User.findOneAndUpdate(
-        existingUser._id,
-        {
-            isPro: true,
-            proExpiresAt: expiryDate
-        },
-        { returnDocument: true }
-    );
+    existingUser.isPro = true;
+    existingUser.proExpiresAt= expiryDate;
+    await existingUser.save();
 
     console.log('Updated user:', updatedUser?.isPro, updatedUser?.email);
 

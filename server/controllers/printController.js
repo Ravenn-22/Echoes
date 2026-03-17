@@ -28,10 +28,18 @@ const getLuluToken = async () => {
     return response.data.access_token;
 };
 
-const generatePDF = async (scrapbook, memories, dedicationNote) => {
+const generatePDF = async (scrapbook, memories, dedicationNote, bookSize) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const doc = new PDFDocument({ size: 'A4', margin: 50 });
+            const pageSizes ={
+                small: [425.2, 595.3],
+                standard:  [432, 648],
+                premium: [612, 792]
+            };
+            const doc = new PDFDocument({
+                size: pageSizes[bookSize] || [612, 792],
+                margin:50
+            });
             const buffers = [];
 
             doc.on('data', (chunk) => buffers.push(chunk));
@@ -109,16 +117,17 @@ resolve(uploadResult.secure_url);
                         console.error('Image error:', imgError.message);
                     }
                 }
-            }
-            // Add blank pages to meet minimum 24 page requirement
-const currentPageCount = memories.filter(m => m.image).length + 2; // +2 for title and dedication pages
-const minPages = 24;
-if (currentPageCount < minPages) {
-    const pagesToAdd = minPages - currentPageCount;
-    for (let i = 0; i < pagesToAdd; i++) {
-        doc.addPage();
-    }
-}
+            } 
+              // Add blank pages to meet minimum 24 page requirement
+              const currentPageCount = memories.filter(m => m.image).length + 2; // +2 for title and dedication pages
+              const minPages = 24;
+              if (currentPageCount < minPages) {
+                const pagesToAdd = minPages - currentPageCount;
+                for (let i = 0; i < pagesToAdd; i++) {
+                    doc.addPage();
+                 }
+                }
+          
 
             doc.end();
         } catch (error) {
@@ -139,7 +148,7 @@ const createPrintOrder = async (req, res) => {
         }
 
         console.log('Generating PDF...');
-        const pdfUrl = await generatePDF(scrapbook, memories, dedicationNote);
+        const pdfUrl = await generatePDF(scrapbook, memories, dedicationNote, bookSize);
         console.log('PDF generated:', pdfUrl);
 
         const token = await getLuluToken();

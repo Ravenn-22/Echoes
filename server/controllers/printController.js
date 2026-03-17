@@ -196,19 +196,22 @@ const createPrintOrder = async (req, res) => {
     }
 );
 
-try {
-    const publicId = `echoes-books/${pdfUrl.split('/').slice(-1)[0].replace('.pdf', '')}`;
-    await cloudinary.uploader.destroy(publicId, { resource_type: 'raw' });
-    console.log('PDF deleted from Cloudinary');
-} catch (cleanupError) {
-    console.error('Cleanup error:', cleanupError.message);
-}
+
 
 res.status(200).json({
     message: 'Print order created successfully!',
     orderId: printJob.data.id,
     estimatedDelivery: '7-14 business days'
 });
+const publicID = `echoes-books/${pdfUrl.split('/').slice(-1)[0]}`;
+setTimeout(async () =>{
+    try{
+        await cloudinary.uploader.destroy(publicId, { resource_type: "raw"})
+        console.log("PDF deleted from Cloudinary")
+    }catch (cleanupError){
+        console.error("Cleanup error:", cleanupError.message)
+    }
+}, 5 * 60 *1000)
 
     } catch (error) {
         console.error('Print order error:', JSON.stringify(error.response?.data, null, 2) || error.message);

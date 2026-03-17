@@ -51,7 +51,7 @@ const generatePDF = async (scrapbook, memories, dedicationNote) => {
             if (error) rej(error);
             else{
                 console.log('PDF URL:', result.secure_url);
-            console.log('Public ID:', result.public_id);
+            console.log('Public ID:', uploadResult.public_id);
             res(result);
             } 
         }
@@ -138,9 +138,9 @@ const createPrintOrder = async (req, res) => {
         const token = await getLuluToken();
 
         const podPackageIds = {
-            small: '0600X0900BWSTDSS060UW444MXX',
-            standard: '0850X1100FCSTDPB060UW444MXX',
-            premium: '0850X1100FCPREM060UW444MXX'
+            small: '0583X0827FCPRECW080CW444MXX',
+            standard: '0600X0900FCPRELW080CW444GNG',
+            premium: '0850X1100FCPRELW080CW444GNG'
         };
 
         const coverUrl = customCoverUrl || scrapbook.coverImage || 'https://via.placeholder.com/800x600';
@@ -179,7 +179,6 @@ const createPrintOrder = async (req, res) => {
         }
     }
 );
-
 
 try {
     const publicId = `echoes-books/${pdfUrl.split('/').slice(-1)[0].replace('.pdf', '')}`;

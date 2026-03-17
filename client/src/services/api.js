@@ -49,3 +49,4 @@ export const resetPassword = (token, password) => API.put(`/auth/reset-password/
 export const updateProfilePicture = (profilePicture) => API.put('/auth/update-profile-picture', { profilePicture });
 export const changePassword = (currentPassword, newPassword) => API.put('/auth/change-password', { currentPassword, newPassword });
 export const pinMemory = (id) => API.put(`/memories/${id}/pin`);
+export const createPrintOrder = (orderData) => API.post('/print/create', orderData);

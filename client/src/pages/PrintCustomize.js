@@ -2,6 +2,10 @@ import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './PrintCustomize.css';
+import { createPrintOrder } from '../services/api';
+import axios from 'axios';
+import compressImage from '../compressImage';
+
 
 const PrintCustomize = () => {
     const { id } = useParams();
@@ -32,24 +36,45 @@ const [customCover, setCustomCover] = useState(null);
         setShippingAddress({ ...shippingAddress, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-        try {
-            console.log('Order submitted:', {
-                scrapbookId: id,
-                dedicationNote,
-                coverStyle,
-                bookSize,
-                shippingAddress,
-                price: prices[bookSize]
+ 
+const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+        let customCoverUrl = '';
+
+        if (customCover) {
+            const compressed = await compressImage(customCover);
+            const formData = new FormData();
+            formData.append('image', compressed);
+
+            const storedUser = JSON.parse(localStorage.getItem('user'));
+            const { data } = await axios.post('https://echoes-j0mn.onrender.com/api/upload', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: `Bearer ${storedUser.token}`
+                }
             });
-        } catch (error) {
-            console.log(error);
-        } finally {
-            setLoading(false);
+            customCoverUrl = data.imageUrl;
         }
-    };
+
+        const { data } = await createPrintOrder({
+            scrapbookId: id,
+            dedicationNote,
+            coverStyle,
+            bookSize,
+            shippingAddress,
+            customCoverUrl
+        });
+
+        navigate(`/scrapbook/${id}`, { state: { printSuccess: true } });
+    } catch (error) {
+        console.log(error);
+        alert('Failed to create print order. Please try again.');
+    } finally {
+        setLoading(false);
+    }
+};
 
     return (
         <div className="print-container">
@@ -264,7 +289,7 @@ const [customCover, setCustomCover] = useState(null);
                                 onClick={handleSubmit}
                                 disabled={loading}
                             >
-                                {loading ? 'Processing...' : `Pay $${prices[bookSize]} & Print 📖`}
+                                {loading ? 'Processing...' : `Pay $${prices[bookSize]}`}
                             </button>
                         </div>
                     </div>

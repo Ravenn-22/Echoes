@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
 import './PrintCustomize.css';
 import { createPrintOrder } from '../services/api';
 import axios from 'axios';
@@ -9,7 +8,7 @@ import compressImage from '../compressImage';
 
 const PrintCustomize = () => {
     const { id } = useParams();
-    const { user } = useAuth();
+    
     const navigate = useNavigate();
 const [customCover, setCustomCover] = useState(null);
     const [step, setStep] = useState(1);
@@ -58,7 +57,7 @@ const handleSubmit = async (e) => {
             customCoverUrl = data.imageUrl;
         }
 
-        const { data } = await createPrintOrder({
+         await createPrintOrder({
             scrapbookId: id,
             dedicationNote,
             coverStyle,

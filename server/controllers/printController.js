@@ -90,7 +90,7 @@ const createPrintOrder = async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Print order error:', error.response?.data || error.message);
+        console.error('Print order error:', JSON.stringify(error.response?.data,null,2));
         res.status(500).json({ message: error.response?.data?.detail || error.message });
     }
 };

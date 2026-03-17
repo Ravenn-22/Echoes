@@ -147,9 +147,9 @@ const createPrintOrder = async (req, res) => {
             return res.status(404).json({ message: 'Scrapbook not found' });
         }
 
-        console.log('Generating PDF...');
-        const pdfUrl = await generatePDF(scrapbook, memories, dedicationNote, bookSize);
-        console.log('PDF generated:', pdfUrl);
+        console.log('Generating cover PDF...');
+        const coverPdfUrl = await generateCoverPDF(scrapbook, coverStyle, customCoverUrl, bookSize);
+        console.log('Cover PDF generated:', coverPdfUrl);
 
         const token = await getLuluToken();
 
@@ -167,7 +167,7 @@ const createPrintOrder = async (req, res) => {
         line_items: [
             {
                 title: scrapbook.title,
-                cover: coverUrl,
+                cover: coverPdfUrl,
                 interior: {
                     source_url: pdfUrl
                 },
@@ -203,20 +203,104 @@ res.status(200).json({
     orderId: printJob.data.id,
     estimatedDelivery: '7-14 business days'
 });
-const publicID = `echoes-books/${pdfUrl.split('/').slice(-1)[0]}`;
-setTimeout(async () =>{
-    try{
-        await cloudinary.uploader.destroy(publicId, { resource_type: "raw"})
-        console.log("PDF deleted from Cloudinary")
-    }catch (cleanupError){
-        console.error("Cleanup error:", cleanupError.message)
+
+const interiorPublicId = `echoes-books/${pdfUrl.split('/').slice(-1)[0]}`;
+const coverPublicId = `echoes-books/${coverPdfUrl.split('/').slice(-1)[0]}`;
+setTimeout(async () => {
+    try {
+        await cloudinary.uploader.destroy(interiorPublicId, { resource_type: 'raw' });
+        await cloudinary.uploader.destroy(coverPublicId, { resource_type: 'raw' });
+        console.log('PDFs deleted from Cloudinary');
+    } catch (cleanupError) {
+        console.error('Cleanup error:', cleanupError.message);
     }
-}, 5 * 60 *1000)
+}, 5 * 60 * 1000);
 
     } catch (error) {
         console.error('Print order error:', JSON.stringify(error.response?.data, null, 2) || error.message);
         res.status(500).json({ message: error.response?.data?.detail || error.message });
     }
+};
+
+const generateCoverPDF = async (scrapbook, coverStyle, customCoverUrl, bookSize) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const pageSizes = {
+                small: [425.2, 595.3],
+                standard: [432, 648],
+                premium: [612, 792]
+            };
+
+            const doc = new PDFDocument({
+                size: pageSizes[bookSize] || [612, 792],
+                margin: 0
+            });
+
+            const buffers = [];
+            doc.on('data', (chunk) => buffers.push(chunk));
+            doc.on('end', async () => {
+                const pdfBuffer = Buffer.concat(buffers);
+
+                const uploadResult = await new Promise((res, rej) => {
+                    cloudinary.uploader.upload_stream(
+                        {
+                            resource_type: 'raw',
+                            folder: 'echoes-books',
+                            public_id: `cover_${Date.now()}`,
+                            overwrite: true
+                        },
+                        (error, result) => {
+                            if (error) rej(error);
+                            else {
+                                console.log('Cover PDF URL:', result.secure_url);
+                                res(result);
+                            }
+                        }
+                    ).end(pdfBuffer);
+                });
+
+                resolve(uploadResult.secure_url);
+            });
+
+            // If custom cover image exists use it
+            if (customCoverUrl) {
+                try {
+                    const imageResponse = await axios.get(customCoverUrl, { responseType: 'arraybuffer' });
+                    const imageBuffer = Buffer.from(imageResponse.data);
+                    const pageSize = pageSizes[bookSize] || [612, 792];
+                    doc.image(imageBuffer, 0, 0, { width: pageSize[0], height: pageSize[1] });
+                } catch (imgError) {
+                    console.error('Cover image error:', imgError.message);
+                    // Fallback to styled cover
+                    doc.rect(0, 0, doc.page.width, doc.page.height).fill('#232020');
+                    doc.fontSize(36).font('Helvetica-Bold').fillColor('#fff2d7')
+                       .text(scrapbook.title, 50, doc.page.height / 2 - 50, { align: 'center' });
+                }
+            } else {
+                // Style based on cover style
+                const colors = {
+                    classic: '#232020',
+                    modern: '#72011f',
+                    minimal: '#FDF6EC'
+                };
+                const textColors = {
+                    classic: '#fff2d7',
+                    modern: '#fff2d7',
+                    minimal: '#3D2B1F'
+                };
+
+                doc.rect(0, 0, doc.page.width, doc.page.height).fill(colors[coverStyle] || '#232020');
+                doc.fontSize(36).font('Helvetica-Bold').fillColor(textColors[coverStyle] || '#fff2d7')
+                   .text(scrapbook.title, 50, doc.page.height / 2 - 50, { align: 'center' });
+                doc.fontSize(14).font('Helvetica').fillColor(textColors[coverStyle] || '#fff2d7')
+                   .text('Made with Echoes', 50, doc.page.height / 2 + 20, { align: 'center' });
+            }
+
+            doc.end();
+        } catch (error) {
+            reject(error);
+        }
+    });
 };
 
 module.exports = { createPrintOrder };

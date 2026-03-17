@@ -49,16 +49,17 @@ const generatePDF = async (scrapbook, memories, dedicationNote) => {
         },
         (error, result) => {
             if (error) rej(error);
-            else res(result);
+            else{
+                console.log('PDF URL:', uploadResult.secure_url);
+            console.log('Public ID:', uploadResult.public_id);
+            res(result);
+            } 
         }
     ).end(pdfBuffer);
 });
-
 resolve(uploadResult.secure_url);
             });
-            console.log('PDF URL:', uploadResult.secure_url);
-console.log('Public ID:', uploadResult.public_id);
-
+            
           
             doc.fontSize(36)
                .font('Helvetica-Bold')

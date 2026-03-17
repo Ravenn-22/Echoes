@@ -165,7 +165,7 @@ const countries = getData();
                                     <span className="option-icon">📗</span>
                                     <p>Small</p>
                                     <p className="option-price">$35</p>
-                                    <p className="option-desc">20 pages · A5</p>
+                                    <p className="option-desc">25 pages · A5</p>
                                 </div>
                                 <div
                                     className={`option-card ${bookSize === 'standard' ? 'selected' : ''}`}

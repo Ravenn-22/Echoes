@@ -50,7 +50,6 @@ const generatePDF = async (scrapbook, memories, dedicationNote) => {
         (error, result) => {
             if (error) rej(error);
             else{
-            // console.log('Public ID:', uploadResult.public_id);
             res(result);
             } 
         }
@@ -111,6 +110,15 @@ resolve(uploadResult.secure_url);
                     }
                 }
             }
+            // Add blank pages to meet minimum 24 page requirement
+const currentPageCount = memories.filter(m => m.image).length + 2; // +2 for title and dedication pages
+const minPages = 24;
+if (currentPageCount < minPages) {
+    const pagesToAdd = minPages - currentPageCount;
+    for (let i = 0; i < pagesToAdd; i++) {
+        doc.addPage();
+    }
+}
 
             doc.end();
         } catch (error) {

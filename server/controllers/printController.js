@@ -2,6 +2,7 @@ const axios = require('axios');
 const PDFDocument = require('pdfkit');
 const Memory = require('../models/Memory');
 const Scrapbook = require('../models/Scrapbook');
+const upload = require('../config/multer');
 const cloudinary = require('cloudinary').v2;
 
 cloudinary.config({
@@ -40,7 +41,11 @@ const generatePDF = async (scrapbook, memories, dedicationNote) => {
                
                 const uploadResult = await new Promise((res, rej) => {
                     cloudinary.uploader.upload_stream(
-                        { resource_type: 'raw', folder: 'echoes-books', format: 'pdf' },
+                        { resource_type: 'raw', 
+                            folder: 'echoes-books',
+                             format: 'pdf',
+                            type: "upload", 
+                            access_mode: "public" },
                         (error, result) => {
                             if (error) rej(error);
                             else res(result);
@@ -170,7 +175,13 @@ const createPrintOrder = async (req, res) => {
                 }
             }
         );
-
+       try {
+    const publicId = `echoes-books/${pdfUrl.split('/').slice(-1)[0].replace('.pdf', '')}`;
+    await cloudinary.uploader.destroy(publicId, { resource_type: 'raw' });
+    console.log('PDF deleted from Cloudinary');
+} catch (cleanupError) {
+    console.error('Cleanup error:', cleanupError.message);
+}
         res.status(200).json({
             message: 'Print order created successfully!',
             orderId: printJob.data.id,

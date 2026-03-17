@@ -50,7 +50,7 @@ const generatePDF = async (scrapbook, memories, dedicationNote) => {
         (error, result) => {
             if (error) rej(error);
             else{
-            console.log('Public ID:', uploadResult.public_id);
+            // console.log('Public ID:', uploadResult.public_id);
             res(result);
             } 
         }

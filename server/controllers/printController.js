@@ -39,22 +39,25 @@ const generatePDF = async (scrapbook, memories, dedicationNote) => {
                 const pdfBuffer = Buffer.concat(buffers);
 
                
-                const uploadResult = await new Promise((res, rej) => {
-                    cloudinary.uploader.upload_stream(
-                        { resource_type: 'raw', 
-                            folder: 'echoes-books',
-                             format: 'pdf',
-                            type: "upload", 
-                            access_mode: "public" },
-                        (error, result) => {
-                            if (error) rej(error);
-                            else res(result);
-                        }
-                    ).end(pdfBuffer);
-                });
+               const uploadResult = await new Promise((res, rej) => {
+    cloudinary.uploader.upload_stream(
+        { 
+            resource_type: 'raw', 
+            folder: 'echoes-books',
+            public_id: `book_${Date.now()}`,
+            overwrite: true
+        },
+        (error, result) => {
+            if (error) rej(error);
+            else res(result);
+        }
+    ).end(pdfBuffer);
+});
 
-                resolve(uploadResult.secure_url);
+resolve(uploadResult.secure_url);
             });
+            console.log('PDF URL:', uploadResult.secure_url);
+console.log('Public ID:', uploadResult.public_id);
 
           
             doc.fontSize(36)

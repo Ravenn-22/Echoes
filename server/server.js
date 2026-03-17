@@ -12,7 +12,7 @@ const uploadRoutes = require('./routes/uploadRoutes');
 const https = require('https');
 const paystackRoutes = require('./routes/paystackRoutes');
 const checkProExpiry = require('./middleware/checkProExpiry');
-
+const printRoutes = require('./routes/printRoutes');
 
 const app = express();
 connectDB();
@@ -30,6 +30,7 @@ app.use('/api/upload', uploadRoutes);
 app.use('/api/paystack', paystackRoutes);
 app.use(checkProExpiry);
 
+app.use('/api/print', printRoutes);
 
 io.on('connection', (socket) => {
     console.log('User connected:', socket.id);

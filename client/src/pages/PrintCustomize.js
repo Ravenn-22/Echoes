@@ -4,6 +4,7 @@ import './PrintCustomize.css';
 import { createPrintOrder } from '../services/api';
 import axios from 'axios';
 import compressImage from '../compressImage';
+import {getData} from 'country-list';
 
 
 const PrintCustomize = () => {
@@ -74,6 +75,8 @@ const handleSubmit = async (e) => {
         setLoading(false);
     }
 };
+
+const countries = getData();
 
     return (
         <div className="print-container">
@@ -228,13 +231,19 @@ const handleSubmit = async (e) => {
                                     />
                                 </div>
                                 <div className="address-row">
-                                    <input
-                                        type="text"
-                                        name="country"
-                                        placeholder="Country"
-                                        value={shippingAddress.country}
-                                        onChange={handleAddressChange}
-                                    />
+                                    <select
+                                    name='country' 
+                                    value={shippingAddress.country}
+                                    onChange={handleAddressChange}
+                                    className='address-select'
+                                    >
+                                        <option value="">Select Country</option>
+                                        {countries.map((country) => (
+                                            <option key={country.code} value={country.code}>
+                                                {country.name}
+                                            </option>
+                                        ))}
+                                    </select>
                                     <input
                                         type="text"
                                         name="zipCode"

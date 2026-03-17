@@ -142,51 +142,54 @@ const createPrintOrder = async (req, res) => {
         const coverUrl = customCoverUrl || scrapbook.coverImage || 'https://via.placeholder.com/800x600';
 
         const printJob = await axios.post(
-            'https://api.lulu.com/print-jobs/',
+    'https://api.lulu.com/print-jobs/',
+    {
+        line_items: [
             {
-                line_items: [
-                    {
-                        title: scrapbook.title,
-                        cover: coverUrl,
-                        interior: {
-                            source_url: pdfUrl
-                        },
-                        pod_package_id: podPackageIds[bookSize],
-                        quantity: 1
-                    }
-                ],
-                shipping_address: {
-                    name: shippingAddress.fullName,
-                    street1: shippingAddress.address,
-                    city: shippingAddress.city,
-                    state_code: shippingAddress.state,
-                    country_code: shippingAddress.country,
-                    postcode: shippingAddress.zipCode,
-                    phone_number: shippingAddress.phone || '0000000000',
-                    email: req.user.email
+                title: scrapbook.title,
+                cover: coverUrl,
+                interior: {
+                    source_url: pdfUrl
                 },
-                shipping_level: 'MAIL',
-                contact_email: req.user.email
-            },
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
+                pod_package_id: podPackageIds[bookSize],
+                quantity: 1
             }
-        );
-       try {
+        ],
+        shipping_address: {
+            name: shippingAddress.fullName,
+            street1: shippingAddress.address,
+            city: shippingAddress.city,
+            state_code: shippingAddress.state,
+            country_code: shippingAddress.country,
+            postcode: shippingAddress.zipCode,
+            phone_number: shippingAddress.phone || '0000000000',
+            email: req.user.email
+        },
+        shipping_level: 'MAIL',
+        contact_email: req.user.email
+    },
+    {
+        headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        }
+    }
+);
+
+
+try {
     const publicId = `echoes-books/${pdfUrl.split('/').slice(-1)[0].replace('.pdf', '')}`;
     await cloudinary.uploader.destroy(publicId, { resource_type: 'raw' });
     console.log('PDF deleted from Cloudinary');
 } catch (cleanupError) {
     console.error('Cleanup error:', cleanupError.message);
 }
-        res.status(200).json({
-            message: 'Print order created successfully!',
-            orderId: printJob.data.id,
-            estimatedDelivery: '7-14 business days'
-        });
+
+res.status(200).json({
+    message: 'Print order created successfully!',
+    orderId: printJob.data.id,
+    estimatedDelivery: '7-14 business days'
+});
 
     } catch (error) {
         console.error('Print order error:', JSON.stringify(error.response?.data, null, 2) || error.message);

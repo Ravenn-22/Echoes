@@ -147,6 +147,10 @@ const createPrintOrder = async (req, res) => {
             return res.status(404).json({ message: 'Scrapbook not found' });
         }
 
+        console.log('Generating PDF...');
+        const pdfUrl = await generatePDF(scrapbook, memories, dedicationNote, bookSize);
+        console.log('PDF generated:', pdfUrl);
+
         console.log('Generating cover PDF...');
         const coverPdfUrl = await generateCoverPDF(scrapbook, coverStyle, customCoverUrl, bookSize);
         console.log('Cover PDF generated:', coverPdfUrl);

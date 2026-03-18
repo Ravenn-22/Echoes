@@ -29,7 +29,7 @@ app.use('/uploads', express.static('uploads'));
 app.use('/api/upload', uploadRoutes);
 app.use('/api/paystack', paystackRoutes);
 app.use(checkProExpiry);
-
+app.use('/temp', express.static('/tmp'))
 app.use('/api/print', printRoutes);
 
 io.on('connection', (socket) => {

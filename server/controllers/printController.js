@@ -3,7 +3,10 @@ const PDFDocument = require('pdfkit');
 const Memory = require('../models/Memory');
 const Scrapbook = require('../models/Scrapbook');
 const upload = require('../config/multer');
-const cloudinary = require('cloudinary').v2;
+// const cloudinary = require('cloudinary').v2;
+const fs = require('fs');
+const path = require('path');
+const tmp = require('tmp')
 
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -40,32 +43,36 @@ const generatePDF = async (scrapbook, memories, dedicationNote, bookSize) => {
                 size: pageSizes[bookSize] || [612, 792],
                 margin:50
             });
-            const buffers = [];
+            const tmpFile = tmp.fileSync({ postfix: '.pdf'});
+            const writeStream = fs.createWriteStream(tmpFile.name);
+            doc.pipe(writeStream)
 
-            doc.on('data', (chunk) => buffers.push(chunk));
-            doc.on('end', async () => {
-                const pdfBuffer = Buffer.concat(buffers);
+            // const buffers = [];
+
+//             doc.on('data', (chunk) => buffers.push(chunk));
+//             doc.on('end', async () => {
+//                 const pdfBuffer = Buffer.concat(buffers);
 
                
-               const uploadResult = await new Promise((res, rej) => {
-    cloudinary.uploader.upload_stream(
-        { 
-            resource_type: 'raw', 
-            folder: 'echoes-books',
-            public_id: `book${Date.now()}.pdf`,
-            overwrite: true,
-            format:"pdf"
-        },
-        (error, result) => {
-            if (error) rej(error);
-            else{
-            res(result);
-            } 
-        }
-    ).end(pdfBuffer);
-});
-resolve(uploadResult.secure_url);
-            });
+//                const uploadResult = await new Promise((res, rej) => {
+//     cloudinary.uploader.upload_stream(
+//         { 
+//             resource_type: 'raw', 
+//             folder: 'echoes-books',
+//             public_id: `book${Date.now()}.pdf`,
+//             overwrite: true,
+//             format:"pdf"
+//         },
+//         (error, result) => {
+//             if (error) rej(error);
+//             else{
+//             res(result);
+//             } 
+//         }
+//     ).end(pdfBuffer);
+// });
+// resolve(uploadResult.secure_url);
+//             });
             
           
             doc.fontSize(36)
@@ -149,11 +156,15 @@ const createPrintOrder = async (req, res) => {
         }
 
         console.log('Generating PDF...');
-        const pdfUrl = await generatePDF(scrapbook, memories, dedicationNote, bookSize);
+        const pdfPath = await generatePDF(scrapbook, memories, dedicationNote, bookSize);
+        const pdfFileName = path.basename(pdfPath);
+        const pdfUrl = `https://echoes-j0mn.onrender.com/temp${pdfFileName}`;
         console.log('PDF generated:', pdfUrl);
 
         console.log('Generating cover PDF...');
-        const coverPdfUrl = await generateCoverPDF(scrapbook, coverStyle, customCoverUrl, bookSize);
+        const coverPath  = await generateCoverPDF(scrapbook, coverStyle, customCoverUrl, bookSize);
+        const coverFileName = path.basename(coverPath);
+        const coverPdfUrl = `https://echoes-j0mn.onrender.com/temp${coverFileName}`;
         console.log('Cover PDF generated:', coverPdfUrl);
 
         const token = await getLuluToken();
@@ -213,9 +224,11 @@ res.status(200).json({
 
 setTimeout(async () => {
     try {
-        await cloudinary.uploader.destroy(interiorPublicId, { resource_type: 'raw' });
-        await cloudinary.uploader.destroy(coverPublicId, { resource_type: 'raw' });
-        console.log('PDFs deleted from Cloudinary');
+        // await cloudinary.uploader.destroy(interiorPublicId, { resource_type: 'raw' });
+        // await cloudinary.uploader.destroy(coverPublicId, { resource_type: 'raw' });
+        fs.unlinkSync(pdfPath);
+        fs.unlinkSync(coverPath);
+        console.log('Temps PDF deleted');
     } catch (cleanupError) {
         console.error('Cleanup error:', cleanupError.message);
     }
@@ -240,33 +253,36 @@ const generateCoverPDF = async (scrapbook, coverStyle, customCoverUrl, bookSize)
                 size: pageSizes[bookSize] || [612, 792],
                 margin: 0
             });
+             const tmpFile = tmp.fileSync({ postfix: '.pdf'});
+            const writeStream = fs.createWriteStream(tmpFile.name);
+            doc.pipe(writeStream)
 
-            const buffers = [];
-            doc.on('data', (chunk) => buffers.push(chunk));
-            doc.on('end', async () => {
-                const pdfBuffer = Buffer.concat(buffers);
+            // const buffers = [];
+            // doc.on('data', (chunk) => buffers.push(chunk));
+            // doc.on('end', async () => {
+            //     const pdfBuffer = Buffer.concat(buffers);
 
-                const uploadResult = await new Promise((res, rej) => {
-                    cloudinary.uploader.upload_stream(
-                        {
-                            resource_type: 'raw',
-                            folder: 'echoes-books',
-                            public_id: `cover_${Date.now()}.pdf`,
-                            overwrite: true,
-                            format: 'pdf'
-                        },
-                        (error, result) => {
-                            if (error) rej(error);
-                            else {
-                                console.log('Cover PDF URL:', result.secure_url);
-                                res(result);
-                            }
-                        }
-                    ).end(pdfBuffer);
-                });
+            //     const uploadResult = await new Promise((res, rej) => {
+            //         cloudinary.uploader.upload_stream(
+            //             {
+            //                 resource_type: 'raw',
+            //                 folder: 'echoes-books',
+            //                 public_id: `cover_${Date.now()}.pdf`,
+            //                 overwrite: true,
+            //                 format: 'pdf'
+            //             },
+            //             (error, result) => {
+            //                 if (error) rej(error);
+            //                 else {
+            //                     console.log('Cover PDF URL:', result.secure_url);
+            //                     res(result);
+            //                 }
+            //             }
+            //         ).end(pdfBuffer);
+            //     });
 
-                resolve(uploadResult.secure_url);
-            });
+            //     resolve(uploadResult.secure_url);
+            // });
 
             // If custom cover image exists use it
             if (customCoverUrl) {

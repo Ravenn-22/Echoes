@@ -52,8 +52,9 @@ const generatePDF = async (scrapbook, memories, dedicationNote, bookSize) => {
         { 
             resource_type: 'raw', 
             folder: 'echoes-books',
-            public_id: `book_${Date.now()}`,
-            overwrite: true
+            public_id: `book${Date.now()}.pdf`,
+            overwrite: true,
+            format:"pdf"
         },
         (error, result) => {
             if (error) rej(error);
@@ -250,8 +251,9 @@ const generateCoverPDF = async (scrapbook, coverStyle, customCoverUrl, bookSize)
                         {
                             resource_type: 'raw',
                             folder: 'echoes-books',
-                            public_id: `cover_${Date.now()}`,
-                            overwrite: true
+                            public_id: `cover_${Date.now()}.pdf`,
+                            overwrite: true,
+                            format: 'pdf'
                         },
                         (error, result) => {
                             if (error) rej(error);

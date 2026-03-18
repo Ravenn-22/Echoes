@@ -25,6 +25,7 @@
     "nodemailer": "^8.0.1",
     "paystack": "^2.0.1",
     "pdfkit": "^0.18.0",
+    "pdfshift": "^2.0.1",
     "socket.io": "^4.8.3",
     "tmp": "^0.2.5"
   },

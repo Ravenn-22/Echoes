@@ -1,18 +1,6 @@
 const axios = require('axios');
-const PDFDocument = require('pdfkit');
 const Memory = require('../models/Memory');
 const Scrapbook = require('../models/Scrapbook');
-const upload = require('../config/multer');
-// const cloudinary = require('cloudinary').v2;
-const fs = require('fs');
-const path = require('path');
-const tmp = require('tmp')
-
-// cloudinary.config({
-//     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-//     api_key: process.env.CLOUDINARY_API_KEY,
-//     api_secret: process.env.CLOUDINARY_API_SECRET
-// });
 
 const getLuluToken = async () => {
     const response = await axios.post(
@@ -31,162 +19,193 @@ const getLuluToken = async () => {
     return response.data.access_token;
 };
 
-const generatePDF = async (scrapbook, memories, dedicationNote, bookSize) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            const pageSizes ={
-                small: [425.2, 595.3],
-                standard:  [432, 648],
-                premium: [612, 792]
-            };
-            const doc = new PDFDocument({
-                size: pageSizes[bookSize] || [612, 792],
-                margin:50
-            });
-            const tmpFile = tmp.fileSync({ postfix: '.pdf'});
-            const writeStream = fs.createWriteStream(tmpFile.name);
-            doc.pipe(writeStream)
-
-            // const buffers = [];
-
-//             doc.on('data', (chunk) => buffers.push(chunk));
-//             doc.on('end', async () => {
-//                 const pdfBuffer = Buffer.concat(buffers);
-
-               
-//                const uploadResult = await new Promise((res, rej) => {
-//     cloudinary.uploader.upload_stream(
-//         { 
-//             resource_type: 'raw', 
-//             folder: 'echoes-books',
-//             public_id: `book${Date.now()}.pdf`,
-//             overwrite: true,
-//             format:"pdf"
-//         },
-//         (error, result) => {
-//             if (error) rej(error);
-//             else{
-//             res(result);
-//             } 
-//         }
-//     ).end(pdfBuffer);
-// });
-// resolve(uploadResult.secure_url);
-//             });
-            
-          
-            doc.fontSize(36)
-               .font('Helvetica-Bold')
-               .text(scrapbook.title, { align: 'center' });
-
-            doc.moveDown();
-
-            
-            if (dedicationNote) {
-                doc.fontSize(14)
-                   .font('Helvetica-Oblique')
-                   .text(dedicationNote, { align: 'center' });
-            }
-
-            doc.addPage();
-
-           
-            for (const memory of memories) {
-                // if (memory.image) {
-                    // try {
-                    //     const imageResponse = await axios.get(memory.image, { responseType: 'arraybuffer' });
-                    //     const imageBuffer = Buffer.from(imageResponse.data);
-
-                        doc.fontSize(18)
-                           .font('Helvetica-Bold')
-                           .text(memory.title, { align: 'center' });
-
-                        doc.moveDown(0.5);
-
-                        // doc.image(imageBuffer, {
-                        //     fit: [400, 400],
-                        //     align: 'center'
-                        // });
-
-                        doc.moveDown();
-
-                        if (memory.description) {
-                            doc.fontSize(12)
-                               .font('Helvetica')
-                               .text(memory.description, { align: 'center' });
-                        }
-
-                        doc.fontSize(10)
-                           .font('Helvetica-Oblique')
-                           .text(`By ${memory.createdBy?.username} • ${new Date(memory.createdAt).toLocaleDateString()}`, { align: 'center' });
-
-                        doc.addPage();
-                    // } catch (imgError) {
-                    //     console.error('Image error:', imgError.message);
-                    // }
-                // }
-            } 
-            // Fetch all images in parallel first
-// const memoriesWithImages = await Promise.all(
-//     memories.filter(m => m.image).map(async (memory) => {
-//         try {
-//             const imageResponse = await axios.get(memory.image, { 
-//                 responseType: 'arraybuffer',
-//                 timeout: 10000
-//             });
-//             return { ...memory.toObject(), imageBuffer: Buffer.from(imageResponse.data) };
-//         } catch (imgError) {
-//             console.error('Image fetch error:', imgError.message);
-//             return { ...memory.toObject(), imageBuffer: null };
-//         }
-//     })
-// );
-
-// // Then add to PDF
-// for (const memory of memoriesWithImages) {
-//     if (memory.imageBuffer) {
-//         doc.fontSize(18)
-//            .font('Helvetica-Bold')
-//            .text(memory.title, { align: 'center' });
-
-//         doc.moveDown(0.5);
-
-//         doc.image(memory.imageBuffer, {
-//             fit: [400, 400],
-//             align: 'center'
-//         });
-
-//         doc.moveDown();
-
-//         if (memory.description) {
-//             doc.fontSize(12)
-//                .font('Helvetica')
-//                .text(memory.description, { align: 'center' });
-//         }
-
-//         doc.fontSize(10)
-//            .font('Helvetica-Oblique')
-//            .text(`By ${memory.createdBy?.username} • ${new Date(memory.createdAt).toLocaleDateString()}`, { align: 'center' });
-
-//         doc.addPage();
-//     }
-// }
-              // Add blank pages to meet minimum 24 page requirement
-              const currentPageCount = memories.filter(m => m.image).length + 2; // +2 for title and dedication pages
-              const minPages = 24;
-              if (currentPageCount < minPages) {
-                const pagesToAdd = minPages - currentPageCount;
-                for (let i = 0; i < pagesToAdd; i++) {
-                    doc.addPage();
-                 }
-                }
-          
-
-            doc.end();
-        } catch (error) {
-            reject(error);
+const generatePDFWithShift = async (html, filename) => {
+    const response = await axios.post(
+        'https://api.pdfshift.io/v3/convert/pdf',
+        {
+            source: html,
+            format: 'A4',
+            margin: { top: '20mm', bottom: '20mm', left: '20mm', right: '20mm' }
+        },
+        {
+            auth: {
+                username: 'api',
+                password: process.env.PDFSHIFT_API_KEY
+            },
+            responseType: 'arraybuffer'
         }
-    });
+    );
+    return Buffer.from(response.data);
+};
+
+const generateInteriorHTML = (scrapbook, memories, dedicationNote) => {
+    const memoriesHTML = memories.map((memory) => `
+        <div class="memory-page">
+            <h2>${memory.title}</h2>
+            ${memory.image ? `<img src="${memory.image}" alt="${memory.title}" />` : ''}
+            ${memory.description ? `<p class="description">${memory.description}</p>` : ''}
+            <p class="meta">By ${memory.createdBy?.username} • ${new Date(memory.createdAt).toLocaleDateString()}</p>
+        </div>
+        <div class="page-break"></div>
+    `).join('');
+
+    // Add blank pages to meet 24 page minimum
+    const memoryCount = memories.length;
+    const totalPages = memoryCount + 2;
+    let blankPages = '';
+    if (totalPages < 24) {
+        for (let i = 0; i < 24 - totalPages; i++) {
+            blankPages += '<div class="page-break"></div>';
+        }
+    }
+
+    return `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <style>
+                body {
+                    font-family: Georgia, serif;
+                    margin: 0;
+                    padding: 0;
+                    color: #3D2B1F;
+                }
+                .title-page {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    height: 100vh;
+                    text-align: center;
+                }
+                .title-page h1 {
+                    font-size: 48px;
+                    color: #72011f;
+                    margin-bottom: 20px;
+                }
+                .dedication {
+                    font-size: 18px;
+                    font-style: italic;
+                    color: #8B6F61;
+                    max-width: 400px;
+                }
+                .page-break {
+                    page-break-after: always;
+                }
+                .memory-page {
+                    text-align: center;
+                    padding: 20px;
+                }
+                .memory-page h2 {
+                    font-size: 28px;
+                    color: #72011f;
+                    margin-bottom: 20px;
+                }
+                .memory-page img {
+                    max-width: 80%;
+                    max-height: 400px;
+                    object-fit: contain;
+                    border-radius: 8px;
+                    margin-bottom: 20px;
+                }
+                .description {
+                    font-size: 16px;
+                    color: #3D2B1F;
+                    margin-bottom: 10px;
+                }
+                .meta {
+                    font-size: 12px;
+                    color: #8B6F61;
+                    font-style: italic;
+                }
+                .echoes-brand {
+                    font-size: 12px;
+                    color: #8B6F61;
+                    text-align: center;
+                    margin-top: 40px;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="title-page">
+                <h1>${scrapbook.title}</h1>
+                ${dedicationNote ? `<p class="dedication">${dedicationNote}</p>` : ''}
+                <p class="echoes-brand">Made with Echoes 🌸</p>
+            </div>
+            <div class="page-break"></div>
+            ${memoriesHTML}
+            ${blankPages}
+        </body>
+        </html>
+    `;
+};
+
+const generateCoverHTML = (scrapbook, coverStyle, customCoverUrl) => {
+    const colors = {
+        classic: '#232020',
+        modern: '#72011f',
+        minimal: '#FDF6EC'
+    };
+    const textColors = {
+        classic: '#fff2d7',
+        modern: '#fff2d7',
+        minimal: '#3D2B1F'
+    };
+
+    const bgColor = colors[coverStyle] || '#232020';
+    const textColor = textColors[coverStyle] || '#fff2d7';
+
+    return `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <style>
+                body {
+                    margin: 0;
+                    padding: 0;
+                    background: ${customCoverUrl ? 'transparent' : bgColor};
+                    height: 100vh;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    text-align: center;
+                    font-family: Georgia, serif;
+                }
+                ${customCoverUrl ? `
+                .cover-bg {
+                    position: fixed;
+                    top: 0; left: 0;
+                    width: 100%; height: 100%;
+                    background-image: url('${customCoverUrl}');
+                    background-size: cover;
+                    background-position: center;
+                    z-index: -1;
+                }
+                ` : ''}
+                h1 {
+                    font-size: 48px;
+                    color: ${textColor};
+                    margin-bottom: 20px;
+                    text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+                }
+                .brand {
+                    font-size: 14px;
+                    color: ${textColor};
+                    opacity: 0.7;
+                    margin-top: 20px;
+                }
+            </style>
+        </head>
+        <body>
+            ${customCoverUrl ? '<div class="cover-bg"></div>' : ''}
+            <h1>${scrapbook.title}</h1>
+            <p class="brand">Made with Echoes 🌸</p>
+        </body>
+        </html>
+    `;
 };
 
 const createPrintOrder = async (req, res) => {
@@ -200,18 +219,27 @@ const createPrintOrder = async (req, res) => {
             return res.status(404).json({ message: 'Scrapbook not found' });
         }
 
-        console.log('Generating PDF...');
-        const pdfPath = await generatePDF(scrapbook, memories, dedicationNote, bookSize);
-        const pdfFileName = path.basename(pdfPath);
-        const pdfUrl = `https://echoes-j0mn.onrender.com/temp${pdfFileName}`;
-        console.log('PDF generated:', pdfUrl);
+        console.log('Generating interior PDF...');
+        const interiorHTML = generateInteriorHTML(scrapbook, memories, dedicationNote);
+        const interiorBuffer = await generatePDFWithShift(interiorHTML);
+        console.log('Interior PDF generated');
 
         console.log('Generating cover PDF...');
-        const coverPath  = await generateCoverPDF(scrapbook, coverStyle, customCoverUrl, bookSize);
-        const coverFileName = path.basename(coverPath);
-        const coverPdfUrl = `https://echoes-j0mn.onrender.com/temp${coverFileName}`;
-        console.log('Cover PDF generated:', coverPdfUrl);
+        const coverHTML = generateCoverHTML(scrapbook, coverStyle, customCoverUrl);
+        const coverBuffer = await generatePDFWithShift(coverHTML);
+        console.log('Cover PDF generated');
 
+        // Store buffers in memory temporarily
+        const pdfId = `pdf_${Date.now()}`;
+        const coverId = `cover_${Date.now()}`;
+        global.tempPDFs = global.tempPDFs || {};
+        global.tempPDFs[pdfId] = interiorBuffer;
+        global.tempPDFs[coverId] = coverBuffer;
+
+        const pdfUrl = `https://echoes-j0mn.onrender.com/temp/${pdfId}`;
+        const coverPdfUrl = `https://echoes-j0mn.onrender.com/temp/${coverId}`;
+
+        console.log('Getting Lulu token...');
         const token = await getLuluToken();
 
         const podPackageIds = {
@@ -220,154 +248,61 @@ const createPrintOrder = async (req, res) => {
             premium: '0850X1100FCPRELW080CW444GNG'
         };
 
-        const coverUrl = customCoverUrl || scrapbook.coverImage || 'https://via.placeholder.com/800x600';
-
+        console.log('Creating Lulu print job...');
         const printJob = await axios.post(
-    'https://api.lulu.com/print-jobs/',
-    {
-        line_items: [
+            'https://api.lulu.com/print-jobs/',
             {
-                title: scrapbook.title,
-                cover: coverPdfUrl,
-                interior: {
-                    source_url: pdfUrl
+                line_items: [
+                    {
+                        title: scrapbook.title,
+                        cover: coverPdfUrl,
+                        interior: {
+                            source_url: pdfUrl
+                        },
+                        pod_package_id: podPackageIds[bookSize],
+                        quantity: 1
+                    }
+                ],
+                shipping_address: {
+                    name: shippingAddress.fullName,
+                    street1: shippingAddress.address,
+                    city: shippingAddress.city,
+                    state_code: shippingAddress.state,
+                    country_code: shippingAddress.country,
+                    postcode: shippingAddress.zipCode,
+                    phone_number: shippingAddress.phone || '0000000000',
+                    email: req.user.email
                 },
-                pod_package_id: podPackageIds[bookSize],
-                quantity: 1
+                shipping_level: 'MAIL',
+                contact_email: req.user.email
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
             }
-        ],
-        shipping_address: {
-            name: shippingAddress.fullName,
-            street1: shippingAddress.address,
-            city: shippingAddress.city,
-            state_code: shippingAddress.state,
-            country_code: shippingAddress.country,
-            postcode: shippingAddress.zipCode,
-            phone_number: shippingAddress.phone || '0000000000',
-            email: req.user.email
-        },
-        shipping_level: 'MAIL',
-        contact_email: req.user.email
-    },
-    {
-        headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
-        }
-    }
-);
+        );
 
-const interiorPublicId = `echoes-books/${pdfUrl.split('/').slice(-1)[0]}`;
-const coverPublicId = `echoes-books/${coverPdfUrl.split('/').slice(-1)[0]}`;
+        console.log('Print job created:', printJob.data.id);
 
-res.status(200).json({
-    message: 'Print order created successfully!',
-    orderId: printJob.data.id,
-    estimatedDelivery: '7-14 business days'
-});
+        res.status(200).json({
+            message: 'Print order created successfully!',
+            orderId: printJob.data.id,
+            estimatedDelivery: '7-14 business days'
+        });
 
-
-setTimeout(async () => {
-    try {
-        // await cloudinary.uploader.destroy(interiorPublicId, { resource_type: 'raw' });
-        // await cloudinary.uploader.destroy(coverPublicId, { resource_type: 'raw' });
-        fs.unlinkSync(pdfPath);
-        fs.unlinkSync(coverPath);
-        console.log('Temps PDF deleted');
-    } catch (cleanupError) {
-        console.error('Cleanup error:', cleanupError.message);
-    }
-}, 10 * 60 * 1000);
+        // Delete temp PDFs after 10 minutes
+        setTimeout(() => {
+            delete global.tempPDFs[pdfId];
+            delete global.tempPDFs[coverId];
+            console.log('Temp PDFs deleted from memory');
+        }, 10 * 60 * 1000);
 
     } catch (error) {
         console.error('Print order error:', JSON.stringify(error.response?.data, null, 2) || error.message);
         res.status(500).json({ message: error.response?.data?.detail || error.message });
     }
-};
-
-const generateCoverPDF = async (scrapbook, coverStyle, customCoverUrl, bookSize) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            const pageSizes = {
-                small: [425.2, 595.3],
-                standard: [432, 648],
-                premium: [612, 792]
-            };
-
-            const doc = new PDFDocument({
-                size: pageSizes[bookSize] || [612, 792],
-                margin: 0
-            });
-             const tmpFile = tmp.fileSync({ postfix: '.pdf'});
-            const writeStream = fs.createWriteStream(tmpFile.name);
-            doc.pipe(writeStream)
-
-            // const buffers = [];
-            // doc.on('data', (chunk) => buffers.push(chunk));
-            // doc.on('end', async () => {
-            //     const pdfBuffer = Buffer.concat(buffers);
-
-            //     const uploadResult = await new Promise((res, rej) => {
-            //         cloudinary.uploader.upload_stream(
-            //             {
-            //                 resource_type: 'raw',
-            //                 folder: 'echoes-books',
-            //                 public_id: `cover_${Date.now()}.pdf`,
-            //                 overwrite: true,
-            //                 format: 'pdf'
-            //             },
-            //             (error, result) => {
-            //                 if (error) rej(error);
-            //                 else {
-            //                     console.log('Cover PDF URL:', result.secure_url);
-            //                     res(result);
-            //                 }
-            //             }
-            //         ).end(pdfBuffer);
-            //     });
-
-            //     resolve(uploadResult.secure_url);
-            // });
-
-            // If custom cover image exists use it
-            if (customCoverUrl) {
-                try {
-                    const imageResponse = await axios.get(customCoverUrl, { responseType: 'arraybuffer' });
-                    const imageBuffer = Buffer.from(imageResponse.data);
-                    const pageSize = pageSizes[bookSize] || [612, 792];
-                    doc.image(imageBuffer, 0, 0, { width: pageSize[0], height: pageSize[1] });
-                } catch (imgError) {
-                    console.error('Cover image error:', imgError.message);
-                    // Fallback to styled cover
-                    doc.rect(0, 0, doc.page.width, doc.page.height).fill('#232020');
-                    doc.fontSize(36).font('Helvetica-Bold').fillColor('#fff2d7')
-                       .text(scrapbook.title, 50, doc.page.height / 2 - 50, { align: 'center' });
-                }
-            } else {
-                // Style based on cover style
-                const colors = {
-                    classic: '#232020',
-                    modern: '#72011f',
-                    minimal: '#FDF6EC'
-                };
-                const textColors = {
-                    classic: '#fff2d7',
-                    modern: '#fff2d7',
-                    minimal: '#3D2B1F'
-                };
-
-                doc.rect(0, 0, doc.page.width, doc.page.height).fill(colors[coverStyle] || '#232020');
-                doc.fontSize(36).font('Helvetica-Bold').fillColor(textColors[coverStyle] || '#fff2d7')
-                   .text(scrapbook.title, 50, doc.page.height / 2 - 50, { align: 'center' });
-                doc.fontSize(14).font('Helvetica').fillColor(textColors[coverStyle] || '#fff2d7')
-                   .text('Made with Echoes', 50, doc.page.height / 2 + 20, { align: 'center' });
-            }
-
-            doc.end();
-        } catch (error) {
-            reject(error);
-        }
-    });
 };
 
 module.exports = { createPrintOrder };

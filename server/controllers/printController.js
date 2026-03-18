@@ -91,86 +91,86 @@ const generatePDF = async (scrapbook, memories, dedicationNote, bookSize) => {
             doc.addPage();
 
            
-            // for (const memory of memories) {
-            //     if (memory.image) {
-            //         try {
-            //             const imageResponse = await axios.get(memory.image, { responseType: 'arraybuffer' });
-            //             const imageBuffer = Buffer.from(imageResponse.data);
+            for (const memory of memories) {
+                // if (memory.image) {
+                    // try {
+                    //     const imageResponse = await axios.get(memory.image, { responseType: 'arraybuffer' });
+                    //     const imageBuffer = Buffer.from(imageResponse.data);
 
-            //             doc.fontSize(18)
-            //                .font('Helvetica-Bold')
-            //                .text(memory.title, { align: 'center' });
+                        doc.fontSize(18)
+                           .font('Helvetica-Bold')
+                           .text(memory.title, { align: 'center' });
 
-            //             doc.moveDown(0.5);
+                        doc.moveDown(0.5);
 
-            //             doc.image(imageBuffer, {
-            //                 fit: [400, 400],
-            //                 align: 'center'
-            //             });
+                        // doc.image(imageBuffer, {
+                        //     fit: [400, 400],
+                        //     align: 'center'
+                        // });
 
-            //             doc.moveDown();
+                        doc.moveDown();
 
-            //             if (memory.description) {
-            //                 doc.fontSize(12)
-            //                    .font('Helvetica')
-            //                    .text(memory.description, { align: 'center' });
-            //             }
+                        if (memory.description) {
+                            doc.fontSize(12)
+                               .font('Helvetica')
+                               .text(memory.description, { align: 'center' });
+                        }
 
-            //             doc.fontSize(10)
-            //                .font('Helvetica-Oblique')
-            //                .text(`By ${memory.createdBy?.username} • ${new Date(memory.createdAt).toLocaleDateString()}`, { align: 'center' });
+                        doc.fontSize(10)
+                           .font('Helvetica-Oblique')
+                           .text(`By ${memory.createdBy?.username} • ${new Date(memory.createdAt).toLocaleDateString()}`, { align: 'center' });
 
-            //             doc.addPage();
-            //         } catch (imgError) {
-            //             console.error('Image error:', imgError.message);
-            //         }
-            //     }
-            // } 
+                        doc.addPage();
+                    // } catch (imgError) {
+                    //     console.error('Image error:', imgError.message);
+                    // }
+                // }
+            } 
             // Fetch all images in parallel first
-const memoriesWithImages = await Promise.all(
-    memories.filter(m => m.image).map(async (memory) => {
-        try {
-            const imageResponse = await axios.get(memory.image, { 
-                responseType: 'arraybuffer',
-                timeout: 10000
-            });
-            return { ...memory.toObject(), imageBuffer: Buffer.from(imageResponse.data) };
-        } catch (imgError) {
-            console.error('Image fetch error:', imgError.message);
-            return { ...memory.toObject(), imageBuffer: null };
-        }
-    })
-);
+// const memoriesWithImages = await Promise.all(
+//     memories.filter(m => m.image).map(async (memory) => {
+//         try {
+//             const imageResponse = await axios.get(memory.image, { 
+//                 responseType: 'arraybuffer',
+//                 timeout: 10000
+//             });
+//             return { ...memory.toObject(), imageBuffer: Buffer.from(imageResponse.data) };
+//         } catch (imgError) {
+//             console.error('Image fetch error:', imgError.message);
+//             return { ...memory.toObject(), imageBuffer: null };
+//         }
+//     })
+// );
 
-// Then add to PDF
-for (const memory of memoriesWithImages) {
-    if (memory.imageBuffer) {
-        doc.fontSize(18)
-           .font('Helvetica-Bold')
-           .text(memory.title, { align: 'center' });
+// // Then add to PDF
+// for (const memory of memoriesWithImages) {
+//     if (memory.imageBuffer) {
+//         doc.fontSize(18)
+//            .font('Helvetica-Bold')
+//            .text(memory.title, { align: 'center' });
 
-        doc.moveDown(0.5);
+//         doc.moveDown(0.5);
 
-        doc.image(memory.imageBuffer, {
-            fit: [400, 400],
-            align: 'center'
-        });
+//         doc.image(memory.imageBuffer, {
+//             fit: [400, 400],
+//             align: 'center'
+//         });
 
-        doc.moveDown();
+//         doc.moveDown();
 
-        if (memory.description) {
-            doc.fontSize(12)
-               .font('Helvetica')
-               .text(memory.description, { align: 'center' });
-        }
+//         if (memory.description) {
+//             doc.fontSize(12)
+//                .font('Helvetica')
+//                .text(memory.description, { align: 'center' });
+//         }
 
-        doc.fontSize(10)
-           .font('Helvetica-Oblique')
-           .text(`By ${memory.createdBy?.username} • ${new Date(memory.createdAt).toLocaleDateString()}`, { align: 'center' });
+//         doc.fontSize(10)
+//            .font('Helvetica-Oblique')
+//            .text(`By ${memory.createdBy?.username} • ${new Date(memory.createdAt).toLocaleDateString()}`, { align: 'center' });
 
-        doc.addPage();
-    }
-}
+//         doc.addPage();
+//     }
+// }
               // Add blank pages to meet minimum 24 page requirement
               const currentPageCount = memories.filter(m => m.image).length + 2; // +2 for title and dedication pages
               const minPages = 24;

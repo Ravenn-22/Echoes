@@ -47,6 +47,7 @@ const verifyPayment = async (req, res) => {
                 }
             }
         );
+        const {status,metadata} = response.data.data;
 
        if (status === 'success') {
     const {plan } = metadata;

@@ -49,14 +49,15 @@ const Views = ( ) => {
     <div className="article-bottom">
 
   <div className="art-p">
-                    <p className="article-p">As Marcel Proust beautifully said,
-“Let us be grateful to people who make us happy; they are the charming gardeners who make our souls blossom.”
+    <p className="article-p">Keeping memories is like pressing flowers between the pages of your heart. They may fade a little with time, but their beauty stays. When life moves fast, memories slow it down. They whisper, “Look how far you’ve come. Look how deeply you’ve loved.”
+                         Save the smiles. Protect the tiny, magical seconds that made your heart glow. One day, they’ll be the soft place you return
+                    </p>
+                    <p className="article-p"> 
 
-So take the pictures. Write the notes. Keep the ticket stubs. Because one day, those small moments will feel like constellations — tiny lights that prove your story has always been full of love. 💕
-                    </p>
-                    <p className="article-p">Keeping memories is like pressing flowers between the pages of your heart. They may fade a little with time, but their beauty stays. When life moves fast, memories slow it down. They whisper, “Look how far you’ve come. Look how deeply you’ve loved.”
-                        o hold onto the feelings. Save the smiles. Protect the tiny, magical seconds that made your heart glow. One day, they’ll be the soft place you return
-                    </p>
+Echoes is a private shared scrapbook built for couples, families and friends who want to capture life’s best moments together. Upload memories, stay connected in real time and even print your scrapbook as a beautiful hardcover book delivered to your door.
+
+🌸 </p>
+                    
                     
                     </div>
 

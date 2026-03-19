@@ -273,17 +273,6 @@ console.log('Cover PDF URL:', coverPdfUrl);
         );
 
         console.log('Print job created:', printJob.data.id);
-
-        res.status(200).json({
-            message: 'Print order created successfully!',
-            orderId: printJob.data.id,
-            estimatedDelivery: '7-14 business days'
-        });
-        res.status(200).json({
-    message: 'Print order created successfully!',
-    orderId: printJob.data.id,
-    estimatedDelivery: '7-14 business days'
-});
 try {
     await sendPrintConfirmationEmail(
         req.user.email,
@@ -295,7 +284,11 @@ try {
 } catch (emailError) {
     console.error('Email error:', emailError.message);
 }
-
+ res.status(200).json({
+    message: 'Print order created successfully!',
+    orderId: printJob.data.id,
+    estimatedDelivery: '7-14 business days'
+});
 
        
     } catch (error) {

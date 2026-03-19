@@ -703,7 +703,16 @@ border-radius:10px;
 }
 @media (max-width: 768px) {
     .navbar {
-        padding: 15px 20px;
+        padding: 10px 15px;
+    }.navbar-user{
+        gap: 8px;
+    }.navbar-logo{
+        font-size: .8rem;
+    }.navbar-logo-img{
+        width: 1.3rem;
+        height: 1.3rem;
+    }.pro-badge-nav{
+        display: none;
     }
 
     .hero h1 {

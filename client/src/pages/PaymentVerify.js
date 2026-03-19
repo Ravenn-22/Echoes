@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { verifyPayment } from '../services/api';
+import { verifyPayment , createPrintOrder} from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
 const PaymentVerify = () => {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
-    const { user, setUser } = useAuth();
+    const {  setUser } = useAuth();
     const [status, setStatus] = useState('verifying');
 
     useEffect(() => {
@@ -20,14 +20,29 @@ const PaymentVerify = () => {
             try {
                 const { data } = await verifyPayment(reference);
                 if (data.isPro) {
-                    const updatedUser = { ...user, isPro: true, proExpiresAt: data.proExpiresAt };
-                    localStorage.setItem('user', JSON.stringify(updatedUser));
-                    setUser(updatedUser);
-                    setStatus('success');
-                    setTimeout(() => navigate('/home'), 3000);
-                } else {
-                    setStatus('failed');
-                }
+    const storedUser = JSON.parse(localStorage.getItem('user'));
+    const updatedUser = { ...storedUser, isPro: true, proExpiresAt: data.proExpiresAt };
+    localStorage.setItem('user', JSON.stringify(updatedUser));
+    setUser(updatedUser);
+    setStatus('success');
+    setTimeout(() => navigate('/home'), 3000);
+} else {
+    const pendingPrintOrder = localStorage.getItem('pendingPrintOrder');
+    if (pendingPrintOrder) {
+        setStatus('printing');
+        try {
+            await createPrintOrder(JSON.parse(pendingPrintOrder));
+            localStorage.removeItem('pendingPrintOrder');
+            setStatus('printSuccess');
+            setTimeout(() => navigate('/home'), 3000);
+        } catch (error) {
+            setStatus('failed');
+        }
+    } else {
+        setStatus('success');
+        setTimeout(() => navigate('/home'), 3000);
+    }
+}
             } catch (error) {
                 setStatus('failed');
             }
@@ -81,6 +96,18 @@ const PaymentVerify = () => {
                     >
                         Try Again
                     </button>
+                </>
+            )}
+            {status === 'printing' && (
+                <>
+                   <h2> Creating your print order...</h2>
+                   <p>Please wait while we curate your book.</p>
+                </>
+            )}
+            {status === 'printSuccess' && (
+                <>
+                   <h2> Your book is on its way!</h2>
+                   <p>Check your email for confirmation. Redirecting you to home....</p>
                 </>
             )}
         </div>

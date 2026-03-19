@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import './PrintCustomize.css';
-import { createPrintOrder, getMemories } from '../services/api';
+import {  getMemories, initializePayment } from '../services/api';
 import axios from 'axios';
 import compressImage from '../compressImage';
 import {getData} from 'country-list';
@@ -13,10 +13,10 @@ const PrintCustomize = () => {
     const { id } = useParams();
     const { user } = useAuth();
     const navigate = useNavigate();
-    const [success, setSuccess] = useState(false);
+    // const [success, setSuccess] = useState(false);
     const [memoriesCount, setMemoriesCount] = useState(0);
     const [loadingMemories, setLoadingMemories] = useState(true);
-const [orderId, setOrderId] = useState("");
+
 const [customCover, setCustomCover] = useState(null);
     const [step, setStep] = useState(1);
     const [dedicationNote, setDedicationNote] = useState('');
@@ -73,7 +73,6 @@ const handleSubmit = async (e) => {
     setLoading(true);
     try {
         let customCoverUrl = '';
-
         if (customCover) {
             const compressed = await compressImage(customCover);
             const formData = new FormData();
@@ -88,17 +87,22 @@ const handleSubmit = async (e) => {
             });
             customCoverUrl = data.imageUrl;
         }
-        const {data} =  await createPrintOrder({
+         const { data: paymentData } = await initializePayment(
+            user.email,
+            prices[bookSize],
+            `print_${bookSize}`
+        );
+
+             localStorage.setItem('pendingPrintOrder', JSON.stringify({
             scrapbookId: id,
             dedicationNote,
             coverStyle,
             bookSize,
             shippingAddress,
             customCoverUrl
-        });
-        setOrderId(data.orderId);
-        setSuccess(true)
-        // navigate(`/scrapbook/${id}`, { state: { printSuccess: true } });
+        }));
+             window.location.href = paymentData.data.authorization_url;
+ 
     } catch (error) {
         console.log(error);
         alert('Failed to create print order. Please try again.');
@@ -108,29 +112,29 @@ const handleSubmit = async (e) => {
 };
 
 const countries = getData();
-if (success) {
-    return (
-        <div className="print-container">
-            <nav className="navbar">
-                <div className="navbar-logo" onClick={() => navigate('/home')}>ECHOES</div>
-            </nav>
-            <div className="print-content" style={{ textAlign: 'center' }}>
-                <div className="success-icon">📖</div>
-                <h1 className="print-title">Your book is on its way! 🎉</h1>
-                <p className="print-subtitle">Your scrapbook is being printed and will be shipped to you soon.</p>
-                <div className="order-details">
-                    <p><strong>Order ID:</strong> {orderId}</p>
-                    <p><strong>Estimated Delivery:</strong> 7-14 business days</p>
-                    <p><strong>Shipping to:</strong> {shippingAddress.city}, {shippingAddress.country}</p>
-                </div>
-                <p className="print-hint">A confirmation email has been sent to {user?.email}</p>
-                <button className="print-next-btn" onClick={() => navigate('/home')} style={{ marginTop: '30px' }}>
-                    Back to Home
-                </button>
-            </div>
-        </div>
-    );
-}
+// if (success) {
+//     return (
+//         <div className="print-container">
+//             <nav className="navbar">
+//                 <div className="navbar-logo" onClick={() => navigate('/home')}>ECHOES</div>
+//             </nav>
+//             <div className="print-content" style={{ textAlign: 'center' }}>
+//                 <div className="success-icon">📖</div>
+//                 <h1 className="print-title">Your book is on its way! 🎉</h1>
+//                 <p className="print-subtitle">Your scrapbook is being printed and will be shipped to you soon.</p>
+//                 <div className="order-details">
+                   
+//                     <p><strong>Estimated Delivery:</strong> 7-14 business days</p>
+//                     <p><strong>Shipping to:</strong> {shippingAddress.city}, {shippingAddress.country}</p>
+//                 </div>
+//                 <p className="print-hint">A confirmation email has been sent to {user?.email}</p>
+//                 <button className="print-next-btn" onClick={() => navigate('/home')} style={{ marginTop: '30px' }}>
+//                     Back to Home
+//                 </button>
+//             </div>
+//         </div>
+//     );
+// }
 
     return (
         <div className="print-container">

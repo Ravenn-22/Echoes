@@ -11,6 +11,7 @@ const initializePayment = async (req, res) => {
             {
                 email,
                 amount: amount * 100, 
+               
                 metadata: {
                     userId: req.user._id.toString(),
                     plan
@@ -25,6 +26,7 @@ const initializePayment = async (req, res) => {
                 timeout: 10000
             }
         );
+        console.log('Amount Received', amount)
 
         res.status(200).json(response.data);
     } catch (error) {

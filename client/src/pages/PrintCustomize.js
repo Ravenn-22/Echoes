@@ -50,7 +50,7 @@ const [customCover, setCustomCover] = useState(null);
             
             let allMemories = data.memories || [];
             
-            // Fetch remaining pages if there are more
+           
             if (total > 1) {
                 for (let page = 2; page <= total; page++) {
                     const { data: pageData } = await getMemories(id, page);
@@ -87,9 +87,14 @@ const handleSubmit = async (e) => {
             });
             customCoverUrl = data.imageUrl;
         }
+        const nairaPrices = {
+            small:52500,
+            standard:75000,
+            premium:97500
+        }
          const { data: paymentData } = await initializePayment(
             user.email,
-            prices[bookSize],
+            nairaPrices[bookSize],
             `print_${bookSize}`
         );
 

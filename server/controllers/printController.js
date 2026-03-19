@@ -46,7 +46,7 @@ const generateInteriorHTML = (scrapbook, memories, dedicationNote) => {
     const totalPages = memoryCount + 2;
     let blankPages = '';
     if (totalPages < 24) {
-        for (let i = 0; i < 24 - totalPages; i++) {
+        for (let i = 0; i < 24 - totalPages + 1; i++) {
             blankPages += '<div class="page-break"></div>';
         }
     }

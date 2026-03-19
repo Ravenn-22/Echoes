@@ -54,9 +54,9 @@ section{
 }
 section p, .article-p{
     line-height: 1.6;
-    font-size: 1rem;
+    font-size: 1.2rem;
     text-align: justify;
-    font-family: "Dancing Script", cursive;
+    font-family: "playfair display", sans-serif;
   font-optical-sizing: auto;
 }
 .sec-img{
@@ -108,7 +108,7 @@ article{
     padding: 1.2rem;
 }
 .bee{
-    width: 250px;
+    width: 200px;
     border-radius: 22px;
     margin-top: -80px;   
 }

@@ -43,7 +43,7 @@ const Upgrade = () => {
             <div className="plans-grid">
                 <div className="plan-card">
                     <h2>Free</h2>
-                    <p className="plan-price">₦0<span>/forever</span></p>
+                    <p className="plan-price">$0<span>/forever</span></p>
                     <ul className="plan-features">
                         <li>✅ Up to 3 scrapbooks</li>
                         <li>✅ Up to 5 members per scrapbook</li>
@@ -61,7 +61,7 @@ const Upgrade = () => {
                 <div className="plan-card pro">
                     <div className="pro-badge">Most Popular</div>
                     <h2>Pro</h2>
-                    <p className="plan-price">$3<span>/month</span></p>
+                    <p className="plan-price">$1<span>/month</span></p>
                     <ul className="plan-features">
                         <li>✅ Unlimited scrapbooks</li>
                         <li>✅ Unlimited members</li>
@@ -75,7 +75,7 @@ const Upgrade = () => {
                     ) : (
                         <button
                             className="plan-btn upgrade"
-                            onClick={() => handlePayment('monthly', 4500, setMonthLoading)}
+                            onClick={() => handlePayment('monthly', 100, setMonthLoading)}
                             disabled={monthLoading}
                         >
                             {monthLoading ? 'Processing...' : 'Upgrade Monthly'}

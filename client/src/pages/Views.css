@@ -199,7 +199,7 @@ footer img{
 }
 @media (max-width : 468px) {
     .top{
-        height: 32vh;
+        height: 35vh;
     }
     .mid{
         opacity: 0;
@@ -214,7 +214,7 @@ footer img{
     .top-header{
         font-size: 1.5em;
          margin-top: -2.em;
-         color: #e0e416ea;
+         color: #9c6a0dea;
     }
     section{
         display: block;

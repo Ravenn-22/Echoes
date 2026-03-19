@@ -11,43 +11,41 @@ const PaymentVerify = () => {
 
     useEffect(() => {
         const verify = async () => {
-            const reference = searchParams.get('reference');
-            if (!reference) {
-                setStatus('failed');
-                return;
-            }
-
-            try {
-                const { data } = await verifyPayment(reference);
-                if (data.isPro) {
-    const storedUser = JSON.parse(localStorage.getItem('user'));
-    const updatedUser = { ...storedUser, isPro: true, proExpiresAt: data.proExpiresAt };
-    localStorage.setItem('user', JSON.stringify(updatedUser));
-    setUser(updatedUser);
-    setStatus('success');
-    setTimeout(() => navigate('/home'), 3000);
-} else {
-    const pendingPrintOrder = localStorage.getItem('pendingPrintOrder');
-    if (pendingPrintOrder) {
-        setStatus('printing');
-        try {
-            await createPrintOrder(JSON.parse(pendingPrintOrder));
-            localStorage.removeItem('pendingPrintOrder');
-            setStatus('printSuccess');
-            setTimeout(() => navigate('/home'), 3000);
-        } catch (error) {
-            setStatus('failed');
-        }
-    } else {
-        setStatus('success');
-        setTimeout(() => navigate('/home'), 3000);
+    const reference = searchParams.get('reference');
+    if (!reference) {
+        setStatus('failed');
+        return;
     }
-}
+
+    try {
+        const pendingPrintOrder = localStorage.getItem('pendingPrintOrder');
+
+        const { data } = await verifyPayment(reference);
+
+        if (pendingPrintOrder) {
+            setStatus('printing');
+            try {
+                await createPrintOrder(JSON.parse(pendingPrintOrder));
+                localStorage.removeItem('pendingPrintOrder');
+                setStatus('printSuccess');
+                setTimeout(() => navigate('/home'), 3000);
             } catch (error) {
                 setStatus('failed');
             }
-        };
-
+        } else if (data.isPro) {
+            const storedUser = JSON.parse(localStorage.getItem('user'));
+            const updatedUser = { ...storedUser, isPro: true, proExpiresAt: data.proExpiresAt };
+            localStorage.setItem('user', JSON.stringify(updatedUser));
+            setUser(updatedUser);
+            setStatus('success');
+            setTimeout(() => navigate('/home'), 3000);
+        } else {
+            setStatus('failed');
+        }
+    } catch (error) {
+        setStatus('failed');
+    }
+};
         verify();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);

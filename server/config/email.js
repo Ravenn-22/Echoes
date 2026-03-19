@@ -76,7 +76,7 @@ const sendPrintConfirmationEmail = async (to, orderId, bookSize, estimatedDelive
         apiKey: process.env.BREVO_API_KEY
     });
 
-    await client.sendTransacEmail({
+    await client.transactionalEmails.sendTransacEmail({
         to: [{ email: to }],
         sender: { name: 'Echoes', email: 'echoesmemo.noreply@gmail.com' },
         subject: 'Your Echoes book is being printed! 📖',

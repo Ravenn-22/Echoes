@@ -61,7 +61,7 @@ const Upgrade = () => {
                 <div className="plan-card pro">
                     <div className="pro-badge">Most Popular</div>
                     <h2>Pro</h2>
-                    <p className="plan-price">$1<span>/month</span></p>
+                    <p className="plan-price">$3<span>/month</span></p>
                     <ul className="plan-features">
                         <li>✅ Unlimited scrapbooks</li>
                         <li>✅ Unlimited members</li>
@@ -75,7 +75,7 @@ const Upgrade = () => {
                     ) : (
                         <button
                             className="plan-btn upgrade"
-                            onClick={() => handlePayment('monthly', 100, setMonthLoading)}
+                            onClick={() => handlePayment('monthly', 4000, setMonthLoading)}
                             disabled={monthLoading}
                         >
                             {monthLoading ? 'Processing...' : 'Upgrade Monthly'}
@@ -98,7 +98,7 @@ const Upgrade = () => {
                     ) : (
                         <button
                             className="plan-btn upgrade"
-                            onClick={() => handlePayment('yearly', 37500, setYearLoading)}
+                            onClick={() => handlePayment('yearly', 34000, setYearLoading)}
                             disabled={yearLoading}
                         >
                             {yearLoading ? 'Processing...' : 'Upgrade Yearly'}

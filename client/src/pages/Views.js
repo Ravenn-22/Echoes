@@ -53,8 +53,8 @@ const Views = ( ) => {
                     <p className="article-p"> 
 Some moments are too precious to remain locked and forgotten 
 in your camera roll <br/>
-Echoes is a private shared scrapbook built for couples, families and friends who want to capture life’s best moments together. Upload memories, stay connected in real time, no matter where life takes you and even print your scrapbook as a beautiful hardcover book delivered to your door
-
+Echoes is a private shared scrapbook built for couples, families and friends who want to capture life’s best moments together. Upload memories, stay connected in real time, print your scrapbook as a beautiful hardcover book and have it delivered to your door
+ no matter where life takes you  
 🌸 <br/>
 So take those pictures, upload those memories and let Echoes keep you and your loves ones connected.
 </p>

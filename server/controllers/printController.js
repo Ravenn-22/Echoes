@@ -21,11 +21,24 @@ const getLuluToken = async () => {
 };
 
 
-const generatePDFWithAPI2PDF = async (html) => {
+const generatePDFWithAPI2PDF = async (html, bookSize) => {
     const a2pClient = new Api2Pdf(process.env.API2PDF_KEY);
+    
+    const pageSizes = {
+        small: { width: '5.83in', height: '8.27in' },
+        standard: { width: '6in', height: '9in' },
+        premium: { width: '8.5in', height: '11in' }
+    };
+
+    const size = pageSizes[bookSize] || pageSizes.premium;
+
     const result = await a2pClient.chromeHtmlToPdf(html, {
         inlinePdf: false,
-        fileName: `echoes_${Date.now()}.pdf`
+        fileName: `echoes_${Date.now()}.pdf`,
+        options: {
+            paperWidth: size.width,
+            paperHeight: size.height
+        }
     });
     return result.FileUrl;
 };
@@ -215,12 +228,12 @@ const createPrintOrder = async (req, res) => {
 
         console.log('Generating interior PDF...');
 const interiorHTML = generateInteriorHTML(scrapbook, memories, dedicationNote);
-const pdfUrl = await generatePDFWithAPI2PDF(interiorHTML);
+const pdfUrl = await generatePDFWithAPI2PDF(interiorHTML, bookSize);
 console.log('Interior PDF URL:', pdfUrl);
 
 console.log('Generating cover PDF...');
 const coverHTML = generateCoverHTML(scrapbook, coverStyle, customCoverUrl);
-const coverPdfUrl = await generatePDFWithAPI2PDF(coverHTML);
+const coverPdfUrl = await generatePDFWithAPI2PDF(coverHTML, bookSize);
 console.log('Cover PDF URL:', coverPdfUrl);
 
        

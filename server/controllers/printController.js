@@ -1,6 +1,7 @@
 const axios = require('axios');
 const Memory = require('../models/Memory');
 const Scrapbook = require('../models/Scrapbook');
+const Api2Pdf = require('api2pdf');
 
 const getLuluToken = async () => {
     const response = await axios.post(
@@ -19,23 +20,14 @@ const getLuluToken = async () => {
     return response.data.access_token;
 };
 
-const generatePDFWithShift = async (html, filename) => {
-    const response = await axios.post(
-        'https://api.pdfshift.io/v3/convert/pdf',
-        {
-            source: html,
-            format: 'A4',
-            margin: { top: '20mm', bottom: '20mm', left: '20mm', right: '20mm' }
-        },
-        {
-            auth: {
-                username: 'api',
-                password: process.env.PDFSHIFT_API_KEY
-            },
-            responseType: 'arraybuffer'
-        }
-    );
-    return Buffer.from(response.data);
+
+const generatePDFWithAPI2PDF = async (html) => {
+    const a2pClient = new Api2Pdf(process.env.API2PDF_KEY);
+    const result = await a2pClient.chromeHtmlToPdf(html, {
+        inlinePdf: false,
+        fileName: `echoes_${Date.now()}.pdf`
+    });
+    return result.FileUrl;
 };
 
 const generateInteriorHTML = (scrapbook, memories, dedicationNote) => {
@@ -222,25 +214,16 @@ const createPrintOrder = async (req, res) => {
         }
 
         console.log('Generating interior PDF...');
-        const interiorHTML = generateInteriorHTML(scrapbook, memories, dedicationNote);
-        const interiorBuffer = await generatePDFWithShift(interiorHTML);
-        console.log('Interior PDF generated');
+const interiorHTML = generateInteriorHTML(scrapbook, memories, dedicationNote);
+const pdfUrl = await generatePDFWithAPI2PDF(interiorHTML);
+console.log('Interior PDF URL:', pdfUrl);
 
-        console.log('Generating cover PDF...');
-        const coverHTML = generateCoverHTML(scrapbook, coverStyle, customCoverUrl);
-        const coverBuffer = await generatePDFWithShift(coverHTML);
-        console.log('Cover PDF generated');
+console.log('Generating cover PDF...');
+const coverHTML = generateCoverHTML(scrapbook, coverStyle, customCoverUrl);
+const coverPdfUrl = await generatePDFWithAPI2PDF(coverHTML);
+console.log('Cover PDF URL:', coverPdfUrl);
 
-        // Store buffers in memory temporarily
-        const pdfId = `pdf_${Date.now()}`;
-        const coverId = `cover_${Date.now()}`;
-        global.tempPDFs = global.tempPDFs || {};
-        global.tempPDFs[pdfId] = interiorBuffer;
-        global.tempPDFs[coverId] = coverBuffer;
-
-        const pdfUrl = `https://echoes-j0mn.onrender.com/temp/${pdfId}`;
-        const coverPdfUrl = `https://echoes-j0mn.onrender.com/temp/${coverId}`;
-
+       
         console.log('Getting Lulu token...');
         const token = await getLuluToken();
 
@@ -294,13 +277,8 @@ const createPrintOrder = async (req, res) => {
             estimatedDelivery: '7-14 business days'
         });
 
-        // Delete temp PDFs after 10 minutes
-        setTimeout(() => {
-            delete global.tempPDFs[pdfId];
-            delete global.tempPDFs[coverId];
-            console.log('Temp PDFs deleted from memory');
-        }, 10 * 60 * 1000);
 
+       
     } catch (error) {
         const errorData = error.response?.data;
         if(Buffer.isBuffer(errorData)){

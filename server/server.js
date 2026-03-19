@@ -32,14 +32,7 @@ app.use(checkProExpiry);
 app.use('/temp', express.static('/tmp'))
 app.use('/api/print', printRoutes);
 
-app.get('/temp/:id', (req, res) => {
-    const buffer = global.tempPDFs?.[req.params.id];
-    if (!buffer) {
-        return res.status(404).send('Not found');
-    }
-    res.setHeader('Content-Type', 'application/pdf');
-    res.send(buffer);
-});
+
 
 io.on('connection', (socket) => {
     console.log('User connected:', socket.id);

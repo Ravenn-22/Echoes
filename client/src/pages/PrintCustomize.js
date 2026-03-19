@@ -41,12 +41,24 @@ const [customCover, setCustomCover] = useState(null);
     const handleAddressChange = (e) => {
         setShippingAddress({ ...shippingAddress, [e.target.name]: e.target.value });
     };
-    useEffect(() => {
+   useEffect(() => {
     const fetchMemories = async () => {
         try {
-            const { data } = await getMemories(id);
-            const memories = data.memories || data;
-            setMemoriesCount(memories.filter(m => m.image).length);
+            setLoadingMemories(true);
+            const { data } = await getMemories(id, 1);
+            const total = data.totalPages || 1;
+            
+            let allMemories = data.memories || [];
+            
+            // Fetch remaining pages if there are more
+            if (total > 1) {
+                for (let page = 2; page <= total; page++) {
+                    const { data: pageData } = await getMemories(id, page);
+                    allMemories = [...allMemories, ...(pageData.memories || [])];
+                }
+            }
+            
+            setMemoriesCount(allMemories.filter(m => m.image).length);
         } catch (error) {
             console.log(error);
         } finally {
@@ -55,7 +67,6 @@ const [customCover, setCustomCover] = useState(null);
     };
     fetchMemories();
 }, [id]);
-
  
 const handleSubmit = async (e) => {
     e.preventDefault();

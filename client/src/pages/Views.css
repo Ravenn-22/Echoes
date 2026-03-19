@@ -57,6 +57,7 @@ section p, .article-p{
     font-size: 1.2rem;
     text-align: justify;
     font-family: "playfair display", sans-serif;
+    font-style: italic;
   font-optical-sizing: auto;
 }
 .sec-img{
@@ -213,7 +214,7 @@ footer img{
     }
     .top-header{
         font-size: 1.5em;
-         margin-top: -2.em;
+         margin-top: -1.5em;
          color: #9c6a0dea;
     }
     section{

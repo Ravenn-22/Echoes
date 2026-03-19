@@ -2,7 +2,7 @@ const axios = require('axios');
 const Memory = require('../models/Memory');
 const Scrapbook = require('../models/Scrapbook');
 const Api2Pdf = require('api2pdf');
-
+const { sendPrintConfirmationEmail } = require('../config/email');
 const getLuluToken = async () => {
     const response = await axios.post(
         'https://api.lulu.com/auth/realms/glasstree/protocol/openid-connect/token',
@@ -54,15 +54,6 @@ const generateInteriorHTML = (scrapbook, memories, dedicationNote) => {
         <div class="page-break"></div>
     `).join('');
 
-    // Add blank pages to meet 24 page minimum
-    const memoryCount = memories.length;
-    const totalPages = memoryCount + 2;
-    let blankPages = '';
-    if (totalPages < 24) {
-        for (let i = 0; i < 24 - totalPages + 1; i++) {
-            blankPages += '<div class="page-break"></div>';
-        }
-    }
 
     return `
         <!DOCTYPE html>
@@ -140,7 +131,6 @@ const generateInteriorHTML = (scrapbook, memories, dedicationNote) => {
             </div>
             <div class="page-break"></div>
             ${memoriesHTML}
-            ${blankPages}
         </body>
         </html>
     `;
@@ -289,6 +279,22 @@ console.log('Cover PDF URL:', coverPdfUrl);
             orderId: printJob.data.id,
             estimatedDelivery: '7-14 business days'
         });
+        res.status(200).json({
+    message: 'Print order created successfully!',
+    orderId: printJob.data.id,
+    estimatedDelivery: '7-14 business days'
+});
+try {
+    await sendPrintConfirmationEmail(
+        req.user.email,
+        printJob.data.id,
+        bookSize,
+        '7-14 business days'
+    );
+    console.log('Confirmation email sent');
+} catch (emailError) {
+    console.error('Email error:', emailError.message);
+}
 
 
        

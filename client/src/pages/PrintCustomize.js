@@ -1,16 +1,22 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import './PrintCustomize.css';
-import { createPrintOrder } from '../services/api';
+import { createPrintOrder, getMemories } from '../services/api';
 import axios from 'axios';
 import compressImage from '../compressImage';
 import {getData} from 'country-list';
+import {useAuth} from '../context/AuthContext'
+
 
 
 const PrintCustomize = () => {
     const { id } = useParams();
-    
+    const { user } = useAuth();
     const navigate = useNavigate();
+    const [success, setSuccess] = useState(false);
+    const [memoriesCount, setMemoriesCount] = useState(0);
+    const [loadingMemories, setLoadingMemories] = useState(true);
+const [orderId, setOrderId] = useState("");
 const [customCover, setCustomCover] = useState(null);
     const [step, setStep] = useState(1);
     const [dedicationNote, setDedicationNote] = useState('');
@@ -35,6 +41,20 @@ const [customCover, setCustomCover] = useState(null);
     const handleAddressChange = (e) => {
         setShippingAddress({ ...shippingAddress, [e.target.name]: e.target.value });
     };
+    useEffect(() => {
+    const fetchMemories = async () => {
+        try {
+            const { data } = await getMemories(id);
+            const memories = data.memories || data;
+            setMemoriesCount(memories.filter(m => m.image).length);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoadingMemories(false);
+        }
+    };
+    fetchMemories();
+}, [id]);
 
  
 const handleSubmit = async (e) => {
@@ -57,8 +77,7 @@ const handleSubmit = async (e) => {
             });
             customCoverUrl = data.imageUrl;
         }
-
-         await createPrintOrder({
+        const {data} =  await createPrintOrder({
             scrapbookId: id,
             dedicationNote,
             coverStyle,
@@ -66,8 +85,9 @@ const handleSubmit = async (e) => {
             shippingAddress,
             customCoverUrl
         });
-
-        navigate(`/scrapbook/${id}`, { state: { printSuccess: true } });
+        setOrderId(data.orderId);
+        setSuccess(true)
+        // navigate(`/scrapbook/${id}`, { state: { printSuccess: true } });
     } catch (error) {
         console.log(error);
         alert('Failed to create print order. Please try again.');
@@ -77,6 +97,29 @@ const handleSubmit = async (e) => {
 };
 
 const countries = getData();
+if (success) {
+    return (
+        <div className="print-container">
+            <nav className="navbar">
+                <div className="navbar-logo" onClick={() => navigate('/home')}>ECHOES</div>
+            </nav>
+            <div className="print-content" style={{ textAlign: 'center' }}>
+                <div className="success-icon">📖</div>
+                <h1 className="print-title">Your book is on its way! 🎉</h1>
+                <p className="print-subtitle">Your scrapbook is being printed and will be shipped to you soon.</p>
+                <div className="order-details">
+                    <p><strong>Order ID:</strong> {orderId}</p>
+                    <p><strong>Estimated Delivery:</strong> 7-14 business days</p>
+                    <p><strong>Shipping to:</strong> {shippingAddress.city}, {shippingAddress.country}</p>
+                </div>
+                <p className="print-hint">A confirmation email has been sent to {user?.email}</p>
+                <button className="print-next-btn" onClick={() => navigate('/home')} style={{ marginTop: '30px' }}>
+                    Back to Home
+                </button>
+            </div>
+        </div>
+    );
+}
 
     return (
         <div className="print-container">
@@ -88,6 +131,11 @@ const countries = getData();
             <div className="print-content">
                 <h1 className="print-title">Print Your Scrapbook 📖</h1>
                 <p className="print-subtitle">Turn your digital memories into a beautiful hardcover book</p>
+                {memoriesCount < 22 && !loadingMemories && (
+    <div className="min-page-warning">
+        ⚠️ You need at least 22 memories with images to print a book. You currently have {memoriesCount}. Add more memories to your scrapbook first!
+    </div>
+)}
 
                 <div className="print-steps">
                     <div className={`step ${step >= 1 ? 'active' : ''}`}>1. Customize</div>
@@ -189,9 +237,10 @@ const countries = getData();
                             </div>
                         </div>
 
-                        <button className="print-next-btn" onClick={() => setStep(2)}>
-                            Next: Shipping Details →
-                        </button>
+                       <button  className="print-next-btn"  onClick={() => setStep(2)} 
+                       disabled={memoriesCount < 22}>
+                       Next: Shipping Details → 
+                       </button>
                     </div>
                 )}
 

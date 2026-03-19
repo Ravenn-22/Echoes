@@ -71,4 +71,30 @@ const sendNewMemoryEmail = async (to, uploaderUsername, memoryTitle, scrapbookTi
     });
 };
 
-module.exports = { sendResetEmail, sendInviteEmail, sendNewMemoryEmail };
+const sendPrintConfirmationEmail = async (to, orderId, bookSize, estimatedDelivery) => {
+    const client = new BrevoClient({
+        apiKey: process.env.BREVO_API_KEY
+    });
+
+    await client.sendTransacEmail({
+        to: [{ email: to }],
+        sender: { name: 'Echoes', email: 'echoesmemo.noreply@gmail.com' },
+        subject: 'Your Echoes book is being printed! 📖',
+        htmlContent: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #232020; color: #fff2d7;">
+                <h1 style="color: #72011f; text-align: center;">Echoes</h1>
+                <h2 style="text-align: center;">Your book is on its way! 📖</h2>
+                <p>Your scrapbook is being printed and will be shipped to you soon.</p>
+                <div style="background: rgba(255,242,215,0.1); border-radius: 10px; padding: 20px; margin: 20px 0;">
+                    <p><strong>Order ID:</strong> ${orderId}</p>
+                    <p><strong>Book Size:</strong> ${bookSize.charAt(0).toUpperCase() + bookSize.slice(1)}</p>
+                    <p><strong>Estimated Delivery:</strong> ${estimatedDelivery}</p>
+                </div>
+                <p>Thank you for using Echoes. Your memories deserve to be held. 🌸</p>
+                <p style="font-size: 0.85rem; color: rgba(255,242,215,0.5);">If you have any questions about your order please reply to this email.</p>
+            </div>
+        `
+    });
+};
+
+module.exports = { sendResetEmail, sendInviteEmail, sendNewMemoryEmail, sendPrintConfirmationEmail };

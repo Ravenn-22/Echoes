@@ -302,7 +302,14 @@ const createPrintOrder = async (req, res) => {
         }, 10 * 60 * 1000);
 
     } catch (error) {
-        console.error('Print order error:', JSON.stringify(error.response?.data, null, 2) || error.message);
+        const errorData = error.response?.data;
+        if(Buffer.isBuffer(errorData)){
+            console.error ("PdfShift error:", Buffer.from(errorData).toString('utf-8'));
+
+        }else{
+
+            console.error('Print order error:', JSON.stringify(error.response?.data, null, 2) || error.message);
+        }
         res.status(500).json({ message: error.response?.data?.detail || error.message });
     }
 };

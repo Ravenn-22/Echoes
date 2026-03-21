@@ -42,18 +42,20 @@ const generatePDFWithAPI2PDF = async (html, bookSize) => {
     });
     return result.FileUrl;
 };
-
 const generateInteriorHTML = (scrapbook, memories, dedicationNote) => {
     const memoriesHTML = memories.map((memory) => `
         <div class="memory-page">
-            <h2>${memory.title}</h2>
-            ${memory.image ? `<img src="${memory.image}" alt="${memory.title}" />` : ''}
-            ${memory.description ? `<p class="description">${memory.description}</p>` : ''}
-            <p class="meta">By ${memory.createdBy?.username} • ${new Date(memory.createdAt).toLocaleDateString()}</p>
+            <div class="polaroid">
+                ${memory.image ? `<img src="${memory.image}" alt="${memory.title}" />` : '<div class="no-image">🌸</div>'}
+                <div class="polaroid-caption">
+                    <h2>${memory.title}</h2>
+                    ${memory.description ? `<p class="description">${memory.description}</p>` : ''}
+                    <p class="meta">By ${memory.createdBy?.username} • ${new Date(memory.createdAt).toLocaleDateString()}</p>
+                </div>
+            </div>
         </div>
         <div class="page-break"></div>
     `).join('');
-
 
     return `
         <!DOCTYPE html>
@@ -61,10 +63,14 @@ const generateInteriorHTML = (scrapbook, memories, dedicationNote) => {
         <head>
             <meta charset="UTF-8">
             <style>
-                body {
-                    font-family: Georgia, serif;
+                * {
                     margin: 0;
                     padding: 0;
+                    box-sizing: border-box;
+                }
+                body {
+                    font-family: Georgia, serif;
+                    background: #FDF6EC;
                     color: #3D2B1F;
                 }
                 .title-page {
@@ -74,63 +80,132 @@ const generateInteriorHTML = (scrapbook, memories, dedicationNote) => {
                     justify-content: center;
                     height: 100vh;
                     text-align: center;
+                    background: #232020;
+                    color: #fff2d7;
+                    padding: 40px;
                 }
                 .title-page h1 {
-                    font-size: 48px;
-                    color: #72011f;
-                    margin-bottom: 20px;
-                }
-                .dedication {
-                    font-size: 18px;
+                    font-size: 52px;
+                    color: #C9627D;
+                    margin-bottom: 25px;
+                    letter-spacing: 3px;
+                }.dedication {
+                    font-size: 20px;
                     font-style: italic;
-                    color: #8B6F61;
-                    max-width: 400px;
+                    color: rgba(255,242,215,0.8);
+                    max-width: 450px;
+                    line-height: 1.8;
+                }
+                .echoes-brand {
+                    font-size: 14px;
+                    color: rgba(255,242,215,0.4);
+                    margin-top: 50px;
+                    letter-spacing: 2px;
                 }
                 .page-break {
                     page-break-after: always;
                 }
                 .memory-page {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    height: 100vh;
+                    background: #FDF6EC;
+                    padding: 30px;
+                }
+                .polaroid {
+                    background: white;
+                    padding: 15px 15px 40px 15px;
+                    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+                    max-width: 90%;
+                    width: 500px;
                     text-align: center;
-                    padding: 20px;
                 }
-                .memory-page h2 {
-                    font-size: 28px;
-                    color: #72011f;
-                    margin-bottom: 20px;
+                .polaroid img {
+                    width: 100%;
+                    height: 380px;
+                    object-fit: cover;
+                    display: block;
                 }
-                .memory-page img {
-                    max-width: 80%;
-                    max-height: 400px;
-                    object-fit: contain;
-                    border-radius: 8px;
-                    margin-bottom: 20px;
+                .no-image {
+                    width: 100%;
+                    height: 380px;
+                    background: #f0e6d3;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 60px;
+                }
+                .polaroid-caption {
+                    padding: 15px 10px 5px 10px;
+                }
+                    .polaroid-caption h2 {
+                    font-size: 22px;
+                    color: #3D2B1F;
+                    margin-bottom: 8px;
+                    font-family: Georgia, serif;
                 }
                 .description {
-                    font-size: 16px;
-                    color: #3D2B1F;
-                    margin-bottom: 10px;
+                    font-size: 14px;
+                    color: #8B6F61;
+                    margin-bottom: 8px;
+                    line-height: 1.6;
                 }
                 .meta {
                     font-size: 12px;
-                    color: #8B6F61;
+                    color: #C9627D;
                     font-style: italic;
                 }
-                .echoes-brand {
-                    font-size: 12px;
-                    color: #8B6F61;
+                .closing-page {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    height: 100vh;
                     text-align: center;
-                    margin-top: 40px;
+                    background: #232020;
+                    color: #fff2d7;
+                    padding: 60px 40px;
+                }
+                .closing-page .echoes-logo {
+                    font-size: 36px;
+                    color: #C9627D;
+                    letter-spacing: 5px;
+                    margin-bottom: 30px;
+                    font-family: Georgia, serif;
+                }
+                .closing-note {
+                    font-size: 16px;
+                    font-style: italic;
+                    color: rgba(255,242,215,0.8);
+                    max-width: 450px;
+                    line-height: 2;
+                    margin-bottom: 30px;
+                }
+                .closing-url {
+                    font-size: 13px;
+                    color: rgba(255,242,215,0.4);
+                    letter-spacing: 2px;
                 }
             </style>
         </head>
         <body>
-            <div class="title-page">
+           <div class="title-page">
                 <h1>${scrapbook.title}</h1>
-                ${dedicationNote ? `<p class="dedication">${dedicationNote}</p>` : ''}
-                <p class="echoes-brand">Made with Echoes 🌸</p>
+                ${dedicationNote ? `<p class="dedication">"${dedicationNote}"</p>` : ''}
+                <p class="echoes-brand">ECHOES · echoesmemo.xyz</p>
             </div>
             <div class="page-break"></div>
+            
             ${memoriesHTML}
+            
+            <div class="closing-page">
+                <p class="echoes-logo">ECHOES</p>
+                <p class="closing-note">This book was made with love on Echoes. 
+                Every memory in these pages was captured, shared and cherished by the 
+                people who matter most to you. Thank you for letting us be part of your story. 🌸</p>
+                <p class="closing-url">echoesmemo.xyz</p>
+            </div>
         </body>
         </html>
     `;

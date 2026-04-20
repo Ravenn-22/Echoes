@@ -20,9 +20,17 @@ const Views = ( ) => {
                     <div className="left-details">
 
                   
-                    <p>Memories are love letters we write to our future selves. They are the soft proof that we lived, that we felt deeply, that ordinary days once shimmered in golden light. A shared laugh, a quiet sunset, a random photo taken at the wrong angle — these are the little treasures that grow sweeter with time. Some moments don’t ask to be remembered — they just quietly become unforgettable. The way someone looked at you when you weren’t paying attention. The laughter that echoed a little too long. The soft stillness of a day that felt ordinary but somehow perfect. </p>
-                    <p>Keeping memories isn’t about holding on to the past; it’s about honoring the moments that shaped your heart. It’s about saving the warmth of a hug, the sparkle in someone’s eyes, the way happiness once felt in your chest. When you look back, those preserved pieces remind you that love existed there — and still does</p>
-                   
+                    <p>
+                         <b>You know that feeling when you’re scrolling through your camera roll at 2am, stumbling on photos from a trip, a birthday, a random Tuesday that somehow became unforgettable?
+ </b><br/>
+ Those moments deserve more than sitting in a folder nobody looks at. <br/>
+<b>Echoes</b> gives you and your people a private shared space to upload photos, drop memories and stay connected — no matter where life takes you.<br/>
+<b>Create a scrapbook</b>, invite your partner, your family or your closest friends and start building something beautiful together.<br/> Every time someone adds a memory everyone gets notified instantly. No more missing moments.
+<br/> <b>And when your scrapbook is full of life? Print it.</b> We turn your digital memories into a real hardcover book — Polaroid-style pages, a personal dedication note and your cover — shipped straight to your door anywhere in the world.
+No ads. No strangers. No algorithm. Just you and the people you love.
+So take those pictures, upload those memories and let Echoes keep you and your loved ones connected. 🌸
+</p>
+                    
                     <span className="logs"> <span className="register"><Link to="/auth">Get Started</Link></span>   </span>
                       </div>
                      
@@ -51,12 +59,10 @@ const Views = ( ) => {
   <div className="art-p">
     
                     <p className="article-p"> 
-Some moments are too precious to remain locked and forgotten 
-in your camera roll <br/>
+ Memories are love letters we write to our future selves. They are the soft proof that we lived, that we felt deeply, that ordinary days once shimmered in golden light. A shared laugh, a quiet sunset, a random photo taken at the wrong angle — these are the little treasures that grow sweeter with time. Some moments don’t ask to be remembered — they just quietly become unforgettable. The way someone looked at you when you weren’t paying attention. The laughter that echoed a little too long. The soft stillness of a day that felt ordinary but somehow perfect. 
 Echoes is a private shared scrapbook built for couples, families and friends who want to capture life’s best moments together. Upload memories, stay connected in real time, print your scrapbook as a beautiful hardcover book and have it delivered to your door
  no matter where life takes you  
 🌸 <br/>
-So take those pictures, upload those memories and let Echoes keep you and your loves ones connected.
 </p>
                     
                     

@@ -189,6 +189,46 @@
    font-family: 'Raleway', sans-serif;
     font-size: 1.8rem;
 }
+.image-upload-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.capsule-image-preview {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.capsule-preview-img {
+    position: relative;
+}
+
+.capsule-preview-img img {
+    width: 100%;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.capsule-preview-img button {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #C9627D;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 @media (max-width: 768px) {
     .capsule-title {
         font-size: 1.8rem;

@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { createCapsule, getCapsules, deleteCapsule } from '../services/api';
 import Toast from '../components/Toast';
+import axios from 'axios';
+import compressImage from '../compressImage';
 import './TimeCapsule.css';
 
 const TimeCapsule = () => {
@@ -17,6 +19,8 @@ const TimeCapsule = () => {
     const [unlockDate, setUnlockDate] = useState('');
     const [memberEmails, setMemberEmails] = useState('');
     const [creating, setCreating] = useState(false);
+    const [images, setImages] = useState([]);
+    const [uploadingImages, setUploadingImages] = useState(false);
     useEffect(() => {
         const fetchCapsules = async () => {
             try {
@@ -40,6 +44,7 @@ const TimeCapsule = () => {
             const { data } = await createCapsule({
                 title,
                 message,
+                images,
                 unlockDate,
                 type: 'capsule',
                 memberEmails: emails
@@ -66,7 +71,31 @@ const TimeCapsule = () => {
             setToast({ message: 'Failed to delete capsule', type: 'error' });
         }
     };
-
+    const handleImageUpload = async(e) =>{
+        const files = Array.from(e.target.files);
+        setUploadingImages(true);
+        try{
+            const uploadUrls = await Promise.all(files.map(async (file) =>{
+                const compressed = await compressImage(file);
+                const formData = new FormData();
+                formData.append('image', compressed);
+                const storedUser = JSON.parse(localStorage.getItem('user'));
+            const { data } = await axios.post('https://echoes-j0mn.onrender.com/api/upload', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: `Bearer ${storedUser.token}`
+                }
+            });
+            return data.imageUrl;
+        }));
+        setImages([...images, ...uploadedUrls]);
+    } catch (error) {
+        setToast({ message: 'Failed to upload images', type: 'error' });
+    } finally {
+        setUploadingImages(false);
+    }
+};
+            
     const getTimeLeft = (unlockDate) => {
         const now = new Date();
         const unlock = new Date(unlockDate);
@@ -127,6 +156,27 @@ const TimeCapsule = () => {
                                 value={memberEmails}
                                 onChange={(e) => setMemberEmails(e.target.value)}
                             />
+                            <div className="image-upload-section">
+    <label>Add Photos (optional)</label>
+    <input
+        type="file"
+        accept="image/*"
+        multiple
+        onChange={handleImageUpload}
+        disabled={uploadingImages}
+    />
+    {uploadingImages && <p style={{ color: '#C9627D', fontFamily: 'Raleway' }}>Uploading images...</p>}
+    {images.length > 0 && (
+        <div className="capsule-image-preview">
+            {images.map((url, index) => (
+                <div key={index} className="capsule-preview-img">
+                    <img src={url} alt={`capsule ${index}`} />
+                    <button type="button" onClick={() => setImages(images.filter((_, i) => i !== index))}>✕</button>
+                </div>
+            ))}
+        </div>
+    )}
+</div>
                             <button type="submit" disabled={creating}>
                                 {creating ? 'Creating...' : 'Lock Capsule 🔒'}
                             </button>

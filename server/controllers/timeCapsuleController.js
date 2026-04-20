@@ -64,8 +64,9 @@ const getCapsules = async (req, res) => {
 
 const getCapsule = async (req, res) => {
     try {
-        const capsule = await TimeCapsule.findById(req.params.id)
+        const capsule = await TimeCapsule.find( {members: req.user._id})
             .populate('createdBy', 'username profilePicture');
+           
 
         if (!capsule) {
             return res.status(404).json({ message: 'Capsule not found' });

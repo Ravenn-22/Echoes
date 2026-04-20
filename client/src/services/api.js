@@ -50,3 +50,8 @@ export const updateProfilePicture = (profilePicture) => API.put('/auth/update-pr
 export const changePassword = (currentPassword, newPassword) => API.put('/auth/change-password', { currentPassword, newPassword });
 export const pinMemory = (id) => API.put(`/memories/${id}/pin`);
 export const createPrintOrder = (orderData) => API.post('/print/create', orderData);
+
+export const createCapsule = (capsuleData) => API.post('/capsules', capsuleData);
+export const getCapsules = () => API.get('/capsules');
+export const getCapsule = (id) => API.get(`/capsules/${id}`);
+export const deleteCapsule = (id) => API.delete(`/capsules/${id}`);

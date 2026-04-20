@@ -97,4 +97,38 @@ const sendPrintConfirmationEmail = async (to, orderId, bookSize, estimatedDelive
     });
 };
 
-module.exports = { sendResetEmail, sendInviteEmail, sendNewMemoryEmail, sendPrintConfirmationEmail };
+const sendCapsuleUnlockEmail = async (to, username, capsuleTitle, type, message) => {
+    const client = new BrevoClient({
+        apiKey: process.env.BREVO_API_KEY
+    });
+
+    const isLetter = type === 'letter';
+
+    await client.sendTransacEmail({
+        to: [{ email: to }],
+        sender: { name: 'Echoes', email: 'echoesmemo.noreply@gmail.com' },
+        subject: isLetter ? `A letter from your past is waiting for you 💌` : `Your time capsule has unlocked! 🎉`,
+        htmlContent: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #232020; color: #fff2d7;">
+                <h1 style="color: #72011f; text-align: center;">Echoes</h1>
+                ${isLetter ? `
+                    <h2 style="text-align: center;">A letter from your past 💌</h2>
+                    <p>Hey ${username}, you wrote yourself a letter and today is the day you get to read it.</p>
+                    <div style="background: rgba(255,242,215,0.1); border-radius: 10px; padding: 20px; margin: 20px 0; font-style: italic; line-height: 1.8;">
+                        ${message}
+                    </div>
+                    <p>How does it feel reading this? We hope it makes you smile 🌸</p>
+                ` : `<h2 style="text-align: center;">Your time capsule is open! 🎉</h2>
+                    <p>Hey ${username}, the time capsule <strong>"${capsuleTitle}"</strong> has finally unlocked!</p>
+                    <p>Head to Echoes to see everything inside 🌸</p>
+                    <div style="text-align: center; margin: 30px 0;">
+                        <a href="${process.env.CLIENT_URL}" style="background: #72011f; color: #fff2d7; padding: 14px 30px; border-radius: 10px; text-decoration: none; font-size: 1rem;">Open Echoes</a>
+                    </div>
+                `}
+                <p style="font-size: 0.85rem; color: rgba(255,242,215,0.5);">You're receiving this because you're part of a time capsule on Echoes 🌸</p>
+            </div>
+        `
+    });
+};
+
+module.exports = { sendResetEmail, sendInviteEmail, sendNewMemoryEmail, sendPrintConfirmationEmail, sendCapsuleUnlockEmail };

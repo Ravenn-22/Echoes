@@ -1,0 +1,200 @@
+ @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Raleway:wght@300;400;600&display=swap');
+
+.capsule-container {
+    min-height: 100vh;
+    background: #232020;
+}
+
+.capsule-content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.capsule-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    color: #fff2d7;
+    margin-bottom: 10px;
+}
+
+.capsule-subtitle {
+    font-family: 'Raleway', sans-serif;
+    color: rgba(255, 242, 215, 0.6);
+    font-size: 1rem;
+    margin-bottom: 35px;
+}
+
+.capsule-create-btn {
+    background: linear-gradient(135deg, #72011f, #C9627D);
+    color: #fff2d7;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 25px;
+    font-family: 'Raleway', sans-serif;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 30px;
+}
+
+.capsule-create-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+.capsule-form {
+    background: rgba(255, 242, 215, 0.05);
+    border-radius: 20px;
+    padding: 30px;
+    margin-bottom: 40px;
+    text-align: left;
+}
+
+.capsule-form form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.capsule-form input,
+.capsule-form textarea {
+    padding: 12px 15px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 242, 215, 0.2);
+    background: rgba(255, 242, 215, 0.05);
+    color: #fff2d7;
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+}
+
+.capsule-form textarea {
+    min-height: 150px;
+    resize: vertical;
+}
+
+.capsule-form input:focus,
+.capsule-form textarea:focus {
+    border-color: #C9627D;
+}
+
+.capsule-form label {
+    font-family: 'Raleway', sans-serif;
+    color: rgba(255, 242, 215, 0.6);
+    font-size: 0.85rem;
+}.capsule-form button[type="submit"] {
+    background: #72011f;
+    color: #fff2d7;
+    border: none;
+    padding: 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: 'Raleway', sans-serif;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.capsule-form button[type="submit"]:hover {
+    background: #C9627D;
+}
+
+.capsule-form button[type="button"] {
+    background: transparent;
+    color: rgba(255, 242, 215, 0.5);
+    border: 1px solid rgba(255, 242, 215, 0.2);
+    padding: 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: 'Raleway', sans-serif;
+    font-size: 1rem;
+}
+
+.capsules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+    text-align: left;
+}
+
+.capsule-card {
+    border-radius: 20px;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: all 0.3s ease;
+}
+
+.capsule-card.locked {
+    background: rgba(255, 242, 215, 0.05);
+    border: 1px solid rgba(255, 242, 215, 0.1);
+}
+
+.capsule-card.unlocked {
+    background: rgba(201, 98, 125, 0.1);
+    border: 1px solid rgba(201, 98, 125, 0.3);
+}
+
+.capsule-icon {
+    font-size: 2.5rem;
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.capsule-card h3 {
+    font-family: 'Playfair Display', serif;
+    color: #fff2d7;
+    font-size: 1.2rem;
+}
+
+.capsule-time {
+    font-family: 'Raleway', sans-serif;
+    color: #C9627D;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.capsule-date {
+    font-family: 'Raleway', sans-serif;
+    color: rgba(255, 242, 215, 0.4);
+    font-size: 0.8rem;
+}
+
+.capsule-message {
+    background: rgba(255, 242, 215, 0.05);
+    border-radius: 10px;padding: 15px;
+    font-family: 'Raleway', sans-serif;
+    color: rgba(255, 242, 215, 0.8);
+    font-size: 0.9rem;
+    line-height: 1.8;
+    font-style: italic;
+    margin-top: 5px;
+}
+
+.capsule-author {
+    font-family: 'Raleway', sans-serif;
+    color: rgba(255, 242, 215, 0.4);
+    font-size: 0.8rem;
+}
+
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.empty-state p {
+    color: rgba(255, 242, 215, 0.4);
+   font-family: 'Raleway', sans-serif;
+    font-size: 1.8rem;
+}
+@media (max-width: 768px) {
+    .capsule-title {
+        font-size: 1.8rem;
+    }
+
+    .capsules-grid {
+        grid-template-columns: 1fr;
+    }
+}

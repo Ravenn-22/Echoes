@@ -13,6 +13,8 @@ const https = require('https');
 const paystackRoutes = require('./routes/paystackRoutes');
 const checkProExpiry = require('./middleware/checkProExpiry');
 const printRoutes = require('./routes/printRoutes');
+const timeCapsuleRoutes = require ('./routes/timeCapsulesRoutes')
+const {checkAndUnlockCapsules} = require('./controllers/timeCapsuleController')
 
 const app = express();
 connectDB();
@@ -31,7 +33,7 @@ app.use('/api/paystack', paystackRoutes);
 app.use(checkProExpiry);
 app.use('/temp', express.static('/tmp'))
 app.use('/api/print', printRoutes);
-
+app.use('/api/capsules', timeCapsuleRoutes)
 
 
 io.on('connection', (socket) => {
@@ -50,11 +52,16 @@ app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).json({ message: err.message });
 });
+setInterval(async () => {
+    console.log("Checking for capsules to unlock...")
+    await checkAndUnlockCapsules();
+}, 60 * 60 * 1000)
 
 const PORT = process.env.PORT || 3007;
 server.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${PORT}`);
 });
+
 
 setInterval(() => {
     https.get('https://echoes-j0mn.onrender.com', (res) => {

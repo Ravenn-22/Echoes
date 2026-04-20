@@ -12,7 +12,8 @@ import NotFound from './pages/NotFound';
 import Upgrade from './pages/Upgrade';
 import PaymentVerify from './pages/PaymentVerify';
 import PrintCustomize from './pages/PrintCustomize';
-
+import TimeCapsule from './pages/TimeCapsule';
+import LetterToSelf from './pages/LetterToSelf'
 
 const PrivateRoute = ({ children }) => {
     const { user } = useAuth();
@@ -36,6 +37,17 @@ function App() {
                     <PrivateRoute>
                         <Scrapbook />
                     </PrivateRoute>
+                } />
+                
+                <Route path="/capsules" element={
+                     <PrivateRoute>
+                         <TimeCapsule />
+                     </PrivateRoute>
+                } />
+                <Route path="/letters" element={
+                     <PrivateRoute>
+                         <LetterToSelf />
+                     </PrivateRoute>
                 } />
                 <Route path="/upgrade" element={
                      <PrivateRoute>

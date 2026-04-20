@@ -310,6 +310,7 @@ const handleChangePassword = async (e) => {
         {menuOpen && (
             <div className="hamburger-menu">
                 <button className="logout-btn" onClick={handleLogout}>🚪 Logout</button>
+                 
                 <button className="change-password-btn" 
                 onClick={() => { setShowChangePassword(!showChangePassword); 
                 setMenuOpen(false); }}>🔒 Change Password</button>
@@ -317,6 +318,16 @@ const handleChangePassword = async (e) => {
         <button className="upgrade-menu-btn" onClick={() => navigate('/upgrade')}>
             ⭐ Upgrade to Pro
         </button>
+    )}
+                {user?.isPro && (
+                    <div className='ints'>
+        <button className="upgrade-menu-btn" onClick={() => navigate('/capsules')}>
+               ⏳ Time capsules
+        </button>
+        <button className="upgrade-menu-btn" onClick={() => navigate('/letters')}>
+               💌 Letters to Future Self
+        </button>
+        </div>
     )}
             </div>
         )}

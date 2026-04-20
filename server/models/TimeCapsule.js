@@ -15,8 +15,9 @@ const timeCapsuleSchema = new mongoose.Schema({
     }],
     scrapbook:{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
+        ref: 'Scrapbook',
+        default: null,
+        required: false
     },
     unlockDate:{
         type: Date,

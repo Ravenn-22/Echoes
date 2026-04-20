@@ -54,7 +54,7 @@ section{
 }
 section p, .article-p{
     line-height: 1.6;
-    font-size: 1.2rem;
+    font-size: 1rem;
     text-align: justify;
     font-family: "playfair display", sans-serif;
     font-style: italic;
@@ -257,7 +257,7 @@ footer img{
     border-radius: 22px;
     width: auto;
 }.article-p{
-         font-size: 1.2rem;
+         font-size: .8rem;
     }
 footer{
     display: flex;
@@ -364,7 +364,7 @@ footer{
     .article-bottom { display: grid; grid-template-columns: 2fr 1fr; padding: 1rem; }
     .messy h1 { font-size: 2.5rem; width: 35rem; }
     .art-p { width: auto; margin-top: 2rem; }
-    .art-p p { font-size: 1.2rem; }
+    .art-p p { font-size: 1rem; }
     footer { height: auto; 
         padding: 1rem; 
     

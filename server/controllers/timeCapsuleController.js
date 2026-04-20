@@ -27,6 +27,7 @@ const createCapsule = async (req, res) => {
 
         res.status(201).json(capsule);
     } catch (error) {
+        console.error('Create a capsule error', error.message)
         res.status(500).json({ message: error.message });
     }
 };
@@ -56,6 +57,7 @@ const getCapsules = async (req, res) => {
         });
         res.status(200).json(safeCapsules);
     } catch (error) {
+       console.error('Create a capsule error', error.message)
         res.status(500).json({ message: error.message });
     }
 };

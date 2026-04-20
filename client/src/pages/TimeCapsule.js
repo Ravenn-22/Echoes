@@ -44,7 +44,7 @@ const TimeCapsule = () => {
             const { data } = await createCapsule({
                 title,
                 message,
-                images,
+                images:images,
                 unlockDate,
                 type: 'capsule',
                 memberEmails: emails
@@ -75,7 +75,7 @@ const TimeCapsule = () => {
         const files = Array.from(e.target.files);
         setUploadingImages(true);
         try{
-            const uploadUrls = await Promise.all(files.map(async (file) =>{
+            const uploadedUrls = await Promise.all(files.map(async (file) =>{
                 const compressed = await compressImage(file);
                 const formData = new FormData();
                 formData.append('image', compressed);

@@ -10,7 +10,43 @@ const PaymentVerify = () => {
     const [status, setStatus] = useState('verifying');
 
     useEffect(() => {
-        const verify = async () => {
+//         const verify = async () => {
+//     const reference = searchParams.get('reference');
+//     if (!reference) {
+//         setStatus('failed');
+//         return;
+//     }
+
+//     try {
+//         const { data } = await verifyPayment(reference);
+//         const pendingPrintOrder = localStorage.getItem('pendingPrintOrder');
+
+
+//         if (pendingPrintOrder) {
+//             setStatus('printing');
+//             try {
+//                 await createPrintOrder(JSON.parse(pendingPrintOrder));
+//                 localStorage.removeItem('pendingPrintOrder');
+//                 setStatus('printSuccess');
+//                 setTimeout(() => navigate('/home'), 3000);
+//             } catch (error) {
+//                 setStatus('failed');
+//             }
+//         } else if (data.isPro) {
+//             const storedUser = JSON.parse(localStorage.getItem('user'));
+//             const updatedUser = { ...storedUser, isPro: true, proExpiresAt: data.proExpiresAt };
+//             localStorage.setItem('user', JSON.stringify(updatedUser));
+//             setUser(updatedUser);
+//             setStatus('success');
+//             setTimeout(() => navigate('/home'), 3000);
+//         } else {
+//             setStatus('failed');
+//         }
+//     } catch (error) {
+//         setStatus('failed');
+//     }
+// };
+const verify = async () => {
     const reference = searchParams.get('reference');
     if (!reference) {
         setStatus('failed');
@@ -18,11 +54,21 @@ const PaymentVerify = () => {
     }
 
     try {
+        const { data } = await verifyPayment(reference);
         const pendingPrintOrder = localStorage.getItem('pendingPrintOrder');
 
-        const { data } = await verifyPayment(reference);
-
-        if (pendingPrintOrder) {
+        // Check payment metadata to determine type
+        if (data.plan && (data.plan === 'monthly' || data.plan === 'yearly')) {
+            // This is a Pro subscription payment
+            const storedUser = JSON.parse(localStorage.getItem('user'));
+            const updatedUser = { ...storedUser, isPro: true, proExpiresAt: data.proExpiresAt };
+            localStorage.setItem('user', JSON.stringify(updatedUser));
+            setUser(updatedUser);
+            localStorage.removeItem('pendingPrintOrder');
+            setStatus('success');
+            setTimeout(() => navigate('/home'), 3000);
+        } else if (pendingPrintOrder) {
+            // This is a print order payment
             setStatus('printing');
             try {
                 await createPrintOrder(JSON.parse(pendingPrintOrder));
@@ -32,13 +78,6 @@ const PaymentVerify = () => {
             } catch (error) {
                 setStatus('failed');
             }
-        } else if (data.isPro) {
-            const storedUser = JSON.parse(localStorage.getItem('user'));
-            const updatedUser = { ...storedUser, isPro: true, proExpiresAt: data.proExpiresAt };
-            localStorage.setItem('user', JSON.stringify(updatedUser));
-            setUser(updatedUser);
-            setStatus('success');
-            setTimeout(() => navigate('/home'), 3000);
         } else {
             setStatus('failed');
         }

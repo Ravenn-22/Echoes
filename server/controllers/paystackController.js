@@ -64,11 +64,12 @@ const verifyPayment = async (req, res) => {
         {$set: {isPro: true, proExpiresAt: expiryDate}}
     )
 
-    res.status(200).json({ message: 'Payment successful!', 
-        isPro: true ,
-        proExpiresAt: req.user.proExpiresAt
-    
-    });
+    res.status(200).json({ 
+    message: 'Payment successful!', 
+    isPro: true,
+    plan: plan,
+    proExpiresAt: expiryDate
+});
 
         } else {
             res.status(400).json({ message: 'Payment failed' });

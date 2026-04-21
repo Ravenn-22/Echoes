@@ -13,6 +13,7 @@ const Upgrade = () => {
     const handlePayment = async (plan, amount, setLoading) => {
         setLoading(true);
         try {
+            localStorage.removeItem('pendingPrintOrder')
             const { data } = await initializePayment(user.email, amount, plan);
             window.location.href = data.data.authorization_url;
         } catch (error) {

@@ -68,7 +68,7 @@ const Upgrade = () => {
                         <li>✅ Unlimited scrapbooks</li>
                         <li>✅ Unlimited members</li>
                         <li>✅ Unlimited memories</li>
-                        <li>✅ Print Out Scrapbook</li>
+                        <li>✅ Physical hardcover book printing</li>
                         <li>✅ Time Capsules</li>
                         <li>✅ Letter To Future Self</li>
                         <li>✅ All core features</li>

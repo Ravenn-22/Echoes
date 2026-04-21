@@ -417,17 +417,18 @@ try {
 });
 
        
-    } catch (error) {
-        const errorData = error.response?.data;
-        if(Buffer.isBuffer(errorData)){
-            console.error ("PdfShift error:", Buffer.from(errorData).toString('utf-8'));
-
-        }else{
-
-            console.error('Print order error:', JSON.stringify(error.response?.data, null, 2) || error.message);
-        }
-        res.status(500).json({ message: error.response?.data?.detail || error.message });
+   } catch (error) {
+    console.error('Full error:', error);
+    console.error('Error message:', error.message);
+    console.error('Error stack:', error.stack);
+    const errorData = error.response?.data;
+    if(Buffer.isBuffer(errorData)){
+        console.error("PDF error:", Buffer.from(errorData).toString('utf-8'));
+    } else {
+        console.error('Print order error:', JSON.stringify(error.response?.data, null, 2) || error.message);
     }
+    res.status(500).json({ message: error.response?.data?.detail || error.message || 'Unknown error' });
+}
 };
 
 module.exports = { createPrintOrder };

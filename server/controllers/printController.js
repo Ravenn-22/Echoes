@@ -42,20 +42,61 @@ const generatePDFWithAPI2PDF = async (html, bookSize) => {
     });
     return result.FileUrl;
 };
-const generateInteriorHTML = (scrapbook, memories, dedicationNote) => {
-    const memoriesHTML = memories.map((memory) => `
-        <div class="memory-page">
-            <div class="polaroid">
-                ${memory.image ? `<img src="${memory.image}" alt="${memory.title}" />` : '<div class="no-image">🌸</div>'}
-                <div class="polaroid-caption">
-                    <h2>${memory.title}</h2>
-                    ${memory.description ? `<p class="description">${memory.description}</p>` : ''}
-                    <p class="meta">By ${memory.createdBy?.username} • ${new Date(memory.createdAt).toLocaleDateString()}</p>
-                </div>
-            </div>
-        </div>
-        <div class="page-break"></div>
-    `).join('');
+const generateInteriorHTML = (scrapbook, memories, dedicationNote, bookStyle = 'polaroid') => {
+    const memoriesHTML = memories.map((memory) => {
+        switch (bookStyle) {
+            case 'magazine':
+                return `
+                    <div class="memory-page magazine-page">
+                        <img src="${memory.image}" alt="${memory.title}" class="magazine-img" />
+                        <div class="magazine-overlay">
+                            <h2>${memory.title}</h2>
+                            ${memory.description ? `<p class="description">${memory.description}</p>` : ''}
+                            <p class="meta">By ${memory.createdBy?.username} • ${new Date(memory.createdAt).toLocaleDateString()}</p>
+                        </div>
+                    </div>
+                    <div class="page-break"></div>
+                `;
+            case 'classic':
+                return `
+                    <div class="memory-page classic-page">
+                        <div class="classic-image">
+                            <img src="${memory.image}" alt="${memory.title}" />
+                        </div>
+                        <div class="classic-text">
+                            <h2>${memory.title}</h2>
+                            ${memory.description ? `<p class="description">${memory.description}</p>` : ''}
+                            <p class="meta">By ${memory.createdBy?.username}</p>
+                            <p class="meta">${new Date(memory.createdAt).toLocaleDateString()}</p>
+                        </div>
+                    </div>
+                    <div class="page-break"></div>
+                `;
+            case 'minimal':
+                return `
+                    <div class="memory-page minimal-page">
+                        <img src="${memory.image}" alt="${memory.title}" class="minimal-img" />
+                        <h2>${memory.title}</h2>
+                        <p class="meta">${new Date(memory.createdAt).toLocaleDateString()}</p>
+                    </div>
+                    <div class="page-break"></div>
+                `;
+            default: // polaroid
+                return `
+                    <div class="memory-page polaroid-page">
+                        <div class="polaroid">
+                            <img src="${memory.image}" alt="${memory.title}" />
+                            <div class="polaroid-caption">
+                                <h2>${memory.title}</h2>
+                                ${memory.description ? `<p class="description">${memory.description}</p>` : ''}
+                                <p class="meta">By ${memory.createdBy?.username} • ${new Date(memory.createdAt).toLocaleDateString()}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="page-break"></div>
+                `;
+        }
+    }).join('');
 
     return `
         <!DOCTYPE html>
@@ -63,16 +104,9 @@ const generateInteriorHTML = (scrapbook, memories, dedicationNote) => {
         <head>
             <meta charset="UTF-8">
             <style>
-                * {
-                    margin: 0;
-                    padding: 0;
-                    box-sizing: border-box;
-                }
-                body {
-                    font-family: Georgia, serif;
-                    background: #FDF6EC;
-                    color: #3D2B1F;
-                }
+                * { margin: 0; padding: 0; box-sizing: border-box; }
+                body { font-family: Georgia, serif; background: #FDF6EC; color: #3D2B1F; }
+                
                 .title-page {
                     display: flex;
                     flex-direction: column;
@@ -89,7 +123,8 @@ const generateInteriorHTML = (scrapbook, memories, dedicationNote) => {
                     color: #C9627D;
                     margin-bottom: 25px;
                     letter-spacing: 3px;
-                }.dedication {
+                }
+                .dedication {
                     font-size: 20px;
                     font-style: italic;
                     color: rgba(255,242,215,0.8);
@@ -102,14 +137,14 @@ const generateInteriorHTML = (scrapbook, memories, dedicationNote) => {
                     margin-top: 50px;
                     letter-spacing: 2px;
                 }
-                .page-break {
-                    page-break-after: always;
-                }
-                .memory-page {
+                .page-break { page-break-after: always; }
+                .memory-page { height: 100vh; }
+
+            
+                .polaroid-page {
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    height: 100vh;
                     background: #FDF6EC;
                     padding: 30px;
                 }
@@ -117,8 +152,8 @@ const generateInteriorHTML = (scrapbook, memories, dedicationNote) => {
                     background: white;
                     padding: 15px 15px 40px 15px;
                     box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-                    max-width: 90%;
-                    width: 500px;
+                    max-width: 500px;
+                    width: 100%;
                     text-align: center;
                 }
                 .polaroid img {
@@ -127,35 +162,72 @@ const generateInteriorHTML = (scrapbook, memories, dedicationNote) => {
                     object-fit: cover;
                     display: block;
                 }
-                .no-image {
+                .polaroid-caption { padding: 15px 10px 5px 10px; }
+                .polaroid-caption h2 { font-size: 22px; color: #3D2B1F; margin-bottom: 8px; }
+
+              
+                .magazine-page {
+                    position: relative;
+                    overflow: hidden;
+                }
+                .magazine-img {
                     width: 100%;
-                    height: 380px;
-                    background: #f0e6d3;
+                    height: 100%;
+                    object-fit: cover;
+                    display: block;
+                }
+                .magazine-overlay {
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    background: linear-gradient(transparent, rgba(35,32,32,0.92));
+                    padding: 60px 40px 40px;
+                    color: #fff2d7;
+                }
+                .magazine-overlay h2 { font-size: 32px; margin-bottom: 10px; }
+
+                
+                .classic-page {
                     display: flex;
+                    background: white;
+                }
+                .classic-image { width: 55%; height: 100vh; }
+                .classic-image img { width: 100%; height: 100%; object-fit: cover; }
+                .classic-text {
+                    width: 45%;
+                    padding: 60px 40px;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    gap: 15px;
+                }
+                .classic-text h2 { font-size: 28px; color: #3D2B1F; }
+
+                
+                .minimal-page {
+                    display: flex;
+                    flex-direction: column;
                     align-items: center;
                     justify-content: center;
-                    font-size: 60px;
+                    background: white;
+                    padding: 40px;
+                    gap: 20px;
+                    text-align: center;
                 }
-                .polaroid-caption {
-                    padding: 15px 10px 5px 10px;
+                .minimal-img {
+                    width: 100%;
+                    max-height: 75vh;
+                    object-fit: cover;
+                    border-radius: 4px;
                 }
-                    .polaroid-caption h2 {
-                    font-size: 22px;
-                    color: #3D2B1F;
-                    margin-bottom: 8px;
-                    font-family: Georgia, serif;
-                }
-                .description {
-                    font-size: 14px;
-                    color: #8B6F61;
-                    margin-bottom: 8px;
-                    line-height: 1.6;
-                }
-                .meta {
-                    font-size: 12px;
-                    color: #C9627D;
-                    font-style: italic;
-                }
+                .minimal-page h2 { font-size: 26px; color: #3D2B1F; }
+
+                /* Shared */
+                .description { font-size: 15px; color: #8B6F61; line-height: 1.7; margin-bottom: 8px; }
+                .meta { font-size: 13px; color: #C9627D; font-style: italic; }
+
+                /* Closing */
                 .closing-page {
                     display: flex;
                     flex-direction: column;
@@ -167,50 +239,28 @@ const generateInteriorHTML = (scrapbook, memories, dedicationNote) => {
                     color: #fff2d7;
                     padding: 60px 40px;
                 }
-                .closing-page .echoes-logo {
-                    font-size: 36px;
-                    color: #C9627D;
-                    letter-spacing: 5px;
-                    margin-bottom: 30px;
-                    font-family: Georgia, serif;
-                }
-                .closing-note {
-                    font-size: 16px;
-                    font-style: italic;
-                    color: rgba(255,242,215,0.8);
-                    max-width: 450px;
-                    line-height: 2;
-                    margin-bottom: 30px;
-                }
-                .closing-url {
-                    font-size: 13px;
-                    color: rgba(255,242,215,0.4);
-                    letter-spacing: 2px;
-                }
+                .closing-logo { font-size: 36px; color: #C9627D; letter-spacing: 5px; margin-bottom: 30px; }
+                .closing-note { font-size: 16px; font-style: italic; color: rgba(255,242,215,0.8); max-width: 450px; line-height: 2; margin-bottom: 30px; }
+                .closing-url { font-size: 13px; color: rgba(255,242,215,0.4); letter-spacing: 2px; }
             </style>
         </head>
         <body>
-           <div class="title-page">
+            <div class="title-page">
                 <h1>${scrapbook.title}</h1>
                 ${dedicationNote ? `<p class="dedication">"${dedicationNote}"</p>` : ''}
                 <p class="echoes-brand">ECHOES · echoesmemo.xyz</p>
             </div>
             <div class="page-break"></div>
-            
             ${memoriesHTML}
-            
             <div class="closing-page">
-                <p class="echoes-logo">ECHOES</p>
-                <p class="closing-note">This book was made with love on Echoes. 
-                Every memory in these pages was captured, shared and cherished by the 
-                people who matter most to you. Thank you for letting us be part of your story. 🌸</p>
+                <p class="closing-logo">ECHOES</p>
+                <p class="closing-note">This book was made with love on Echoes. Every memory in these pages was captured, shared and cherished by the people who matter most to you. Thank you for letting us be part of your story. 🌸</p>
                 <p class="closing-url">echoesmemo.xyz</p>
             </div>
         </body>
         </html>
     `;
 };
-
 const generateCoverHTML = (scrapbook, coverStyle, customCoverUrl) => {
     const colors = {
         classic: '#232020',
@@ -282,7 +332,7 @@ const createPrintOrder = async (req, res) => {
     console.log('Print Order started');
     console.log('Request body:', req.body);
     try {
-        const { scrapbookId, dedicationNote, coverStyle, bookSize, shippingAddress, customCoverUrl } = req.body;
+        const { scrapbookId, dedicationNote, coverStyle, bookSize, shippingAddress, customCoverUrl, bookStyle } = req.body;
 
         const scrapbook = await Scrapbook.findById(scrapbookId);
         const memories = await Memory.find({ scrapbook: scrapbookId }).populate('createdBy', 'username');
@@ -292,7 +342,7 @@ const createPrintOrder = async (req, res) => {
         }
 
         console.log('Generating interior PDF...');
-const interiorHTML = generateInteriorHTML(scrapbook, memories, dedicationNote);
+const interiorHTML = generateInteriorHTML(scrapbook, memories, dedicationNote, bookStyle || 'polaroid');
 const pdfUrl = await generatePDFWithAPI2PDF(interiorHTML, bookSize);
 console.log('Interior PDF URL:', pdfUrl);
 

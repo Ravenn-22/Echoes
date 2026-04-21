@@ -332,6 +332,25 @@
     margin-bottom: 25px;
     text-align: center;
 }
+.preview-toggle-btn {
+    background: transparent;
+    border: 1px solid rgba(201, 98, 125, 0.4);
+    color: #3D2B1F;
+    padding: 10px 25px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.preview-toggle-btn:hover {
+    background: #C9627D;
+    color: white;
+    border-color: #C9627D;
+}
 @media (max-width: 768px) {
     .options-grid {
         grid-template-columns: 1fr;

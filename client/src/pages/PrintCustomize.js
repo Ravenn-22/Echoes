@@ -5,7 +5,9 @@ import {  getMemories, initializePayment } from '../services/api';
 import axios from 'axios';
 import compressImage from '../compressImage';
 import {getData} from 'country-list';
-import {useAuth} from '../context/AuthContext'
+import {useAuth} from '../context/AuthContext';
+import BookPreview from '../components/BookPreview';
+
 
 
 
@@ -15,6 +17,9 @@ const PrintCustomize = () => {
     const navigate = useNavigate();
     const [memoriesCount, setMemoriesCount] = useState(0);
     const [loadingMemories, setLoadingMemories] = useState(true);
+    const [showPreview, setShowPreview] = useState(false);
+const [allMemories, setAllMemories] = useState([]);
+const [bookStyle, setBookStyle] = useState('polaroid');
 
 const [customCover, setCustomCover] = useState(null);
     const [step, setStep] = useState(1);
@@ -66,6 +71,24 @@ const [customCover, setCustomCover] = useState(null);
     };
     fetchMemories();
 }, [id]);
+useEffect(() => {
+    const fetchAllMemories = async () => {
+        try {
+            const { data } = await getMemories(id, 1);
+            let memories = data.memories || [];
+            if (data.totalPages > 1) {
+                for (let page = 2; page <= data.totalPages; page++) {
+                    const { data: pageData } = await getMemories(id, page);
+                    memories = [...memories, ...(pageData.memories || [])];
+                }
+            }
+            setAllMemories(memories);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    fetchAllMemories();
+}, [id]);
  
 const handleSubmit = async (e) => {
     e.preventDefault();
@@ -102,6 +125,7 @@ const handleSubmit = async (e) => {
             dedicationNote,
             coverStyle,
             bookSize,
+            bookStyle,
             shippingAddress,
             customCoverUrl
         }));
@@ -134,7 +158,22 @@ const countries = getData();
 )}
 
                 <div className="print-steps">
-                    <div className={`step ${step >= 1 ? 'active' : ''}`}>1. Customize</div>
+                    <div className={`step ${step >= 1 ? 'active' : ''}`}>1. Customize <button
+    type="button"
+    className="preview-toggle-btn"
+    onClick={() => setShowPreview(!showPreview)}
+>
+    {showPreview ? '👁️ Hide Preview' : '👁️ Preview your book'}
+</button>
+
+{showPreview && (
+    <BookPreview
+        scrapbook={{ title: 'Your Scrapbook' }}
+        memories={allMemories}
+        dedicationNote={dedicationNote}
+        onStyleChange={(style) => setBookStyle(style)}
+    />
+)}</div>
                     <div className={`step ${step >= 2 ? 'active' : ''}`}>2. Shipping</div>
                     <div className={`step ${step >= 3 ? 'active' : ''}`}>3. Review & Pay</div>
                 </div>

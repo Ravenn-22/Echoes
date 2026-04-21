@@ -1,0 +1,346 @@
+.book-preview {
+    background: #FDF6EC;
+    border-radius: 20px;
+    padding: 25px;
+    margin-top: 20px;
+}
+
+.preview-heading {
+    font-family: 'Playfair Display', serif;
+    color: #3D2B1F;
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.style-toggle {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.style-btn {
+    background: transparent;
+    border: 1px solid rgba(201, 98, 125, 0.3);
+    color: #3D2B1F;
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+}
+
+.style-btn:hover {
+    border-color: #C9627D;
+    color: #C9627D;
+}
+
+.style-btn.active {
+    background: #72011f;
+    color: #fff2d7;
+    border-color: #72011f;
+}
+
+.preview-book {
+    width: 100%;
+    height: 400px;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+    margin-bottom: 15px;
+}
+
+/* Title Page */
+.preview-title-page {
+    height: 100%;
+    background: #232020;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 30px;
+}
+
+.preview-title-page h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: #C9627D;
+    margin-bottom: 20px;
+    letter-spacing: 2px;
+}
+
+.preview-dedication {
+    font-family: 'Raleway', sans-serif;
+    font-size: 1rem;
+    font-style: italic;
+    color: rgba(255, 242, 215, 0.7);
+    max-width: 350px;
+    line-height: 1.8;
+    margin-bottom: 30px;
+}
+
+.preview-brand {
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.75rem;
+    color: rgba(255, 242, 215, 0.3);
+    letter-spacing: 2px;
+}
+
+/* Polaroid Style */
+.preview-polaroid {
+    background: #FDF6EC;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 20px;
+}
+
+.polaroid-frame {
+    background: white;
+    padding: 12px 12px 35px 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    max-width: 280px;
+    width: 100%;
+}
+
+.polaroid-frame img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+}
+
+.polaroid-caption {
+    padding: 10px 5px 0 5px;
+    text-align: center;
+}
+
+.polaroid-caption h3 {
+    font-family: 'Playfair Display', serif;
+    color: #3D2B1F;
+    font-size: 1rem;
+    margin-bottom: 5px;
+}
+
+.polaroid-caption p {
+    font-family: 'Raleway', sans-serif;
+    color: #8B6F61;
+    font-size: 0.75rem;
+}
+
+/* Magazine Style */
+.preview-magazine {
+    position: relative;
+    height: 100%;
+}
+
+.preview-magazine img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.magazine-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(35, 32, 32, 0.9));
+    padding: 30px 20px 20px;
+    color: #fff2d7;
+}
+
+.magazine-overlay h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    margin-bottom: 5px;
+}
+
+.magazine-overlay p {
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.8rem;
+    color: rgba(255, 242, 215, 0.7);
+}
+
+/* Classic Style */
+.preview-classic {
+    display: flex;
+    height: 100%;
+    background: white;
+}
+
+.classic-image {
+    width: 55%;
+    height: 100%;
+}
+
+.classic-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.classic-text {
+    width: 45%;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+}
+
+.classic-text h3 {
+    font-family: 'Playfair Display', serif;
+    color: #3D2B1F;
+    font-size: 1.2rem;
+}
+
+.classic-text p {
+    font-family: 'Raleway', sans-serif;
+    color: #8B6F61;
+    font-size: 0.85rem;
+    line-height: 1.6;
+}
+
+/* Minimal Style */
+.preview-minimal {
+    background: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 20px;
+    gap: 15px;
+}
+
+.preview-minimal img {
+    width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.preview-minimal h3 {
+    font-family: 'Playfair Display', serif;
+    color: #3D2B1F;
+    font-size: 1.2rem;
+    text-align: center;
+}
+
+/* Closing Page */
+.preview-closing-page {
+    height: 100%;
+    background: #232020;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 30px;
+    gap: 15px;
+}
+
+.preview-closing-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: #C9627D;
+    letter-spacing: 5px;
+}
+
+.preview-closing-note {
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.85rem;
+    font-style: italic;
+    color: rgba(255, 242, 215, 0.7);
+    max-width: 350px;
+    line-height: 1.8;
+}
+
+.preview-closing-url {
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.75rem;
+    color: rgba(255, 242, 215, 0.3);
+    letter-spacing: 2px;
+}
+
+/* Navigation */
+.preview-navigation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+
+.preview-nav-btn {
+    background: transparent;
+    border: 1px solid rgba(201, 98, 125, 0.4);
+    color: #3D2B1F;
+    padding: 8px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+}
+
+.preview-nav-btn:hover:not(:disabled) {
+    background: #C9627D;
+    color: white;
+    border-color: #C9627D;
+}
+
+.preview-nav-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.preview-page-count {
+    font-family: 'Raleway', sans-serif;
+    color: #8B6F61;
+    font-size: 0.85rem;
+}
+
+.preview-meta {
+    font-family: 'Raleway', sans-serif;
+    color: #C9627D !important;
+    font-size: 0.75rem !important;
+    font-style: italic;
+}
+
+/* Page styles */
+.preview-page {
+    width: 100%;
+    height: 100%;
+}
+
+@media (max-width: 768px) {
+    .preview-classic {
+        flex-direction: column;
+    }
+
+    .classic-image {
+        width: 100%;
+        height: 60%;
+    }
+
+    .classic-text {
+        width: 100%;
+        height: 40%;
+        padding: 15px;
+    }
+
+    .style-toggle {
+        gap: 5px;
+    }
+
+    .style-btn {
+        font-size: 0.75rem;
+        padding: 6px 10px;
+    }
+}

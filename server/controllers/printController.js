@@ -331,6 +331,7 @@ const generateCoverHTML = (scrapbook, coverStyle, customCoverUrl) => {
 const createPrintOrder = async (req, res) => {
     console.log('Print Order started');
     console.log('Request body:', req.body);
+    console.log("Book Style:", req.body.bookStyle)
     try {
         const { scrapbookId, dedicationNote, coverStyle, bookSize, shippingAddress, customCoverUrl, bookStyle } = req.body;
 

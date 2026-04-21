@@ -51,6 +51,7 @@ const Upgrade = () => {
                         <li>✅ All core features</li>
                         <li>❌ Unlimited scrapbooks</li>
                         <li>❌ Unlimited memories</li>
+                        <li>❌ Print Out Scrapbook</li>
                         <li>❌ Priority support</li>
                     </ul>
                     <button className="plan-btn current" disabled>
@@ -66,6 +67,9 @@ const Upgrade = () => {
                         <li>✅ Unlimited scrapbooks</li>
                         <li>✅ Unlimited members</li>
                         <li>✅ Unlimited memories</li>
+                        <li>✅ Print Out Scrapbook</li>
+                        <li>✅ Time Capsules</li>
+                        <li>✅ Letter To Future Self</li>
                         <li>✅ All core features</li>
                         <li>✅ Priority support</li>
                         <li>✅ Early access to new features</li>

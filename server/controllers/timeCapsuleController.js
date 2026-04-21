@@ -6,7 +6,7 @@ const createCapsule = async (req, res) => {
     try {
         const { title, message, images, scrapbook, unlockDate, type, memberEmails } = req.body;
 
-        // Find members by email
+       
         let members = [req.user._id];
         if (memberEmails && memberEmails.length > 0) {
             const foundUsers = await User.find({ email: { $in: memberEmails } });
@@ -40,7 +40,7 @@ const getCapsules = async (req, res) => {
         .populate('createdBy', 'username profilePicture')
         .sort({ unlockDate: 1 });
 
-        // Hide contents of locked capsules
+      
         const safeCapsules = capsules.map(capsule => {
             if (!capsule.isUnlocked && capsule.type === 'capsule') {
                 return {
@@ -111,14 +111,15 @@ const checkAndUnlockCapsules = async () => {
     try {
         const capsulesToUnlock = await TimeCapsule.find({
             isUnlocked: false,
-            unlockDate: { $lte: new Date() }
+            unlockDate: { $lte: new Date() },
+            createdBy: {$exists: true}
         }).populate('members', 'email username').populate('createdBy', 'username');
 
         for (const capsule of capsulesToUnlock) {
             capsule.isUnlocked = true;
             await capsule.save();
 
-            // Send unlock email to all members
+           
             for (const member of capsule.members) {
                 try {
                     await sendCapsuleUnlockEmail(

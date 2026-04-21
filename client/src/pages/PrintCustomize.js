@@ -158,7 +158,11 @@ const countries = getData();
 )}
 
                 <div className="print-steps">
-                    <div className={`step ${step >= 1 ? 'active' : ''}`}>1. Customize <button
+                    <div className={`step ${step >= 1 ? 'active' : ''}`}>1. Customize </div>
+                    <div className={`step ${step >= 2 ? 'active' : ''}`}>2. Shipping</div>
+                    <div className={`step ${step >= 3 ? 'active' : ''}`}>3. Review & Pay</div>
+                </div>
+                <button
     type="button"
     className="preview-toggle-btn"
     onClick={() => setShowPreview(!showPreview)}
@@ -173,10 +177,7 @@ const countries = getData();
         dedicationNote={dedicationNote}
         onStyleChange={(style) => setBookStyle(style)}
     />
-)}</div>
-                    <div className={`step ${step >= 2 ? 'active' : ''}`}>2. Shipping</div>
-                    <div className={`step ${step >= 3 ? 'active' : ''}`}>3. Review & Pay</div>
-                </div>
+)}
 
                 {step === 1 && (
                     <div className="print-step-content">
@@ -367,6 +368,11 @@ const countries = getData();
                                     <span>Dedication Note</span>
                                     <span>{dedicationNote ? '✅ Added' : '❌ None'}</span>
                                 </div>
+                                <div className="summary-row">
+                                    <span>Book Style</span>
+                                    <span>{bookStyle.charAt(0).toUpperCase() + bookStyle.slice(1)}</span>
+                                </div>
+
                                 <div className="summary-row total">
                                     <span>Total</span>
                                     <span>${prices[bookSize]}</span>

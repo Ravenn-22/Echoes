@@ -308,10 +308,7 @@ const generateCoverHTML = (scrapbook, coverStyle, customCoverUrl,customWidth = n
         <head>
             <meta charset="UTF-8">
             <style>
-            @page {
-    size: ${bookSize === 'small' ? '5.83in 8.27in' : bookSize === 'premium' ? '8.5in 11in' : '6in 9in'};
-    margin: 0;
-}
+ 
                 body {
                     margin: 0;
                     padding: 0;

@@ -271,7 +271,7 @@ const generateInteriorHTML = (scrapbook, memories, dedicationNote, bookStyle = '
         </html>
     `;
 };
-const generateCoverHTML = (scrapbook, coverStyle, customCoverUrl,customWidth = null, customHeight = null) => {
+const generateCoverHTML = (scrapbook, coverStyle,bookCoverSize, customCoverUrl,customWidth = null, customHeight = null) => {
     const colors = {
         classic: '#232020',
         modern: '#72011f',
@@ -293,7 +293,7 @@ const generateCoverHTML = (scrapbook, coverStyle, customCoverUrl,customWidth = n
         premium: { width: 17.39, height: 11.25 }
     };
 
-    const size = coverSizes[bookSize] || coverSizes.standard;
+    const size = coverSizes[bookCoverSize] || coverSizes.standard;
     const width = customWidth || size.width;
     const height = customHeight || size.height;
 

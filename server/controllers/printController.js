@@ -396,15 +396,13 @@ const coverDimensions = await axios.post(
         }
     }
 );
-const widthC =  coverDimensions.data.width/72;
-const heightC =  coverDimensions.data.height/72;
 
 
-const coverWidth = `${widthC}in`
-const coverHeight = `${heightC}in`
+const coverWidth = coverDimensions.data.width/72;
+const coverHeight = coverDimensions.data.width/72;;
 
 console.log('Cover dimensions:', JSON.stringify(coverDimensions.data,null,2));
-console.log('Cover dimensions in inches:', widthC, heightC);
+console.log('Cover dimensions in inches:', coverWidth, coverHeight);
 
 
 console.log('Generating cover PDF...');

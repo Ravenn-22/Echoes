@@ -32,7 +32,7 @@ const generatePDFWithAPI2PDF = async (html, bookSize, customWidth = null, custom
 
     const size = pageSizes[bookSize] || pageSizes.standard;
     const width = customWidth || size.width;
-    const Height = customHeight || size.height;
+    const height = customHeight || size.height;
 
     const result = await a2pClient.chromeHtmlToPdf(html, {
         inlinePdf: false,

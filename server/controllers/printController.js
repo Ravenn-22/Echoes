@@ -25,9 +25,9 @@ const generatePDFWithAPI2PDF = async (html, bookSize, customWidth = null, custom
     const a2pClient = new Api2Pdf(process.env.API2PDF_KEY);
     
     const pageSizes = {
-        small: { width: 6.08, height: 8.52 },
-        standard: { width: 6.25, height: 9.25 },
-        premium: { width: 8.75, height: 11.25 }
+        small: { width: 5.83, height: 8.27 },
+        standard: { width: 6, height: 9 },
+        premium: { width: 8.5, height: 11 }
     };
 
     const size = pageSizes[bookSize] || pageSizes.standard;
@@ -392,6 +392,11 @@ console.log('Generating cover PDF...');
 const coverHTML = generateCoverHTML(scrapbook, coverStyle, customCoverUrl);
 const coverPdfUrl = await generatePDFWithAPI2PDF(coverHTML, bookSize, coverWidth, coverHeight);
 console.log('Cover PDF URL:', coverPdfUrl);
+console.log('PDF URL:', result.FileUrl);
+console.log('PDF options used:', {
+    paperWidth: width,
+    paperHeight: height
+});
  
         console.log('Creating Lulu print job...');
         const printJob = await axios.post(

@@ -372,8 +372,7 @@ const coverDimensions = await axios.post(
     'https://api.lulu.com/cover-dimensions/',
     {
         pod_package_id: podPackageIds[bookSize],
-        interior_page_count: memories.length + 2,
-        unit: 'IN'
+        interior_page_count: memories.length + 2
     },
     {
         headers: {

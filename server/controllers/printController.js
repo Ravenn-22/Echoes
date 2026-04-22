@@ -22,41 +22,45 @@ const getLuluToken = async () => {
 
 
 const generatePDFWithAPI2PDF = async (html, bookSize, customWidth = null, customHeight = null) => {
-    const a2pClient = new Api2Pdf(process.env.API2PDF_KEY);
-    
     const pageSizes = {
         small: { width: 5.83, height: 8.27 },
-        standard: { width: 6, height: 9 },
-        premium: { width: 8.5, height: 11 }
+        standard: { width: 6.0, height: 9.0 },
+        premium: { width: 8.5, height: 11.0 }
     };
 
     const size = pageSizes[bookSize] || pageSizes.standard;
     const width = customWidth || size.width;
     const height = customHeight || size.height;
 
-    const result = await a2pClient.chromeHtmlToPdf(html, {
-        inlinePdf: false,
-        fileName: `echoes_${Date.now()}.pdf`,
-        options: {
-            paperWidth: `${width}`,
-            paperHeight: `${height}`,
-            marginTop: '0',
-            marginBottom: '0' ,
-            marginLeft: '0',
-            marginRight: '0',
-            printBackground: true,
+    const response = await axios.post(
+        'https://v2.api2pdf.com/chrome/pdf/html',
+        {
+            html: html,
+            inlinePdf: false,
+            fileName: `echoes_${Date.now()}.pdf`,
+            options: {
+                paperWidth: width,
+                paperHeight: height,
+                marginTop: 0,
+                marginBottom: 0,
+                marginLeft: 0,
+                marginRight: 0,
+                printBackground: true
+            }
+        },
+        {
+            headers: {
+                'Authorization': process.env.API2PDF_KEY,
+                'Content-Type': 'application/json'
+            }
         }
-    });
-    console.log('PDF URL:', result.FileUrl);
-console.log('PDF options used:', {
-    paperWidth: width,
-    paperHeight: height
-});
- 
-    if(!result.Success){
-        throw new Error(result.Error || 'PDF generation failed');
+    );
+
+    if (!response.data.Success) {
+        throw new Error(response.data.Error || 'PDF generation failed');
     }
-    return result.FileUrl;
+
+    return response.data.FileUrl;
 };
 const generateInteriorHTML = (scrapbook, memories, dedicationNote, bookStyle = 'polaroid') => {
     const memoriesHTML = memories.map((memory) => {

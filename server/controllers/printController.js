@@ -25,9 +25,9 @@ const generatePDFWithAPI2PDF = async (html, bookSize, customWidth = null, custom
     const a2pClient = new Api2Pdf(process.env.API2PDF_KEY);
     
     const pageSizes = {
-        small: { width: 5.83, height: 8.27 },
-        standard: { width: 6, height: 9 },
-        premium: { width: 8.5, height: 11 }
+        small: { width: 6.08, height: 8.52 },
+        standard: { width: 6.25, height: 9.25 },
+        premium: { width: 8.75, height: 11.25 }
     };
 
     const size = pageSizes[bookSize] || pageSizes.standard;

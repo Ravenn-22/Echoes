@@ -392,7 +392,7 @@ console.log('Generating cover PDF...');
 const coverHTML = generateCoverHTML(scrapbook, coverStyle, customCoverUrl);
 const coverPdfUrl = await generatePDFWithAPI2PDF(coverHTML, bookSize, coverWidth, coverHeight);
 console.log('Cover PDF URL:', coverPdfUrl);
-console.log('PDF URL:', result.FileUrl);
+// console.log('PDF URL:', result.FileUrl);
 console.log('PDF options used:', {
     paperWidth: width,
     paperHeight: height

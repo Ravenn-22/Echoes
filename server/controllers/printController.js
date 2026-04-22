@@ -38,12 +38,12 @@ const generatePDFWithAPI2PDF = async (html, bookSize, customWidth = null, custom
         inlinePdf: false,
         fileName: `echoes_${Date.now()}.pdf`,
         options: {
-            paperWidth: width,
-            paperHeight: height,
-            marginTop: 0,
-            marginBottom: 0 ,
-            marginLeft: 0,
-            marginRight: 0,
+            paperWidth: `${width}`,
+            paperHeight: `${height}`,
+            marginTop: '0',
+            marginBottom: '0' ,
+            marginLeft: '0',
+            marginRight: '0',
             printBackground: true,
         }
     });

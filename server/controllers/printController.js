@@ -45,7 +45,8 @@ const generatePDFWithAPI2PDF = async (html, bookSize, customWidth = null, custom
                 marginBottom: 0,
                 marginLeft: 0,
                 marginRight: 0,
-                printBackground: true
+                printBackground: true,
+                scale:1
             }
         },
         {

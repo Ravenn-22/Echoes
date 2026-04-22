@@ -400,8 +400,8 @@ const coverDimensions = await axios.post(
     }
 );
 
-const coverWidth = coverDimensions.data.width/72;
-const coverHeight = coverDimensions.data.height/72;
+const coverWidth = coverDimensions.data.width;
+const coverHeight = coverDimensions.data.height;
 console.log('Cover dimensions:', JSON.stringify(coverDimensions.data,null,2));
 
 console.log('Cover dimensions in inches:', coverWidth, coverHeight);

@@ -373,7 +373,8 @@ const coverDimensions = await axios.post(
     'https://api.lulu.com/cover-dimensions/',
     {
         pod_package_id: podPackageIds[bookSize],
-        interior_page_count: memories.length + 2
+        interior_page_count: memories.length + 2,
+        unit: "pt"
     },
     {
         headers: {
@@ -383,8 +384,8 @@ const coverDimensions = await axios.post(
     }
 );
 
-const coverWidth = coverDimensions.data.width_in;
-const coverHeight = coverDimensions.data.height_in;
+const coverWidth = coverDimensions.data.width;
+const coverHeight = coverDimensions.data.height;
 console.log('Cover dimensions:', JSON.stringify(coverDimensions.data,null,2));
 
 console.log('Cover dimensions:', coverWidth, coverHeight);

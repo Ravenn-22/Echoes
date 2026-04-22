@@ -357,6 +357,16 @@ const interiorHTML = generateInteriorHTML(scrapbook, memories, dedicationNote, b
 const pdfUrl = await generatePDFWithAPI2PDF(interiorHTML, bookSize);
 console.log('Interior PDF URL:', pdfUrl);
 
+   
+
+        const podPackageIds = {
+            small: '0583X0827FCPRECW080CW444MXX',
+            standard: '0600X0900FCPRELW080CW444GNG',
+            premium: '0850X1100FCPRELW080CW444GNG'
+        };
+        console.log('Getting Lulu token...');
+        const token = await getLuluToken();
+
 // Get cover dimensions from Lulu
 const coverDimensions = await axios.post(
     'https://api.lulu.com/cover-dimensions/',
@@ -381,17 +391,7 @@ console.log('Generating cover PDF...');
 const coverHTML = generateCoverHTML(scrapbook, coverStyle, customCoverUrl);
 const coverPdfUrl = await generatePDFWithAPI2PDF(coverHTML, bookSize, coverWidth, coverHeight);
 console.log('Cover PDF URL:', coverPdfUrl);
-
-       
-        console.log('Getting Lulu token...');
-        const token = await getLuluToken();
-
-        const podPackageIds = {
-            small: '0583X0827FCPRECW080CW444MXX',
-            standard: '0600X0900FCPRELW080CW444GNG',
-            premium: '0850X1100FCPRELW080CW444GNG'
-        };
-
+ 
         console.log('Creating Lulu print job...');
         const printJob = await axios.post(
             'https://api.lulu.com/print-jobs/',

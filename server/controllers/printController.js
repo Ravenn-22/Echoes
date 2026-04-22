@@ -25,21 +25,33 @@ const generatePDFWithAPI2PDF = async (html, bookSize) => {
     const a2pClient = new Api2Pdf(process.env.API2PDF_KEY);
     
     const pageSizes = {
-        small: { width: '5.83in', height: '8.27in' },
-        standard: { width: '6in', height: '9in' },
-        premium: { width: '8.5in', height: '11in' }
+        small: { width: '6.08in', height: '8.52in' },
+        standard: { width: '6.25in', height: '9.25in' },
+        premium: { width: '8.75in', height: '11.25in' }
     };
 
-    const size = pageSizes[bookSize] || pageSizes.premium;
+    const size = pageSizes[bookSize] || pageSizes.standard;
+    const width = customWidth || size.width;
+    const Height = customHeight || size.Height;
+
+
 
     const result = await a2pClient.chromeHtmlToPdf(html, {
         inlinePdf: false,
         fileName: `echoes_${Date.now()}.pdf`,
         options: {
             paperWidth: size.width,
-            paperHeight: size.height
+            paperHeight: size.height,
+            marginTop: 0,
+            marginBottom: 0 ,
+            marginLeft: 0,
+            marginRight: 0,
+            printBackground: true,
         }
     });
+    if(!result.Success){
+        throw new Error(result.Error || 'PDF generation failed');
+    }
     return result.FileUrl;
 };
 const generateInteriorHTML = (scrapbook, memories, dedicationNote, bookStyle = 'polaroid') => {
@@ -347,9 +359,29 @@ const interiorHTML = generateInteriorHTML(scrapbook, memories, dedicationNote, b
 const pdfUrl = await generatePDFWithAPI2PDF(interiorHTML, bookSize);
 console.log('Interior PDF URL:', pdfUrl);
 
+// Get cover dimensions from Lulu
+const coverDimensions = await axios.post(
+    'https://api.lulu.com/cover-dimensions/',
+    {
+        pod_package_id: podPackageIds[bookSize],
+        page_count: memories.length + 2
+    },
+    {
+        headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        }
+    }
+);
+
+const coverWidth = coverDimensions.data.width_in;
+const coverHeight = coverDimensions.data.height_in;
+
+console.log('Cover dimensions:', coverWidth, coverHeight);
+
 console.log('Generating cover PDF...');
 const coverHTML = generateCoverHTML(scrapbook, coverStyle, customCoverUrl);
-const coverPdfUrl = await generatePDFWithAPI2PDF(coverHTML, bookSize);
+const coverPdfUrl = await generatePDFWithAPI2PDF(coverHTML, bookSize, coverWidth, coverHeight);
 console.log('Cover PDF URL:', coverPdfUrl);
 
        

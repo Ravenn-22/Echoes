@@ -308,7 +308,19 @@ const handleChangePassword = async (e) => {
             <span></span>
         </div>
         {menuOpen && (
+            
             <div className="hamburger-menu">
+                      {user?.isPro && (
+                    <div className='ints'>
+        <button className="upgrade-menu-btn" onClick={() => navigate('/capsules')}>
+               ⏳ Time capsules
+        </button>
+        <button className="upgrade-menu-btn" onClick={() => navigate('/letters')}>
+               💌 Letters to Future Self
+        </button>
+        </div>
+    )}
+
                 <button className="logout-btn" onClick={handleLogout}>🚪 Logout</button>
                  
                 <button className="change-password-btn" 
@@ -319,16 +331,7 @@ const handleChangePassword = async (e) => {
             ⭐ Upgrade to Pro
         </button>
     )}
-                {user?.isPro && (
-                    <div className='ints'>
-        <button className="upgrade-menu-btn" onClick={() => navigate('/capsules')}>
-               ⏳ Time capsules
-        </button>
-        <button className="upgrade-menu-btn" onClick={() => navigate('/letters')}>
-               💌 Letters to Future Self
-        </button>
-        </div>
-    )}
+          
             </div>
         )}
     </div>

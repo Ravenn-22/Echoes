@@ -47,6 +47,12 @@ const generatePDFWithAPI2PDF = async (html, bookSize, customWidth = null, custom
             printBackground: true,
         }
     });
+    console.log('PDF URL:', result.FileUrl);
+console.log('PDF options used:', {
+    paperWidth: width,
+    paperHeight: height
+});
+ 
     if(!result.Success){
         throw new Error(result.Error || 'PDF generation failed');
     }
@@ -392,12 +398,7 @@ console.log('Generating cover PDF...');
 const coverHTML = generateCoverHTML(scrapbook, coverStyle, customCoverUrl);
 const coverPdfUrl = await generatePDFWithAPI2PDF(coverHTML, bookSize, coverWidth, coverHeight);
 console.log('Cover PDF URL:', coverPdfUrl);
-// console.log('PDF URL:', result.FileUrl);
-console.log('PDF options used:', {
-    paperWidth: width,
-    paperHeight: height
-});
- 
+
         console.log('Creating Lulu print job...');
         const printJob = await axios.post(
             'https://api.lulu.com/print-jobs/',

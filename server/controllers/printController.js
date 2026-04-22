@@ -372,7 +372,8 @@ const coverDimensions = await axios.post(
     'https://api.lulu.com/cover-dimensions/',
     {
         pod_package_id: podPackageIds[bookSize],
-        page_count: memories.length + 2
+        page_count: memories.length + 2,
+        unit: 'in'
     },
     {
         headers: {
@@ -386,6 +387,7 @@ const coverWidth = coverDimensions.data.width_in;
 const coverHeight = coverDimensions.data.height_in;
 
 console.log('Cover dimensions:', coverWidth, coverHeight);
+console.log('Cover dimensions:', JSON.stringify(coverDimensions.data,null,2));
 
 console.log('Generating cover PDF...');
 const coverHTML = generateCoverHTML(scrapbook, coverStyle, customCoverUrl);

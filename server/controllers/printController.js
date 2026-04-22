@@ -25,9 +25,9 @@ const generatePDFWithAPI2PDF = async (html, bookSize, customWidth = null, custom
     const a2pClient = new Api2Pdf(process.env.API2PDF_KEY);
     
     const pageSizes = {
-        small: { width: 5.83, height: 8.27 },
-        standard: { width: 6, height: 9 },
-        premium: { width: 8.5, height: 11 }
+        small: { width: "5.83in", height: '8.27in' },
+        standard: { width: '6in', height: '9in' },
+        premium: { width: '8.5in', height: '11in' }
     };
 
     const size = pageSizes[bookSize] || pageSizes.standard;
@@ -271,7 +271,7 @@ const generateInteriorHTML = (scrapbook, memories, dedicationNote, bookStyle = '
         </html>
     `;
 };
-const generateCoverHTML = (scrapbook, coverStyle,bookCoverSize, customCoverUrl,customWidth = null, customHeight = null) => {
+const generateCoverHTML = (scrapbook, coverStyle, customCoverUrl,customWidth = null, customHeight = null) => {
     const colors = {
         classic: '#232020',
         modern: '#72011f',
@@ -285,17 +285,6 @@ const generateCoverHTML = (scrapbook, coverStyle,bookCoverSize, customCoverUrl,c
 
     const bgColor = colors[coverStyle] || '#232020';
     const textColor = textColors[coverStyle] || '#fff2d7';
-
-
-      const coverSizes = {
-        small: { width: 11.96, height: 8.52 },
-        standard: { width: 12.34, height: 9.25 },
-        premium: { width: 17.39, height: 11.25 }
-    };
-
-    const size = coverSizes[bookCoverSize] || coverSizes.standard;
-    const width = customWidth || size.width;
-    const height = customHeight || size.height;
 
 
     return `
@@ -393,10 +382,10 @@ const coverDimensions = await axios.post(
         }
     }
 );
-console.log('Cover dimensions:', JSON.stringify(coverDimensions.data,null,2));
 
 const coverWidth = coverDimensions.data.width_in;
 const coverHeight = coverDimensions.data.height_in;
+console.log('Cover dimensions:', JSON.stringify(coverDimensions.data,null,2));
 
 console.log('Cover dimensions:', coverWidth, coverHeight);
 

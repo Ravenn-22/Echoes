@@ -25,9 +25,9 @@ const generatePDFWithAPI2PDF = async (html, bookSize, customWidth = null, custom
     const a2pClient = new Api2Pdf(process.env.API2PDF_KEY);
     
     const pageSizes = {
-        small: { width: "5.83in", height: '8.27in' },
-        standard: { width: '6in', height: '9in' },
-        premium: { width: '8.5in', height: '11in' }
+        small: { width: 5.83, height: 8.27 },
+        standard: { width: 6, height: 9 },
+        premium: { width: 8.5, height: 11 }
     };
 
     const size = pageSizes[bookSize] || pageSizes.standard;
@@ -357,10 +357,7 @@ const createPrintOrder = async (req, res) => {
 const interiorHTML = generateInteriorHTML(scrapbook, memories, dedicationNote, bookStyle || 'polaroid');
 const pdfUrl = await generatePDFWithAPI2PDF(interiorHTML, bookSize);
 console.log('Interior PDF URL:', pdfUrl);
-
-   
-
-        const podPackageIds = {
+const podPackageIds = {
             small: '0583X0827FCPRECW080CW444MXX',
             standard: '0600X0900FCPRELW080CW444GNG',
             premium: '0850X1100FCPRELW080CW444GNG'

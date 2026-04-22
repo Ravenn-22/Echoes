@@ -64,6 +64,7 @@ const generatePDFWithAPI2PDF = async (html, bookSize, customWidth = null, custom
 };
 const generateInteriorHTML = (scrapbook, memories, dedicationNote, bookStyle = 'polaroid') => {
     const memoriesHTML = memories.map((memory) => {
+        
         switch (bookStyle) {
             case 'magazine':
                 return `
@@ -126,7 +127,10 @@ const generateInteriorHTML = (scrapbook, memories, dedicationNote, bookStyle = '
             <style>
                 * { margin: 0; padding: 0; box-sizing: border-box; }
                 body { font-family: Georgia, serif; background: #FDF6EC; color: #3D2B1F; }
-                
+                @page {
+    size: ${bookSize === 'small' ? '5.83in 8.27in' : bookSize === 'premium' ? '8.5in 11in' : '6in 9in'};
+    margin: 0;
+}
                 .title-page {
                     display: flex;
                     flex-direction: column;
@@ -303,6 +307,10 @@ const generateCoverHTML = (scrapbook, coverStyle, customCoverUrl,customWidth = n
         <head>
             <meta charset="UTF-8">
             <style>
+            @page {
+    size: ${bookSize === 'small' ? '5.83in 8.27in' : bookSize === 'premium' ? '8.5in 11in' : '6in 9in'};
+    margin: 0;
+}
                 body {
                     margin: 0;
                     padding: 0;

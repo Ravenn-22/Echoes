@@ -21,27 +21,25 @@ const getLuluToken = async () => {
 };
 
 
-const generatePDFWithAPI2PDF = async (html, bookSize) => {
+const generatePDFWithAPI2PDF = async (html, bookSize, customWidth = null, customHeight = null) => {
     const a2pClient = new Api2Pdf(process.env.API2PDF_KEY);
     
     const pageSizes = {
-        small: { width: '6.08in', height: '8.52in' },
-        standard: { width: '6.25in', height: '9.25in' },
-        premium: { width: '8.75in', height: '11.25in' }
+        small: { width: 6.08, height: 8.52 },
+        standard: { width: 6.25, height: 9.25 },
+        premium: { width: 8.75, height: 11.25 }
     };
 
     const size = pageSizes[bookSize] || pageSizes.standard;
     const width = customWidth || size.width;
-    const Height = customHeight || size.Height;
-
-
+    const Height = customHeight || size.height;
 
     const result = await a2pClient.chromeHtmlToPdf(html, {
         inlinePdf: false,
         fileName: `echoes_${Date.now()}.pdf`,
         options: {
-            paperWidth: size.width,
-            paperHeight: size.height,
+            paperWidth: width,
+            paperHeight: height,
             marginTop: 0,
             marginBottom: 0 ,
             marginLeft: 0,

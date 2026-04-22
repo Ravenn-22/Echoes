@@ -63,7 +63,7 @@ const generatePDFWithAPI2PDF = async (html, bookSize, customWidth = null, custom
 
     return response.data.FileUrl;
 };
-const generateInteriorHTML = (scrapbook, memories, dedicationNote, bookStyle = 'polaroid') => {
+const generateInteriorHTML = (scrapbook, memories, dedicationNote, bookStyle = 'polaroid',bookSize = 'standard') => {
     const memoriesHTML = memories.map((memory) => {
         
         switch (bookStyle) {
@@ -373,7 +373,7 @@ const createPrintOrder = async (req, res) => {
         }
 
         console.log('Generating interior PDF...');
-const interiorHTML = generateInteriorHTML(scrapbook, memories, dedicationNote, bookStyle || 'polaroid');
+const interiorHTML = generateInteriorHTML(scrapbook, memories, dedicationNote, bookStyle || 'polaroid', bookSize);
 const pdfUrl = await generatePDFWithAPI2PDF(interiorHTML, bookSize);
 console.log('Interior PDF URL:', pdfUrl);
 const podPackageIds = {

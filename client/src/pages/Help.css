@@ -56,10 +56,6 @@
     font-size: 0.9rem;
     transition: all 0.3s ease;
 }
-.help-nav-btn:hover {
-    background: #72011f;
-    color: white;
-}
 .help-nav-btn.active {
     background: #72011f;
     color: white;

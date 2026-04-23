@@ -286,7 +286,11 @@ const generateInteriorHTML = (scrapbook, memories, dedicationNote, bookStyle = '
         </html>
     `;
 };
-const generateCoverHTML = (scrapbook, coverStyle, customCoverUrl, coverWidth = null , coverHeight= null) => {
+const generateCoverHTML = (scrapbook, coverStyle, customCoverUrl, coverWidth = null , coverHeight= null, bookSize = "standard") => {
+    const pageDimensions =   coverWidth && coverHeight ? `${coverWidth}in ${coverHeight}in`
+        : bookSize === 'small' ? '5.83in 8.27in' 
+        : bookSize === 'premium' ? '8.5in 11in' 
+        : '6in 9in';
     const colors = {
         classic: '#232020',
         modern: '#72011f',
@@ -308,6 +312,10 @@ const generateCoverHTML = (scrapbook, coverStyle, customCoverUrl, coverWidth = n
         <head>
             <meta charset="UTF-8">
             <style>
+            @page {
+    size: ${pageDimensions};
+    margin: 0;
+}
  
                 body {
                     margin: 0;
@@ -406,7 +414,7 @@ console.log('Cover dimensions in inches:', coverWidth, coverHeight);
 
 
 console.log('Generating cover PDF...');
-const coverHTML = generateCoverHTML(scrapbook, coverStyle, customCoverUrl, coverHeight, coverWidth);
+const coverHTML = generateCoverHTML(scrapbook, coverStyle, customCoverUrl, coverHeight, coverWidth, bookSize);
 const coverPdfUrl = await generatePDFWithAPI2PDF(coverHTML, coverWidth, coverHeight);
 console.log('Cover PDF URL:', coverPdfUrl);
 

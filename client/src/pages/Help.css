@@ -60,3 +60,7 @@
     background: #72011f;
     color: white;
 }
+.help-nav-btn.active {
+    background: #72011f;
+    color: white;
+}

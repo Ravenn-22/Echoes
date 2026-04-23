@@ -286,7 +286,7 @@ const generateInteriorHTML = (scrapbook, memories, dedicationNote, bookStyle = '
         </html>
     `;
 };
-const generateCoverHTML = (scrapbook, coverStyle, customCoverUrl,customWidth = null, customHeight = null, bookSize = 'standard') => {
+const generateCoverHTML = (scrapbook, coverStyle, customCoverUrl,customWidth = null, customHeight = null) => {
     const colors = {
         classic: '#232020',
         modern: '#72011f',
@@ -406,8 +406,8 @@ console.log('Cover dimensions in inches:', coverWidth, coverHeight);
 
 
 console.log('Generating cover PDF...');
-const coverHTML = generateCoverHTML(scrapbook, coverStyle, customCoverUrl);
-const coverPdfUrl = await generatePDFWithAPI2PDF(coverHTML, bookSize, coverWidth, coverHeight);
+const coverHTML = generateCoverHTML(scrapbook, coverStyle, customCoverUrl, coverHeight, coverWidth);
+const coverPdfUrl = await generatePDFWithAPI2PDF(coverHTML, coverWidth, coverHeight);
 console.log('Cover PDF URL:', coverPdfUrl);
 
         console.log('Creating Lulu print job...');

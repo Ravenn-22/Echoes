@@ -286,7 +286,7 @@ const generateInteriorHTML = (scrapbook, memories, dedicationNote, bookStyle = '
         </html>
     `;
 };
-const generateCoverHTML = (scrapbook, coverStyle, customCoverUrl,coverWidth, coverHeight) => {
+const generateCoverHTML = (scrapbook, coverStyle, customCoverUrl, coverWidth = null , coverHeight= null) => {
     const colors = {
         classic: '#232020',
         modern: '#72011f',

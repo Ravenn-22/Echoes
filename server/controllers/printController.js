@@ -414,7 +414,7 @@ console.log('Cover dimensions in inches:', coverWidth, coverHeight);
 
 
 console.log('Generating cover PDF...');
-const coverHTML = generateCoverHTML(scrapbook, coverStyle, customCoverUrl, coverHeight, coverWidth, bookSize);
+const coverHTML = generateCoverHTML(scrapbook, coverStyle, customCoverUrl, coverWidth, coverHeight, bookSize);
 const coverPdfUrl = await generatePDFWithAPI2PDF(coverHTML, coverWidth, coverHeight);
 console.log('Cover PDF URL:', coverPdfUrl);
 

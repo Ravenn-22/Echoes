@@ -377,7 +377,7 @@ const createPrintOrder = async (req, res) => {
             return res.status(404).json({ message: 'Scrapbook not found' });
         }
 
-        console.log('Generating interior PDF...');
+        // console.log('Generating interior PDF...');
 const interiorHTML = generateInteriorHTML(scrapbook, memories, dedicationNote, bookStyle || 'polaroid', bookSize);
 const pdfUrl = await generatePDFWithAPI2PDF(interiorHTML, bookSize);
 console.log('Interior PDF URL:', pdfUrl);
@@ -409,16 +409,16 @@ const coverDimensions = await axios.post(
 const coverWidth = coverDimensions.data.width/72;
 const coverHeight = coverDimensions.data.height/72;;
 
-console.log('Cover dimensions:', JSON.stringify(coverDimensions.data,null,2));
-console.log('Cover dimensions in inches:', coverWidth, coverHeight);
+// console.log('Cover dimensions:', JSON.stringify(coverDimensions.data,null,2));
+// console.log('Cover dimensions in inches:', coverWidth, coverHeight);
 
 
-console.log('Generating cover PDF...');
+// console.log('Generating cover PDF...');
 const coverHTML = generateCoverHTML(scrapbook, coverStyle, customCoverUrl, coverWidth, coverHeight, bookSize);
 const coverPdfUrl = await generatePDFWithAPI2PDF(coverHTML, coverWidth, coverHeight);
-console.log('Cover PDF URL:', coverPdfUrl);
+// console.log('Cover PDF URL:', coverPdfUrl);
 
-        console.log('Creating Lulu print job...');
+        // console.log('Creating Lulu print job...');
         const printJob = await axios.post(
             'https://api.lulu.com/print-jobs/',
             {

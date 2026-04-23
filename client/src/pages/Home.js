@@ -320,12 +320,13 @@ const handleChangePassword = async (e) => {
         </button>
         </div>
     )}
-
-                <button className="logout-btn" onClick={handleLogout}>🚪 Logout</button>
-                 
-                <button className="change-password-btn" 
+    <button className="upgrade-menu-btn" onClick={() => navigate('/help')}>
+               🤝Help Center
+        </button>
+        <button className="change-password-btn" 
                 onClick={() => { setShowChangePassword(!showChangePassword); 
                 setMenuOpen(false); }}>🔒 Change Password</button>
+         <button className="logout-btn" onClick={handleLogout}>🚪 Logout</button>
                 {!user?.isPro && (
         <button className="upgrade-menu-btn" onClick={() => navigate('/upgrade')}>
             ⭐ Upgrade to Pro

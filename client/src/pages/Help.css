@@ -1,0 +1,62 @@
+.help-container {
+    min-height: 100vh;
+    background-color: #FDF6EC;
+    font-family: 'Raleway', sans-serif;
+    color: #3D2B1F;
+}
+.help-main{
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 60px 20px;
+    text-align: center;
+}
+.help-sidebar{
+    text-align: center;
+    /* padding: 50px 20px 30px; */
+}
+.help-sidebar h3{
+    font-size: 2rem;
+    color: #72011f;
+    margin-bottom: 10px;
+     font-family: "Lobster Two", sans-serif;
+  font-style: italic;
+}
+.help-section h1{
+    color: #72011f;
+    margin-bottom: 10px;
+    text-align: center;
+     font-family: "Lobster Two", sans-serif;
+  font-style: italic;
+}
+.help-section h2{
+     font-family: 'Playfair Display', serif;
+    color: #C9627D;
+    margin-bottom: 10px;
+}
+.help-section p{
+    font-size: 1.1rem;
+    color: #8B6F61;
+    margin-bottom: 30px;
+}
+.help-section li{
+    font-size: 1.1rem;
+    color: #8B6F61;
+    margin-bottom: 30px;
+    list-style: none;
+}
+.help-nav-btn {
+    background: transparent;
+    border: 2px solid #72011f;
+    color: #72011f;
+    padding: 8px 20px;
+    margin: 5px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+.help-nav-btn:hover {
+    background: #72011f;
+    color: white;
+}

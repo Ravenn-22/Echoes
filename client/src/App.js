@@ -14,6 +14,7 @@ import PaymentVerify from './pages/PaymentVerify';
 import PrintCustomize from './pages/PrintCustomize';
 import TimeCapsule from './pages/TimeCapsule';
 import LetterToSelf from './pages/LetterToSelf'
+import Help from './pages/Help';
 
 const PrivateRoute = ({ children }) => {
     const { user } = useAuth();
@@ -47,6 +48,11 @@ function App() {
                 <Route path="/letters" element={
                      <PrivateRoute>
                          <LetterToSelf />
+                     </PrivateRoute>
+                } />
+                <Route path="/help" element={
+                     <PrivateRoute>
+                         <Help />
                      </PrivateRoute>
                 } />
                 <Route path="/upgrade" element={

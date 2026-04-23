@@ -26,8 +26,13 @@ const Views = ( ) => {
  Those moments deserve more than sitting in a folder nobody looks at. <br/>
 <b>Echoes</b> gives you and your people a private shared space to upload photos, drop memories and stay connected — no matter where life takes you.<br/>
 <b>Create a scrapbook</b>, invite your partner, your family or your closest friends and start building something beautiful together.<br/> Every time someone adds a memory everyone gets notified instantly. No more missing moments.
-<br/> <b>And when your scrapbook is full of life? Print it.</b> We turn your digital memories into a real hardcover book — Polaroid-style pages, a personal dedication note and your cover — shipped straight to your door anywhere in the world.
-No ads. No strangers. No algorithm. Just you and the people you love.
+<br/> <b>And when your scrapbook is full of life? Print it.</b> When you’re ready to hold your memories in your hands, we turn your digital memories into a real hardcover book.
+ Pro users can print their scrapbook as a real hardcover book, choose different beautiful styles:  
+	<b> Polaroid, Magazine, Classic, Minimal</b> and have it shipped anywhere in the world.
+<br/> 
+
+ Polaroid-style pages, a personal dedication note and your cover — shipped straight to your door anywhere in the world.
+No algorithm. Just you and the people you love.
 So take those pictures, upload those memories and let Echoes keep you and your loved ones connected. 🌸
 </p>
                     

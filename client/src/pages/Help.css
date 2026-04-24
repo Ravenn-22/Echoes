@@ -63,6 +63,10 @@
     background: #72011f;
     color: white;
 }
+.help-section strong {
+    color: #72011f;
+}
+
 @media (min-width: 768px) {
 .help-container {
     min-height: 100vh;

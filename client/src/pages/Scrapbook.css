@@ -590,35 +590,7 @@ margin-top:6px;
     opacity: 0.9;
     transform: translateY(-2px);
 }
-.memory-meta {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 8px;
-}
 
-.memory-author-avatar {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 1px solid #C9627D;
-}
-
-.memory-author-initial {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #C9627D, #D4AF37);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 0.7rem;
-    font-weight: 600;
-    font-family: 'Playfair Display', serif;
-    flex-shrink: 0;
-}
 @media (max-width: 768px) {
     .navbar {
         padding: 15px 20px;

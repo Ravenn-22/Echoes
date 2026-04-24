@@ -418,9 +418,16 @@ const sortedMemory = [...filteredMemories].sort((a, b) => {
                             </div>
                             <h3>{memory.title}</h3>
                             <p>{memory.description}</p>
-                            <p className="memory-meta">
-                                By {memory.createdBy?.username} • {new Date(memory.createdAt).toLocaleDateString()}
-                            </p>
+                           <p className="memory-meta">
+    {memory.createdBy?.profilePicture ? (
+        <img src={memory.createdBy.profilePicture} alt={memory.createdBy.username} className="memory-author-avatar" />
+    ) : (
+        <span className="memory-author-initial">
+            {memory.createdBy?.username?.charAt(0).toUpperCase()}
+        </span>
+    )}
+    {memory.createdBy?.username} • {new Date(memory.createdAt).toLocaleDateString()}
+</p>
                             <div className="memory-actions">
                                 <button className={`pin-btn ${memory.pinned ? 'pinned' : ''}`} onClick={() => handlePin(memory._id)}>
                                     {memory.pinned ? '📌 Pinned' : '📌 Pin'}

@@ -67,7 +67,7 @@ const getMemories = async (req, res) => {
         const total = await Memory.countDocuments({ scrapbook: req.query.scrapbookId });
 
         const memories = await Memory.find({ scrapbook: req.query.scrapbookId })
-            .populate('createdBy', 'username')
+            .populate('createdBy', 'username ','profilePicture')
             .skip(skip)
             .limit(limit);
 

@@ -229,6 +229,83 @@
     align-items: center;
     justify-content: center;
 }
+.capsule-preview {
+    text-align: center;
+}
+
+.capsule-preview h3 {
+    font-family: 'Playfair Display', serif;
+    color: #fff2d7;
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+}
+
+.capsule-preview-card {
+    background: rgba(255, 242, 215, 0.05);
+    border: 1px solid rgba(201, 98, 125, 0.3);
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.capsule-preview-card h4 {
+    font-family: 'Playfair Display', serif;
+    color: #fff2d7;
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+}
+
+.capsule-preview-message {
+    font-family: 'Raleway', sans-serif;
+    color: rgba(255, 242, 215, 0.7);
+    font-size: 0.95rem;
+    line-height: 1.8;
+    font-style: italic;
+    margin-bottom: 15px;
+}
+
+.capsule-preview-date {
+    font-family: 'Raleway', sans-serif;
+    color: #C9627D;
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+}
+
+.capsule-preview-members {
+    font-family: 'Raleway', sans-serif;
+    color: rgba(255, 242, 215, 0.5);
+    font-size: 0.85rem;
+}
+
+.capsule-preview-img-small {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.preview-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.preview-edit-btn {
+    background: transparent;
+    color: rgba(255, 242, 215, 0.6);
+    border: 1px solid rgba(255, 242, 215, 0.2);
+    padding: 12px 25px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-family: 'Raleway', sans-serif;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    flex: 1;
+}
+
+.preview-edit-btn:hover {
+    background: rgba(255, 242, 215, 0.05);
+}
 @media (max-width: 768px) {
     .capsule-title {
         font-size: 1.8rem;

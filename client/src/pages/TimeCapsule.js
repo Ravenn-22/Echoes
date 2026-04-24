@@ -21,6 +21,8 @@ const TimeCapsule = () => {
     const [creating, setCreating] = useState(false);
     const [images, setImages] = useState([]);
     const [uploadingImages, setUploadingImages] = useState(false);
+    const [showPreview, setShowPreview] = useState(false);
+
     useEffect(() => {
         const fetchCapsules = async () => {
             try {
@@ -126,65 +128,102 @@ const TimeCapsule = () => {
                     + Create Time Capsule
                 </button>
 
-                {showForm && (
-                    <div className="capsule-form">
-                        <form onSubmit={handleCreate}>
-                            <input
-                                type="text"
-                                placeholder="Capsule Title"
-                                value={title}
-                                onChange={(e) => setTitle(e.target.value)}
-                                required
-                            />
-                            <textarea
-                                placeholder="Write your message — what do you want to remember? What do you want to say to the people who open this?"
-                                value={message}
-                                onChange={(e) => setMessage(e.target.value)}
-                                required
-                            />
-                            <label>Unlock Date</label>
-                            <input
-                                type="date"
-                                value={unlockDate}
-                                onChange={(e) => setUnlockDate(e.target.value)}
-                                min={new Date().toISOString().split('T')[0]}
-                                required
-                            />
-                            <input
-                                type="text"
-                                placeholder="Invite members by email (comma separated)"
-                                value={memberEmails}
-                                onChange={(e) => setMemberEmails(e.target.value)}
-                            />
-                            <div className="image-upload-section">
-    <label>Add Photos (optional)</label>
-    <input
-        type="file"
-        accept="image/*"
-        multiple
-        onChange={handleImageUpload}
-        disabled={uploadingImages}
-    />
-    {uploadingImages && <p style={{ color: '#C9627D', fontFamily: 'Raleway' }}>Uploading images...</p>}
-    {images.length > 0 && (
-        <div className="capsule-image-preview">
-            {images.map((url, index) => (
-                <div key={index} className="capsule-preview-img">
-                    <img src={url} alt={`capsule ${index}`} />
-                    <button type="button" onClick={() => setImages(images.filter((_, i) => i !== index))}>✕</button>
+          {showForm && (
+    <div className="capsule-form">
+        {!showPreview ? (
+            <form onSubmit={(e) => { e.preventDefault(); setShowPreview(true); }}>
+                <input
+                    type="text"
+                    placeholder="Capsule Title"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    required
+                />
+                <textarea
+                    placeholder="Write your message — what do you want to remember? What do you want to say to the people who open this?"
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    required
+                />
+                <label>Unlock Date</label>
+                <input
+                    type="date"
+                    value={unlockDate}
+                    onChange={(e) => setUnlockDate(e.target.value)}
+                    min={new Date().toISOString().split('T')[0]}
+                    required
+                />
+                <input
+                    type="text"
+                    placeholder="Invite members by email (comma separated)"
+                    value={memberEmails}
+                    onChange={(e) => setMemberEmails(e.target.value)}
+                />
+                <div className="image-upload-section">
+                    <label>Add Photos (optional)</label>
+                    <input
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        onChange={handleImageUpload}
+                        disabled={uploadingImages}
+                    />
+                    {uploadingImages && <p style={{ color: '#C9627D', fontFamily: 'Raleway' }}>Uploading images...</p>}
+                    {images.length > 0 && (
+                        <div className="capsule-image-preview">
+                            {images.map((url, index) => (
+                                <div key={index} className="capsule-preview-img">
+                                    <img src={url} alt={`capsule ${index}`} />
+                                    <button type="button" onClick={() => setImages(images.filter((_, i) => i !== index))}>✕</button>
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
-            ))}
-        </div>
-    )}
-</div>
-                            <button type="submit" disabled={creating}>
-                                {creating ? 'Creating...' : 'Lock Capsule 🔒'}
-                            </button>
-                            <button type="button" onClick={() => setShowForm(false)} id='cancel'>Cancel</button>
-                        </form>
+                <button type="submit">Preview Capsule 👁️</button>
+                <button type="button" onClick={() => setShowForm(false)}>Cancel</button>
+            </form>
+        ) : (
+            <div className="capsule-preview">
+                <h3>Preview your capsule 🔒</h3>
+                <div className="capsule-preview-card">
+                    <div className="capsule-icon">🔒</div>
+                    <h4>{title}</h4>
+                    <div className="capsule-locked-message">
+                        <p>🔒 Message locked until unlock date</p>
                     </div>
-                )}
-
+                    <p className="capsule-preview-date">
+                        Unlocks on: {new Date(unlockDate).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        })}
+                    </p>
+                    {memberEmails && (
+                        <p className="capsule-preview-members">
+                            Inviting: {memberEmails}
+                        </p>
+                    )}
+                    {images.length > 0 && (
+                        <div className="capsule-image-preview">
+                            {images.map((url, index) => (
+                                <img key={index} src={url} alt={`capsule ${index}`} className="capsule-preview-img-small" />
+                            ))}
+                        </div>
+                    )}
+                </div>
+                <div className="preview-actions">
+                    <button className="capsule-create-btn" onClick={handleCreate} disabled={creating}>
+                        {creating ? 'Locking...' : 'Lock Capsule 🔒'}
+                    </button>
+                    <button className="preview-edit-btn" onClick={() => setShowPreview(false)}>
+                        ✏️ Edit
+                    </button>
+                </div>
+            </div>
+        )}
+    </div>
+)}
                 <div className="capsules-grid">
                     {capsules.length === 0 ? (
                         <div className="empty-state">

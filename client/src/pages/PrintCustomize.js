@@ -7,6 +7,7 @@ import compressImage from '../compressImage';
 import {getData} from 'country-list';
 import {useAuth} from '../context/AuthContext';
 import BookPreview from '../components/BookPreview';
+import Toast from '../components/Toast';
 
 
 
@@ -20,6 +21,7 @@ const PrintCustomize = () => {
     const [showPreview, setShowPreview] = useState(false);
 const [allMemories, setAllMemories] = useState([]);
 const [bookStyle, setBookStyle] = useState('polaroid');
+const [toast, setToast] = useState(null);
 
 const [customCover, setCustomCover] = useState(null);
     const [step, setStep] = useState(1);
@@ -273,10 +275,18 @@ const countries = getData();
                             </div>
                         </div>
 
-                       <button  className="print-next-btn"  onClick={() => setStep(2)} 
-                       disabled={memoriesCount < 22}>
-                       Next: Shipping Details → 
-                       </button>
+                      <button 
+    className="print-next-btn" 
+    onClick={() => {
+        if (memoriesCount < 22) {
+            setToast({ message: `You need at least 22 memories with images to print. You currently have ${memoriesCount}. Add more memories first! 🌸`, type: 'error' });
+        } else {
+            setStep(2);
+        }
+    }}
+>
+    Next: Shipping Details →
+</button>
                     </div>
                 )}
 
@@ -393,6 +403,9 @@ const countries = getData();
                     </div>
                 )}
             </div>
+            {toast && (
+    <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />
+)}
         </div>
     );
 };

@@ -97,13 +97,13 @@
 
 .order-details h3 {
     font-family: 'Playfair Display', serif;
-    color: #fff2d7;
+    color: #e29a0a;
     font-size: 1.2rem;
 }
 
 .order-meta {
     font-family: 'Raleway', sans-serif;
-    color: rgba(255, 242, 215, 0.5);
+    color: rgba(54, 37, 4, 0.5);
     font-size: 0.85rem;
 }
 
@@ -126,7 +126,7 @@
 
 .order-lulu-id {
     font-family: 'Raleway', sans-serif;
-    color: rgba(255, 242, 215, 0.3);
+    color: rgba(21, 16, 5, 0.3);
     font-size: 0.75rem;
 }
 

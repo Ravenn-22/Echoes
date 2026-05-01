@@ -17,6 +17,7 @@ const timeCapsuleRoutes = require ('./routes/timeCapsulesRoutes')
 const {checkAndUnlockCapsules} = require('./controllers/timeCapsuleController')
 const User = require('./models/User');
 const { sendSubscriptionReminderEmail } = require('./config/email');
+const orderRoutes = require('./routes/orderRoutes');
 
 const app = express();
 connectDB();
@@ -36,6 +37,7 @@ app.use(checkProExpiry);
 app.use('/temp', express.static('/tmp'))
 app.use('/api/print', printRoutes);
 app.use('/api/capsules', timeCapsuleRoutes)
+app.use('/api/orders', orderRoutes);
 
 
 io.on('connection', (socket) => {

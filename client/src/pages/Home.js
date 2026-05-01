@@ -320,9 +320,13 @@ const handleChangePassword = async (e) => {
         </button>
         </div>
     )}
+     <button className="hamburger-menu-btn" onClick={() => navigate('/orders')}>
+    📖 My Print Orders
+</button>
     <button className="upgrade-menu-btn" onClick={() => navigate('/help')}>
                🤝Help Center
         </button>
+       
         <button className="change-password-btn" 
                 onClick={() => { setShowChangePassword(!showChangePassword); 
                 setMenuOpen(false); }}>🔒 Change Password</button>

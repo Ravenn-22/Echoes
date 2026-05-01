@@ -55,3 +55,5 @@ export const createCapsule = (capsuleData) => API.post('/capsules', capsuleData)
 export const getCapsules = () => API.get('/capsules');
 export const getCapsule = (id) => API.get(`/capsules/${id}`);
 export const deleteCapsule = (id) => API.delete(`/capsules/${id}`);
+export const getOrders = () => API.get('/orders');
+export const getOrder = (id) => API.get(`/orders/${id}`);

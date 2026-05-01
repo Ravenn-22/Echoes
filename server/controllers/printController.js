@@ -3,6 +3,7 @@ const Memory = require('../models/Memory');
 const Scrapbook = require('../models/Scrapbook');
 const Api2Pdf = require('api2pdf');
 const { sendPrintConfirmationEmail } = require('../config/email');
+const Order = require('../models/Order');
 const getLuluToken = async () => {
     const response = await axios.post(
         'https://api.lulu.com/auth/realms/glasstree/protocol/openid-connect/token',
@@ -367,6 +368,12 @@ const createPrintOrder = async (req, res) => {
     console.log('Print Order started');
     console.log('Request body:', req.body);
     console.log("Book Style:", req.body.bookStyle)
+    const prices = {
+    small: 35,
+    standard: 50,
+    premium: 65
+};
+
     try {
         const { scrapbookId, dedicationNote, coverStyle, bookSize, shippingAddress, customCoverUrl, bookStyle } = req.body;
 
@@ -455,6 +462,20 @@ const coverPdfUrl = await generatePDFWithAPI2PDF(coverHTML, coverWidth, coverHei
         );
 
         console.log('Print job created:', printJob.data.id);
+        // Save order to database
+await Order.create({
+    user: req.user._id,
+    scrapbook: scrapbookId,
+    luluOrderId: printJob.data.id,
+    bookSize,
+    bookStyle: bookStyle || 'polaroid',
+    coverStyle,
+    amount: prices[bookSize],
+    shippingAddress,
+    status: 'created'
+});
+
+console.log('Order saved to database');
 try {
     await sendPrintConfirmationEmail(
         req.user.email,

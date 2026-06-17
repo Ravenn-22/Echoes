@@ -1,15 +1,15 @@
-const { BrevoClient } = require('@getbrevo/brevo');
+const { BrevoClient } = require("@getbrevo/brevo");
 
 const sendResetEmail = async (to, resetUrl) => {
-    const client = new BrevoClient({
-        apiKey: process.env.BREVO_API_KEY
-    });
+  const client = new BrevoClient({
+    apiKey: process.env.BREVO_API_KEY,
+  });
 
-    await client.transactionalEmails.sendTransacEmail({
-        to: [{ email: to }],
-        sender: { name: 'Echoes', email: 'echoesmemo.noreply@gmail.com' },
-        subject: 'Password Reset Request',
-        htmlContent: `
+  await client.transactionalEmails.sendTransacEmail({
+    to: [{ email: to }],
+    sender: { name: "Echoes", email: "echoesmemo.noreply@gmail.com" },
+    subject: "Password Reset Request",
+    htmlContent: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #232020; color: #fff2d7;">
                 <h1 style="color: #72011f; text-align: center;">Echoes</h1>
                 <h2 style="text-align: center;">Password Reset</h2>
@@ -20,19 +20,19 @@ const sendResetEmail = async (to, resetUrl) => {
                 </div>
                 <p style="font-size: 0.85rem; color: rgba(255,242,215,0.5);">If you didn't request this, ignore this email. Your password won't change.</p>
             </div>
-        `
-    });
+        `,
+  });
 };
 const sendInviteEmail = async (to, inviteUsername, scrapbookTitle) => {
-    const client = new BrevoClient({
-         apiKey: process.env.BREVO_API_KEY
-    })
-   
-    await client.transactionalEmails.sendTransacEmail({
-        to: [{ email: to }],
-        sender: { name: 'Echoes', email: 'echoesmemo.noreply@gmail.com' },
-        subject: `${inviteUsername} invited you to a scrapbook on Echoes🌸`,
-        htmlContent: `
+  const client = new BrevoClient({
+    apiKey: process.env.BREVO_API_KEY,
+  });
+
+  await client.transactionalEmails.sendTransacEmail({
+    to: [{ email: to }],
+    sender: { name: "Echoes", email: "echoesmemo.noreply@gmail.com" },
+    subject: `${inviteUsername} invited you to a scrapbook on Echoes🌸`,
+    htmlContent: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #bfb8b8; color: #fff2d7;">
                 <h1 style="color: #72011f; text-align: center;">Echoes</h1>
                 <h2 style="text-align: center;">You've been invited! 🌸</h2>
@@ -43,20 +43,25 @@ const sendInviteEmail = async (to, inviteUsername, scrapbookTitle) => {
                 </div>
                 <p style="font-size: 0.85rem; color: rgba(255,242,215,0.5);">If you don't have an account yet, sign up at echoes and ask ${inviteUsername} to invite you again.</p>
             </div>
-        `
-    });
-}
+        `,
+  });
+};
 
-const sendNewMemoryEmail = async (to, uploaderUsername, memoryTitle, scrapbookTitle) => {
-    const client = new BrevoClient({
-        apiKey: process.env.BREVO_API_KEY
-    });
+const sendNewMemoryEmail = async (
+  to,
+  uploaderUsername,
+  memoryTitle,
+  scrapbookTitle,
+) => {
+  const client = new BrevoClient({
+    apiKey: process.env.BREVO_API_KEY,
+  });
 
-    await client.transactionalEmails.sendTransacEmail({
-        to: [{ email: to }],
-        sender: { name: 'Echoes', email: 'echoesmemo.noreply@gmail.com' },
-        subject: `${uploaderUsername} added a new memory to ${scrapbookTitle} 🌸`,
-        htmlContent: `
+  await client.transactionalEmails.sendTransacEmail({
+    to: [{ email: to }],
+    sender: { name: "Echoes", email: "echoesmemo.noreply@gmail.com" },
+    subject: `${uploaderUsername} added a new memory to ${scrapbookTitle} 🌸`,
+    htmlContent: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #232020; color: #fff2d7;">
                 <h1 style="color: #72011f; text-align: center;">Echoes</h1>
                 <h2 style="text-align: center;">New Memory Added! 🌸</h2>
@@ -67,20 +72,25 @@ const sendNewMemoryEmail = async (to, uploaderUsername, memoryTitle, scrapbookTi
                 </div>
                 <p style="font-size: 0.85rem; color: rgba(255,242,215,0.5);">You're receiving this because you're a member of this scrapbook on Echoes.</p>
             </div>
-        `
-    });
+        `,
+  });
 };
 
-const sendPrintConfirmationEmail = async (to, orderId, bookSize, estimatedDelivery) => {
-    const client = new BrevoClient({
-        apiKey: process.env.BREVO_API_KEY
-    });
+const sendPrintConfirmationEmail = async (
+  to,
+  orderId,
+  bookSize,
+  estimatedDelivery,
+) => {
+  const client = new BrevoClient({
+    apiKey: process.env.BREVO_API_KEY,
+  });
 
-    await client.transactionalEmails.sendTransacEmail({
-        to: [{ email: to }],
-        sender: { name: 'Echoes', email: 'echoesmemo.noreply@gmail.com' },
-        subject: 'Your Echoes book is being printed! 📖',
-        htmlContent: `
+  await client.transactionalEmails.sendTransacEmail({
+    to: [{ email: to }],
+    sender: { name: "Echoes", email: "echoesmemo.noreply@gmail.com" },
+    subject: "Your Echoes book is being printed! 📖",
+    htmlContent: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #232020; color: #fff2d7;">
                 <h1 style="color: #72011f; text-align: center;">Echoes</h1>
                 <h2 style="text-align: center;">Your book is on its way! 📖</h2>
@@ -93,57 +103,162 @@ const sendPrintConfirmationEmail = async (to, orderId, bookSize, estimatedDelive
                 <p>Thank you for using Echoes. Your memories deserve to be held. 🌸</p>
                 <p style="font-size: 0.85rem; color: rgba(255,242,215,0.5);">If you have any questions about your order please reply to this email.</p>
             </div>
-        `
-    });
+        `,
+  });
+};
+const sendOrderReceiptEmail = async (to, username, order) => {
+  const client = new BrevoClient({
+    apiKey: process.env.BREVO_API_KEY,
+  });
+
+  const bookSizeLabels = {
+    small: "Small (25 pages · A5)",
+    standard: "Standard (40 pages · 6x9)",
+    premium: "Premium (60 pages · A4)",
+  };
+
+  const bookStyleLabels = {
+    polaroid: "Polaroid",
+    magazine: "Magazine",
+    classic: "Classic",
+    minimal: "Minimal",
+  };
+
+  await client.sendTransacEmail({
+    to: [{ email: to }],
+    sender: { name: "Echoes", email: "echoesmemo.noreply@gmail.com" },
+    subject: `Your Echoes Order Receipt #${order.luluOrderId} 📖`,
+    htmlContent: `
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #232020; color: #fff2d7;">
+<h1 style="color: #72011f; text-align: center;">Echoes</h1>
+<h2 style="text-align: center;">Order Receipt 📖</h2>
+<p>Hey ${username}! Thank you for your order. Here's your receipt.</p>
+
+<div style="background: rgba(255,242,215,0.1); border-radius: 10px; padding: 20px; margin: 20px 0;">
+<h3 style="color: #C9627D; margin-bottom: 15px;">Order Details</h3>
+<table style="width: 100%; border-collapse: collapse;">
+<tr>
+<td style="padding: 8px 0; color: rgba(255,242,215,0.6);">Order ID</td>
+<td style="padding: 8px 0; text-align: right;">${order.luluOrderId}</td>
+</tr>
+<tr>
+<td style="padding: 8px 0; color: rgba(255,242,215,0.6);">Scrapbook</td>
+<td style="padding: 8px 0; text-align: right;">${order.scrapbookTitle}</td>
+</tr>
+<tr>
+<td style="padding: 8px 0; color: rgba(255,242,215,0.6);">Book Size</td>
+<td style="padding: 8px 0; text-align: right;">${bookSizeLabels[order.bookSize]}</td>
+</tr>
+<tr>
+<td style="padding: 8px 0; color: rgba(255,242,215,0.6);">Book Style</td>
+<td style="padding: 8px 0; text-align: right;">${bookStyleLabels[order.bookStyle]}</td>
+</tr>
+<tr>
+<td style="padding: 8px 0; color: rgba(255,242,215,0.6);">Shipping To</td>
+<td style="padding: 8px 0; text-align: right;">${order.shippingAddress.city}, ${order.shippingAddress.country}</td>
+</tr>
+<tr>
+<td style="padding: 8px 0; color: rgba(255,242,215,0.6);">Order Date</td>
+<td style="padding: 8px 0; text-align: right;">${new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</td>
+</tr>
+<tr style="border-top: 1px solid rgba(255,242,215,0.2);">
+<td style="padding: 12px 0; font-weight: bold; color: #D4AF37;">Total Paid</td>
+<td style="padding: 12px 0; text-align: right; font-weight: bold; color: #D4AF37; font-size: 1.2rem;">$${order.amount}</td>
+</tr>
+</table>
+</div>
+
+<p>Your book is being printed and will be shipped in <strong>7-14 business days</strong>. 📦</p>
+<p style="font-size: 0.85rem; color: rgba(255,242,215,0.5); margin-top: 20px;">If you have any questions about your order please email us at echoesmemo.noreply@gmail.com</p>
+</div>
+`,
+  });
 };
 
-const sendCapsuleUnlockEmail = async (to, username, capsuleTitle, type, message) => {
-    const client = new BrevoClient({
-        apiKey: process.env.BREVO_API_KEY
-    });
+const sendCapsuleUnlockEmail = async (
+  to,
+  username,
+  capsuleTitle,
+  type,
+  message,
+) => {
+  const client = new BrevoClient({
+    apiKey: process.env.BREVO_API_KEY,
+  });
 
-    const isLetter = type === 'letter';
+  const isLetter = type === "letter";
 
-    await client.sendTransacEmail({
-        to: [{ email: to }],
-        sender: { name: 'Echoes', email: 'echoesmemo.noreply@gmail.com' },
-        subject: isLetter ? `A letter from your past is waiting for you 💌` : `Your time capsule has unlocked! 🎉`,
-        htmlContent: `
+  await client.sendTransacEmail({
+    to: [{ email: to }],
+    sender: { name: "Echoes", email: "echoesmemo.noreply@gmail.com" },
+    subject: isLetter
+      ? `A letter from your past is waiting for you 💌`
+      : `Your time capsule has unlocked! 🎉`,
+    htmlContent: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #232020; color: #fff2d7;">
                 <h1 style="color: #72011f; text-align: center;">Echoes</h1>
-                ${isLetter ? `
+                ${
+                  isLetter
+                    ? `
                     <h2 style="text-align: center;">A letter from your past 💌</h2>
                     <p>Hey ${username}, you wrote yourself a letter and today is the day you get to read it.</p>
                     <div style="background: rgba(255,242,215,0.1); border-radius: 10px; padding: 20px; margin: 20px 0; font-style: italic; line-height: 1.8;">
                         ${message}
                     </div>
                     <p>How does it feel reading this? We hope it makes you smile 🌸</p>
-                ` : `<h2 style="text-align: center;">Your time capsule is open! 🎉</h2>
+                `
+                    : `<h2 style="text-align: center;">Your time capsule is open! 🎉</h2>
                     <p>Hey ${username}, the time capsule <strong>"${capsuleTitle}"</strong> has finally unlocked!</p>
                     <p>Head to Echoes to see everything inside 🌸</p>
                     <div style="text-align: center; margin: 30px 0;">
                         <a href="${process.env.CLIENT_URL}" style="background: #72011f; color: #fff2d7; padding: 14px 30px; border-radius: 10px; text-decoration: none; font-size: 1rem;">Open Echoes</a>
                     </div>
-                `}
+                `
+                }
                 <p style="font-size: 0.85rem; color: rgba(255,242,215,0.5);">You're receiving this because you're part of a time capsule on Echoes 🌸</p>
             </div>
-        `
-    });
+        `,
+  });
+};
+
+const sendShippingEmail = async (to, username, orderId) => {
+  const client = new BrevoClient({
+    apiKey: process.env.BREVO_API_KEY,
+  });
+
+  await client.sendTransacEmail({
+    to: [{ email: to }],
+    sender: { name: "Echoes", email: "echoesmemo.noreply@gmail.com" },
+    subject: "Your Echoes book has been shipped! 📦",
+    htmlContent: `
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #232020; color: #fff2d7;">
+<h1 style="color: #72011f; text-align: center;">Echoes</h1>
+<h2 style="text-align: center;">Your book is on its way! 📦</h2>
+<p>Hey ${username}! Great news — your Echoes hardcover book has been shipped!</p>
+<div style="background: rgba(255,242,215,0.1); border-radius: 10px; padding: 20px; margin: 20px 0;">
+<p><strong>Order ID:</strong> ${orderId}</p>
+<p><strong>Estimated Delivery:</strong> 7-14 business days</p>
+</div>
+<p>Your memories are on their way to you. We hope you love it! 🌸</p>
+<p style="font-size: 0.85rem; color: rgba(255,242,215,0.5);">If you have any questions please email us at echoesmemo.noreply@gmail.com</p>
+</div>
+`,
+  });
 };
 const sendSubscriptionReminderEmail = async (to, username, expiryDate) => {
-    const client = new BrevoClient({
-        apiKey: process.env.BREVO_API_KEY
-    });
+  const client = new BrevoClient({
+    apiKey: process.env.BREVO_API_KEY,
+  });
 
-    await client.sendTransacEmail({
-        to: [{ email: to }],
-        sender: { name: 'Echoes', email: 'echoesmemo.noreply@gmail.com' },
-        subject: 'Your Echoes Pro subscription is expiring soon 🌸',
-        htmlContent: `
+  await client.sendTransacEmail({
+    to: [{ email: to }],
+    sender: { name: "Echoes", email: "echoesmemo.noreply@gmail.com" },
+    subject: "Your Echoes Pro subscription is expiring soon 🌸",
+    htmlContent: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #232020; color: #fff2d7;">
                 <h1 style="color: #72011f; text-align: center;">Echoes</h1>
                 <h2 style="text-align: center;">Your Pro subscription is expiring soon ⚠️</h2>
-                <p>Hey ${username}! Just a heads up — your Echoes Pro subscription expires on <strong>${new Date(expiryDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</strong>.</p>
+                <p>Hey ${username}! Just a heads up — your Echoes Pro subscription expires on <strong>${new Date(expiryDate).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</strong>.</p>
                 <p>You have a 3 day grace period after expiry before Pro access is removed.</p>
                 <p>Renew now to keep enjoying:</p>
                 <ul style="line-height: 2; color: #fff2d7;">
@@ -159,9 +274,17 @@ const sendSubscriptionReminderEmail = async (to, username, expiryDate) => {
                 </div>
                 <p style="font-size: 0.85rem; color: rgba(255,242,215,0.5);">You're receiving this because you have an Echoes Pro subscription.</p>
             </div>
-        `
-    });
+        `,
+  });
 };
 
-module.exports = { sendResetEmail, sendInviteEmail, sendNewMemoryEmail, sendPrintConfirmationEmail, sendCapsuleUnlockEmail, sendSubscriptionReminderEmail };
-
+module.exports = {
+  sendResetEmail,
+  sendInviteEmail,
+  sendNewMemoryEmail,
+  sendPrintConfirmationEmail,
+  sendCapsuleUnlockEmail,
+  sendSubscriptionReminderEmail,
+  sendOrderReceiptEmail,
+   sendShippingEmail
+};

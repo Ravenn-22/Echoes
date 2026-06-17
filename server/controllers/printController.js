@@ -1,102 +1,115 @@
-const axios = require('axios');
-const Memory = require('../models/Memory');
-const Scrapbook = require('../models/Scrapbook');
-const Api2Pdf = require('api2pdf');
-const { sendPrintConfirmationEmail } = require('../config/email');
-const Order = require('../models/Order');
+const axios = require("axios");
+const Memory = require("../models/Memory");
+const Scrapbook = require("../models/Scrapbook");
+const Api2Pdf = require("api2pdf");
+const {
+  sendPrintConfirmationEmail,
+  sendOrderReceiptEmail,
+} = require("../config/email");
+const Order = require("../models/Order");
 const getLuluToken = async () => {
-    const response = await axios.post(
-        'https://api.lulu.com/auth/realms/glasstree/protocol/openid-connect/token',
-        new URLSearchParams({
-            grant_type: 'client_credentials',
-            client_id: process.env.LULU_CLIENT_ID,
-            client_secret: process.env.LULU_CLIENT_SECRET
-        }),
-        {
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            }
-        }
-    );
-    return response.data.access_token;
+  const response = await axios.post(
+    "https://api.lulu.com/auth/realms/glasstree/protocol/openid-connect/token",
+    new URLSearchParams({
+      grant_type: "client_credentials",
+      client_id: process.env.LULU_CLIENT_ID,
+      client_secret: process.env.LULU_CLIENT_SECRET,
+    }),
+    {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    },
+  );
+  return response.data.access_token;
 };
 
+const generatePDFWithAPI2PDF = async (
+  html,
+  bookSize,
+  customWidth = null,
+  customHeight = null,
+) => {
+  const pageSizes = {
+    small: { width: 5.83, height: 8.27 },
+    standard: { width: 6.0, height: 9.0 },
+    premium: { width: 8.5, height: 11.0 },
+  };
 
-const generatePDFWithAPI2PDF = async (html, bookSize, customWidth = null, customHeight = null) => {
-    const pageSizes = {
-        small: { width: 5.83, height: 8.27 },
-        standard: { width: 6.0, height: 9.0 },
-        premium: { width: 8.5, height: 11.0 }
-    };
+  const size = pageSizes[bookSize] || pageSizes.standard;
+  const width = customWidth || size.width;
+  const height = customHeight || size.height;
 
-    const size = pageSizes[bookSize] || pageSizes.standard;
-    const width = customWidth || size.width;
-    const height = customHeight || size.height;
+  const response = await axios.post(
+    "https://v2.api2pdf.com/chrome/pdf/html",
+    {
+      html: html,
+      inlinePdf: false,
+      fileName: `echoes_${Date.now()}.pdf`,
+      options: {
+        paperWidth: width,
+        paperHeight: height,
+        marginTop: 0,
+        marginBottom: 0,
+        marginLeft: 0,
+        marginRight: 0,
+        printBackground: true,
+        preferCssPageSize: true,
+      },
+    },
+    {
+      headers: {
+        Authorization: process.env.API2PDF_KEY,
+        "Content-Type": "application/json",
+      },
+    },
+  );
 
-    const response = await axios.post(
-        'https://v2.api2pdf.com/chrome/pdf/html',
-        {
-            html: html,
-            inlinePdf: false,
-            fileName: `echoes_${Date.now()}.pdf`,
-            options: {
-                paperWidth: width,
-                paperHeight: height,
-                marginTop: 0,
-                marginBottom: 0,
-                marginLeft: 0,
-                marginRight: 0,
-                printBackground: true,
-                preferCssPageSize: true
-            }
-        },
-        {
-            headers: {
-                'Authorization': process.env.API2PDF_KEY,
-                'Content-Type': 'application/json'
-            }
-        }
-    );
+  if (!response.data.Success) {
+    throw new Error(response.data.Error || "PDF generation failed");
+  }
 
-    if (!response.data.Success) {
-        throw new Error(response.data.Error || 'PDF generation failed');
-    }
-
-    return response.data.FileUrl;
+  return response.data.FileUrl;
 };
-const generateInteriorHTML = (scrapbook, memories, dedicationNote, bookStyle = 'polaroid',bookSize = 'standard') => {
-    const memoriesHTML = memories.map((memory) => {
-        
-        switch (bookStyle) {
-            case 'magazine':
-                return `
+const generateInteriorHTML = (
+  scrapbook,
+  memories,
+  dedicationNote,
+  bookStyle = "polaroid",
+  bookSize = "standard",
+) => {
+  const memoriesHTML = memories
+    .map((memory) => {
+      switch (bookStyle) {
+        case "magazine":
+          return `
                     <div class="memory-page magazine-page">
                         <img src="${memory.image}" alt="${memory.title}" class="magazine-img" />
                         <div class="magazine-overlay">
                             <h2>${memory.title}</h2>
-                            ${memory.description ? `<p class="description">${memory.description}</p>` : ''}
+                            ${memory.description ? `<p class="description">${memory.description}</p>` : ""}
                             <p class="meta">By ${memory.createdBy?.username} • ${new Date(memory.createdAt).toLocaleDateString()}</p>
                         </div>
                     </div>
                     <div class="page-break"></div>
                 `;
-            case 'classic':
-                return `
+        case "classic":
+          return `
                     <div class="memory-page classic-page">
                         <div class="classic-image">
                             <img src="${memory.image}" alt="${memory.title}" />
                         </div>
                         <div class="classic-text">
                             <h2>${memory.title}</h2>
-                            ${memory.description ? `<p class="description">${memory.description}</p>` : ''}
+                            ${memory.description ? `<p class="description">${memory.description}</p>` : ""}
                             <p class="meta">By ${memory.createdBy?.username}</p>
                             <p class="meta">${new Date(memory.createdAt).toLocaleDateString()}</p>
                         </div>
                     </div>
                     <div class="page-break"></div>
                 `;
-            case 'minimal':
-                return `
+        case "minimal":
+          return `
                     <div class="memory-page minimal-page">
                         <img src="${memory.image}" alt="${memory.title}" class="minimal-img" />
                         <h2>${memory.title}</h2>
@@ -104,24 +117,25 @@ const generateInteriorHTML = (scrapbook, memories, dedicationNote, bookStyle = '
                     </div>
                     <div class="page-break"></div>
                 `;
-            default: // polaroid
-                return `
+        default: // polaroid
+          return `
                     <div class="memory-page polaroid-page">
                         <div class="polaroid">
                             <img src="${memory.image}" alt="${memory.title}" />
                             <div class="polaroid-caption">
                                 <h2>${memory.title}</h2>
-                                ${memory.description ? `<p class="description">${memory.description}</p>` : ''}
+                                ${memory.description ? `<p class="description">${memory.description}</p>` : ""}
                                 <p class="meta">By ${memory.createdBy?.username} • ${new Date(memory.createdAt).toLocaleDateString()}</p>
                             </div>
                         </div>
                     </div>
                     <div class="page-break"></div>
                 `;
-        }
-    }).join('');
+      }
+    })
+    .join("");
 
-    return `
+  return `
         <!DOCTYPE html>
         <html>
         <head>
@@ -130,7 +144,7 @@ const generateInteriorHTML = (scrapbook, memories, dedicationNote, bookStyle = '
                 * { margin: 0; padding: 0; box-sizing: border-box; }
                 body { font-family: Georgia, serif; background: #FDF6EC; color: #3D2B1F; }
                 @page {
-    size: ${bookSize === 'small' ? '5.83in 8.27in' : bookSize === 'premium' ? '8.5in 11in' : '6in 9in'};
+    size: ${bookSize === "small" ? "5.83in 8.27in" : bookSize === "premium" ? "8.5in 11in" : "6in 9in"};
     margin: 0;
 }
                 .title-page {
@@ -273,7 +287,7 @@ const generateInteriorHTML = (scrapbook, memories, dedicationNote, bookStyle = '
         <body>
             <div class="title-page">
                 <h1>${scrapbook.title}</h1>
-                ${dedicationNote ? `<p class="dedication">"${dedicationNote}"</p>` : ''}
+                ${dedicationNote ? `<p class="dedication">"${dedicationNote}"</p>` : ""}
                 <p class="echoes-brand">ECHOES · echoesmemo.xyz</p>
             </div>
             <div class="page-break"></div>
@@ -287,27 +301,37 @@ const generateInteriorHTML = (scrapbook, memories, dedicationNote, bookStyle = '
         </html>
     `;
 };
-const generateCoverHTML = (scrapbook, coverStyle, customCoverUrl, coverWidth = null , coverHeight= null, bookSize = "standard") => {
-    const pageDimensions =   coverWidth && coverHeight ? `${coverWidth}in ${coverHeight}in`
-        : bookSize === 'small' ? '5.83in 8.27in' 
-        : bookSize === 'premium' ? '8.5in 11in' 
-        : '6in 9in';
-    const colors = {
-        classic: '#232020',
-        modern: '#72011f',
-        minimal: '#FDF6EC'
-    };
-    const textColors = {
-        classic: '#fff2d7',
-        modern: '#fff2d7',
-        minimal: '#3D2B1F'
-    };
+const generateCoverHTML = (
+  scrapbook,
+  coverStyle,
+  customCoverUrl,
+  coverWidth = null,
+  coverHeight = null,
+  bookSize = "standard",
+) => {
+  const pageDimensions =
+    coverWidth && coverHeight
+      ? `${coverWidth}in ${coverHeight}in`
+      : bookSize === "small"
+        ? "5.83in 8.27in"
+        : bookSize === "premium"
+          ? "8.5in 11in"
+          : "6in 9in";
+  const colors = {
+    classic: "#232020",
+    modern: "#72011f",
+    minimal: "#FDF6EC",
+  };
+  const textColors = {
+    classic: "#fff2d7",
+    modern: "#fff2d7",
+    minimal: "#3D2B1F",
+  };
 
-    const bgColor = colors[coverStyle] || '#232020';
-    const textColor = textColors[coverStyle] || '#fff2d7';
+  const bgColor = colors[coverStyle] || "#232020";
+  const textColor = textColors[coverStyle] || "#fff2d7";
 
-
-    return `
+  return `
         <!DOCTYPE html>
         <html>
         <head>
@@ -321,7 +345,7 @@ const generateCoverHTML = (scrapbook, coverStyle, customCoverUrl, coverWidth = n
                 body {
                     margin: 0;
                     padding: 0;
-                    background: ${customCoverUrl ? 'transparent' : bgColor};
+                    background: ${customCoverUrl ? "transparent" : bgColor};
                     height: 100vh;
                     display: flex;
                     flex-direction: column;
@@ -330,7 +354,9 @@ const generateCoverHTML = (scrapbook, coverStyle, customCoverUrl, coverWidth = n
                     text-align: center;
                     font-family: Georgia, serif;
                 }
-                ${customCoverUrl ? `
+                ${
+                  customCoverUrl
+                    ? `
                 .cover-bg {
                     position: fixed;
                     top: 0; left: 0;
@@ -340,7 +366,9 @@ const generateCoverHTML = (scrapbook, coverStyle, customCoverUrl, coverWidth = n
                     background-position: center;
                     z-index: -1;
                 }
-                ` : ''}
+                `
+                    : ""
+                }
                 h1 {
                     font-size: 48px;
                     color: ${textColor};
@@ -356,7 +384,7 @@ const generateCoverHTML = (scrapbook, coverStyle, customCoverUrl, coverWidth = n
             </style>
         </head>
         <body>
-            ${customCoverUrl ? '<div class="cover-bg"></div>' : ''}
+            ${customCoverUrl ? '<div class="cover-bg"></div>' : ""}
             <h1>${scrapbook.title}</h1>
             <p class="brand">Made with Echoes 🌸</p>
         </body>
@@ -365,147 +393,179 @@ const generateCoverHTML = (scrapbook, coverStyle, customCoverUrl, coverWidth = n
 };
 
 const createPrintOrder = async (req, res) => {
-    console.log('Print Order started');
-    console.log('Request body:', req.body);
-    console.log("Book Style:", req.body.bookStyle)
-    const prices = {
+  console.log("Print Order started");
+  console.log("Request body:", req.body);
+  console.log("Book Style:", req.body.bookStyle);
+  const prices = {
     small: 35,
     standard: 50,
-    premium: 65
-};
+    premium: 65,
+  };
 
-    try {
-        const { scrapbookId, dedicationNote, coverStyle, bookSize, shippingAddress, customCoverUrl, bookStyle } = req.body;
+  try {
+    const {
+      scrapbookId,
+      dedicationNote,
+      coverStyle,
+      bookSize,
+      shippingAddress,
+      customCoverUrl,
+      bookStyle,
+    } = req.body;
 
-        const scrapbook = await Scrapbook.findById(scrapbookId);
-        const memories = await Memory.find({ scrapbook: scrapbookId }).populate('createdBy', 'username');
+    const scrapbook = await Scrapbook.findById(scrapbookId);
+    const memories = await Memory.find({ scrapbook: scrapbookId }).populate(
+      "createdBy",
+      "username",
+    );
 
-        if (!scrapbook) {
-            return res.status(404).json({ message: 'Scrapbook not found' });
-        }
+    if (!scrapbook) {
+      return res.status(404).json({ message: "Scrapbook not found" });
+    }
 
-        // console.log('Generating interior PDF...');
-const interiorHTML = generateInteriorHTML(scrapbook, memories, dedicationNote, bookStyle || 'polaroid', bookSize);
-const pdfUrl = await generatePDFWithAPI2PDF(interiorHTML, bookSize);
-console.log('Interior PDF URL:', pdfUrl);
-const podPackageIds = {
-            small: '0583X0827FCPRECW080CW444MXX',
-            standard: '0600X0900FCPRELW080CW444GNG',
-            premium: '0850X1100FCPRELW080CW444GNG'
-        };
-        console.log('Getting Lulu token...');
-        const token = await getLuluToken();
+    // console.log('Generating interior PDF...');
+    const interiorHTML = generateInteriorHTML(
+      scrapbook,
+      memories,
+      dedicationNote,
+      bookStyle || "polaroid",
+      bookSize,
+    );
+    const pdfUrl = await generatePDFWithAPI2PDF(interiorHTML, bookSize);
+    console.log("Interior PDF URL:", pdfUrl);
+    const podPackageIds = {
+      small: "0583X0827FCPRECW080CW444MXX",
+      standard: "0600X0900FCPRELW080CW444GNG",
+      premium: "0850X1100FCPRELW080CW444GNG",
+    };
+    console.log("Getting Lulu token...");
+    const token = await getLuluToken();
 
-// Get cover dimensions from Lulu
-const coverDimensions = await axios.post(
-    'https://api.lulu.com/cover-dimensions/',
-    {
+    // Get cover dimensions from Lulu
+    const coverDimensions = await axios.post(
+      "https://api.lulu.com/cover-dimensions/",
+      {
         pod_package_id: podPackageIds[bookSize],
         interior_page_count: memories.length + 2,
-        unit: "pt"
-    },
-    {
+        unit: "pt",
+      },
+      {
         headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
-        }
-    }
-);
-
-
-const coverWidth = coverDimensions.data.width/72;
-const coverHeight = coverDimensions.data.height/72;;
-
-// console.log('Cover dimensions:', JSON.stringify(coverDimensions.data,null,2));
-// console.log('Cover dimensions in inches:', coverWidth, coverHeight);
-
-
-// console.log('Generating cover PDF...');
-const coverHTML = generateCoverHTML(scrapbook, coverStyle, customCoverUrl, coverWidth, coverHeight, bookSize);
-const coverPdfUrl = await generatePDFWithAPI2PDF(coverHTML, coverWidth, coverHeight);
-// console.log('Cover PDF URL:', coverPdfUrl);
-
-        // console.log('Creating Lulu print job...');
-        const printJob = await axios.post(
-            'https://api.lulu.com/print-jobs/',
-            {
-                line_items: [
-                    {
-                        title: scrapbook.title,
-                        cover: coverPdfUrl,
-                        interior: {
-                            source_url: pdfUrl
-                        },
-                        pod_package_id: podPackageIds[bookSize],
-                        quantity: 1
-                    }
-                ],
-                shipping_address: {
-                    name: shippingAddress.fullName,
-                    street1: shippingAddress.address,
-                    city: shippingAddress.city,
-                    state_code: shippingAddress.state,
-                    country_code: shippingAddress.country,
-                    postcode: shippingAddress.zipCode,
-                    phone_number: shippingAddress.phone || '0000000000',
-                    email: req.user.email
-                },
-                shipping_level: 'MAIL',
-                contact_email: req.user.email
-            },
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            }
-        );
-
-        console.log('Print job created:', printJob.data.id);
-        // Save order to database
-await Order.create({
-    user: req.user._id,
-    scrapbook: scrapbookId,
-    luluOrderId: printJob.data.id,
-    bookSize,
-    bookStyle: bookStyle || 'polaroid',
-    coverStyle,
-    amount: prices[bookSize],
-    shippingAddress,
-    status: 'created'
-});
-
-console.log('Order saved to database');
-try {
-    await sendPrintConfirmationEmail(
-        req.user.email,
-        printJob.data.id,
-        bookSize,
-        '7-14 business days'
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      },
     );
-    console.log('Confirmation email sent');
-} catch (emailError) {
-    console.error('Email error:', emailError.message);
-}
- res.status(200).json({
-    message: 'Print order created successfully!',
-    orderId: printJob.data.id,
-    estimatedDelivery: '7-14 business days'
-});
 
-       
-   } catch (error) {
-    console.error('Full error:', error);
-    console.error('Error message:', error.message);
-    console.error('Error stack:', error.stack);
-    const errorData = error.response?.data;
-    if(Buffer.isBuffer(errorData)){
-        console.error("PDF error:", Buffer.from(errorData).toString('utf-8'));
-    } else {
-        console.error('Print order error:', JSON.stringify(error.response?.data, null, 2) || error.message);
+    const coverWidth = coverDimensions.data.width / 72;
+    const coverHeight = coverDimensions.data.height / 72;
+
+    // console.log('Cover dimensions:', JSON.stringify(coverDimensions.data,null,2));
+    // console.log('Cover dimensions in inches:', coverWidth, coverHeight);
+
+    // console.log('Generating cover PDF...');
+    const coverHTML = generateCoverHTML(
+      scrapbook,
+      coverStyle,
+      customCoverUrl,
+      coverWidth,
+      coverHeight,
+      bookSize,
+    );
+    const coverPdfUrl = await generatePDFWithAPI2PDF(
+      coverHTML,
+      coverWidth,
+      coverHeight,
+    );
+    // console.log('Cover PDF URL:', coverPdfUrl);
+
+    // console.log('Creating Lulu print job...');
+    const printJob = await axios.post(
+      "https://api.lulu.com/print-jobs/",
+      {
+        line_items: [
+          {
+            title: scrapbook.title,
+            cover: coverPdfUrl,
+            interior: {
+              source_url: pdfUrl,
+            },
+            pod_package_id: podPackageIds[bookSize],
+            quantity: 1,
+          },
+        ],
+        shipping_address: {
+          name: shippingAddress.fullName,
+          street1: shippingAddress.address,
+          city: shippingAddress.city,
+          state_code: shippingAddress.state,
+          country_code: shippingAddress.country,
+          postcode: shippingAddress.zipCode,
+          phone_number: shippingAddress.phone || "0000000000",
+          email: req.user.email,
+        },
+        shipping_level: "MAIL",
+        contact_email: req.user.email,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      },
+    );
+
+    console.log("Print job created:", printJob.data.id);
+    // Save order to database
+    const savedOrder = await Order.create({
+      user: req.user._id,
+      scrapbook: scrapbookId,
+      luluOrderId: printJob.data.id,
+      bookSize,
+      bookStyle: bookStyle || "polaroid",
+      coverStyle,
+      amount: prices[bookSize],
+      shippingAddress,
+      status: "created",
+    });
+
+    console.log("Order saved to database");
+    try {
+      await sendOrderReceiptEmail(req.user.email, req.user.username, {
+        luluOrderId: printJob.data.id,
+        scrapbookTitle: scrapbook.title,
+        bookSize,
+        bookStyle: bookStyle || "polaroid",
+        shippingAddress,
+        amount: prices[bookSize],
+      });
+      console.log("Receipt email sent");
+    } catch (emailError) {
+      console.error("Receipt email error:", emailError.message);
     }
-    res.status(500).json({ message: error.response?.data?.detail || error.message || 'Unknown error' });
-}
+
+    res.status(200).json({
+      message: "Print order created successfully!",
+      orderId: printJob.data.id,
+      estimatedDelivery: "7-14 business days",
+    });
+  } catch (error) {
+    console.error("Full error:", error);
+    console.error("Error message:", error.message);
+    console.error("Error stack:", error.stack);
+    const errorData = error.response?.data;
+    if (Buffer.isBuffer(errorData)) {
+      console.error("PDF error:", Buffer.from(errorData).toString("utf-8"));
+    } else {
+      console.error(
+        "Print order error:",
+        JSON.stringify(error.response?.data, null, 2) || error.message,
+      );
+    }
+    res.status(500).json({
+      message: error.response?.data?.detail || error.message || "Unknown error",
+    });
+  }
 };
 
 module.exports = { createPrintOrder };

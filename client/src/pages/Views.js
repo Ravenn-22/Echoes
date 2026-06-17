@@ -1,14 +1,22 @@
 import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 import "./Views.css";
 import pell from "../assets/fonts/pexels-ballet-1840427_1920.jpg";
 import logo from "../assets/fonts/Echoes-img.png";
 import heroBg from "../assets/fonts/Echoesbg.mp4";
 
 const Views = () => {
+    const [scrolled, setScrolled] = useState(false);
+
+          useEffect(() => {
+            const handleScroll = () => setScrolled(window.scrollY > 40)
+            window.addEventListener("scroll", handleScroll)
+            return () => window.removeEventListener("scroll", handleScroll)
+          }, [])
   return (
     <div className="views-container">
       {/* Navbar */}
-      <nav className="landing-nav">
+      <nav className={`landing-nav ${scrolled ? "scrolled" : ""}`}>
         <div className="landing-logo">
           <img src={logo} alt="Echoes" className="landing-logo-img" />
           ECHOES

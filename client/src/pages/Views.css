@@ -15,10 +15,27 @@
   justify-content: space-between;
   align-items: center;
   padding: 15px 30px;
-  background: #232020;
-  position: sticky;
+  overflow: visible;
+  gap: 16px;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 100;
+
+  width: 100%;
+  background: rgba(8, 0, 0, 0.35);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.scrolled {
+  background: rgba(45, 47, 48, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition:
+    background 0.4s,
+    border-bottom 0.4s;
 }
 
 .landing-logo {
@@ -40,9 +57,10 @@
 
 .landing-login-btn {
   font-family: "Raleway", sans-serif;
-  color: #fff2d7;
+  background: #fff2d7;
+  color: #72011f;
   text-decoration: none;
-  border: 1px solid rgba(255, 242, 215, 0.4);
+  /* border: 1px solid rgba(255, 242, 215, 0.4); */
   padding: 8px 20px;
   border-radius: 20px;
   font-size: 0.9rem;
@@ -52,41 +70,42 @@
 .landing-login-btn:hover {
   background: #72011f;
   border-color: #72011f;
+  color: #fff2d7;
 }
 
 /* ===== HERO SECTION ===== */
 .hero-section {
-   width: 100%;
+  width: 100%;
   position: relative;
-  height:60vh;
+  height: 100vh;
   overflow: hidden;
   padding-bottom: 40px;
   border-radius: 0 0 1.2rem 1.2rem;
 }
-.hero-video{
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    z-index: 0;
+.hero-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
 }
-.hero-overlay{
-    position: absolute;
-    inset: 0;
-    background: rgba( 0 ,0, 0, 0.45);
-    z-index: 1;
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 1;
 }
-.hero-content{
-    position: relative;
-    z-index: 2;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 0 24px;
+.hero-content {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 24px;
 }
 
 .hero-text {
@@ -314,7 +333,6 @@ footer {
   .landing-logo {
     font-size: 1.1rem;
   }
-
 
   .hero-headline {
     font-size: 1.5rem;

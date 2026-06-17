@@ -376,3 +376,12 @@ footer{
     .foot-img-b { width: 18rem; max-height: 100%; object-fit: cover;  }
     .footer-h { font-size: 2.2rem; margin-left: 2rem; }
 }
+
+
+.copyright a {
+color: #C9627D;
+text-decoration: none;
+}
+.copyright a:hover{
+    text-decoration: underline;
+}

@@ -187,3 +187,18 @@
         font-size: 1.6rem;
     }
 }
+.auth-privacy {
+font-family: 'Raleway', sans-serif;
+font-size: 0.75rem;
+color: rgba(255, 242, 215, 0.4);
+text-align: center;
+margin-top: 10px;
+}
+
+.auth-privacy a {
+color: #C9627D;
+text-decoration: none;
+}
+.auth-privacy a:hover{
+    text-decoration: underline;
+}

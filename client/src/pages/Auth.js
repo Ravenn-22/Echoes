@@ -1,127 +1,159 @@
-import { useState } from 'react';
-import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
-import './Auth.css';
+import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import "./Auth.css";
 
 const Auth = () => {
-    const [isFlipped, setIsFlipped] = useState(false);
-    const [loginData, setLoginData] = useState({ email: '', password: '' });
-    const [registerData, setRegisterData] = useState({ username: '', email: '', password: '' });
-    const [error, setError] = useState('');
+  const [isFlipped, setIsFlipped] = useState(false);
+  const [loginData, setLoginData] = useState({ email: "", password: "" });
+  const [registerData, setRegisterData] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
+  const [error, setError] = useState("");
 
-    const { login, register } = useAuth();
-    const navigate = useNavigate();
+  const { login, register } = useAuth();
+  const navigate = useNavigate();
 
-    const [loading, setLoading ] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-    const handleLoginChange = (e) => {
-        setLoginData({ ...loginData, [e.target.name]: e.target.value });
-    };
+  const handleLoginChange = (e) => {
+    setLoginData({ ...loginData, [e.target.name]: e.target.value });
+  };
 
-    const handleRegisterChange = (e) => {
-        setRegisterData({ ...registerData, [e.target.name]: e.target.value });
-    };
+  const handleRegisterChange = (e) => {
+    setRegisterData({ ...registerData, [e.target.name]: e.target.value });
+  };
 
-const handleLogin = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setLoading(true);
     try {
-        await login(loginData);
-        navigate('/home');
+      await login(loginData);
+      navigate("/home");
     } catch (error) {
-        setError(error.response?.data?.message || 'Something went wrong');
-    }finally{
-        setLoading(false)
+      setError(error.response?.data?.message || "Something went wrong");
+    } finally {
+      setLoading(false);
     }
-};
+  };
 
-   const handleRegister = async (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
-    setError('');
-     setLoading(true);
+    setError("");
+    setLoading(true);
     try {
-        await register(registerData);
-        navigate('/home');
+      await register(registerData);
+      navigate("/home");
     } catch (error) {
-        setError(error.response?.data?.message || 'Something went wrong');
-    }finally{
-        setLoading(false)
+      setError(error.response?.data?.message || "Something went wrong");
+    } finally {
+      setLoading(false);
     }
-};
+  };
 
-    return (
-        <div className="auth-container">
-            <div className={`card-flip ${isFlipped ? 'flipped' : ''}`}>
-                <div className="card-flip-inner">
-
-                   
-                    <div className="card-front">
-                        <div className="auth-logo">ECHOES</div>
-                        <div className="auth-subtitle">Welcome back, cherish your memories 🌸</div>
-                        <h2 className="auth-form-title">Login</h2>
-                        <form className="auth-form" onSubmit={handleLogin}>
-                            <input
-                                type="email"
-                                name="email"
-                                placeholder="Email"
-                                onChange={handleLoginChange}
-                            />
-                            <input
-                                type="password"
-                                name="password"
-                                placeholder="Password"
-                                onChange={handleLoginChange}
-                            />
-                            {error && <p className="auth-error">{error}</p>}
-                            <button type="submit" className="auth-btn" disabled={loading}>{loading ? 'Please wait... ' : 'Login'} </button>
-                        </form>
-                        <div className="auth-switch">
-                            Don't have an account?{' '}
-                           <span onClick={() => { setIsFlipped(true); setError(''); }}>Register</span>
-                        </div>
-                        <div className="auth-switch" style={{ marginTop: '10px' }}>
-                            Forgot your password?{' '}<span onClick={() => navigate('/forgot-password')}>Reset it</span>
-                        </div>
-                    </div>
-
-                   
-                    <div className="card-back">
-                        <div className="auth-logo">ECHOES</div>
-                        <div className="auth-subtitle">Start capturing your beautiful moments ✨</div>
-                        <h2 className="auth-form-title">Register</h2>
-                        <form className="auth-form" onSubmit={handleRegister}>
-                            <input
-                                type="text"
-                                name="username"
-                                placeholder="Username"
-                                onChange={handleRegisterChange}
-                            />
-                            <input
-                                type="email"
-                                name="email"
-                                placeholder="Email"
-                                onChange={handleRegisterChange}
-                            />
-                            <input
-                                type="password"
-                                name="password"
-                                placeholder="Password"
-                                onChange={handleRegisterChange}
-                            />
-                            {error && <p className="auth-error">{error}</p>}
-                            <button type="submit" className="auth-btn" disabled={loading} > {loading ? 'Creating account...':'Register'}</button>
-                        </form>
-                        <div className="auth-switch">
-                            Already have an account?{' '}
-                            <span onClick={() => { setIsFlipped(false); setError(''); }}>Login</span>
-                        </div>
-                    </div>
-
-                </div>
+  return (
+    <div className="auth-container">
+      <div className={`card-flip ${isFlipped ? "flipped" : ""}`}>
+        <div className="card-flip-inner">
+          <div className="card-front">
+            <div className="auth-logo">ECHOES</div>
+            <div className="auth-subtitle">
+              Welcome back, cherish your memories 🌸
             </div>
+            <h2 className="auth-form-title">Login</h2>
+            <form className="auth-form" onSubmit={handleLogin}>
+              <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                onChange={handleLoginChange}
+              />
+              <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                onChange={handleLoginChange}
+              />
+              {error && <p className="auth-error">{error}</p>}
+              <button type="submit" className="auth-btn" disabled={loading}>
+                {loading ? "Please wait... " : "Login"}{" "}
+              </button>
+            </form>
+            <div className="auth-switch">
+              Don't have an account?{" "}
+              <span
+                onClick={() => {
+                  setIsFlipped(true);
+                  setError("");
+                }}
+              >
+                Register
+              </span>
+            </div>
+            <div className="auth-switch" style={{ marginTop: "10px" }}>
+              Forgot your password?{" "}
+              <span onClick={() => navigate("/forgot-password")}>Reset it</span>
+            </div>
+          </div>
+
+          <div className="card-back">
+            <div className="auth-logo">ECHOES</div>
+            <div className="auth-subtitle">
+              Start capturing your beautiful moments ✨
+            </div>
+            <h2 className="auth-form-title">Register</h2>
+            <form className="auth-form" onSubmit={handleRegister}>
+              <input
+                type="text"
+                name="username"
+                placeholder="Username"
+                onChange={handleRegisterChange}
+              />
+              <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                onChange={handleRegisterChange}
+              />
+              <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                onChange={handleRegisterChange}
+              />
+              {error && <p className="auth-error">{error}</p>}
+              <button type="submit" className="auth-btn" disabled={loading}>
+                {" "}
+                {loading ? "Creating account..." : "Register"}
+              </button>
+
+              <p className="auth-privacy">
+                By signing up you agree to our{" "}
+                <a href="/privacy" target="_blank" rel="noreferrer">
+                  Privacy Policy
+                </a>
+              </p>
+              
+            </form>
+            <div className="auth-switch">
+              Already have an account?{" "}
+              <span
+                onClick={() => {
+                  setIsFlipped(false);
+                  setError("");
+                }}
+              >
+                Login
+              </span>
+            </div>
+          </div>
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
 export default Auth;

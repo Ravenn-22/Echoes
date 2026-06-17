@@ -135,6 +135,9 @@ const Auth = () => {
                 <a href="/privacy" target="_blank" rel="noreferrer">
                   Privacy Policy
                 </a>
+                <a href="/terms" target="_blank" rel="noreferrer">
+                  Terms and Conditions
+                </a>
               </p>
               
             </form>

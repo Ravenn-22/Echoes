@@ -17,6 +17,7 @@ import LetterToSelf from './pages/LetterToSelf'
 import Help from './pages/Help';
 import Orders from './pages/Orders';
 import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsCondition from './pages/TermsCondition';
 
 const PrivateRoute = ({ children }) => {
     const { user } = useAuth();
@@ -30,6 +31,7 @@ function App() {
                 <Route path='/' element={<Views />} />
                  <Route path="/auth" element={<Auth />} />
                  <Route path="/privacy" element={<PrivacyPolicy />} />
+                 <Route path="/terms" element={<TermsCondition />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/reset-password/:token" element={<ResetPassword />} />
                 <Route path="/home" element={

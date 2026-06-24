@@ -6,6 +6,7 @@ const https = require("https");
 const { init } = require("./config/socket");
 require("dotenv").config();
 const connectDB = require("./config/db");
+const rateLimit = require("express-rate-limit");
 
 const authRoutes = require("./routes/authRoutes");
 const scrapbookRoutes = require("./routes/scrapBookRoutes");
@@ -40,22 +41,9 @@ app.use(
   }),
 );
 
-const rateLimit = require("express-rate-limit");
 
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // max 100 requests per 15 minutes
-  message: { message: "Too many requests, please try again later." },
-});
 
-const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 10, // stricter limit for auth routes
-  message: { message: "Too many login attempts, please try again later." },
-});
 
-app.use("/api/", limiter);
-app.use("/api/auth", authLimiter);
 
 // Paystack Webhook
 app.post(
@@ -206,6 +194,21 @@ app.post(
 
 // ─── BODY PARSER
 app.use(express.json());
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // max 100 requests per 15 minutes
+  message: { message: "Too many requests, please try again later." },
+});
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10, // stricter limit for auth routes
+  message: { message: "Too many login attempts, please try again later." },
+});
+
+app.use("/api/", limiter);
+app.use("/api/auth", authLimiter);
 
 // ─── ROUTES
 app.use("/api/auth", authRoutes);

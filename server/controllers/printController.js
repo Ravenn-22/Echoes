@@ -7,6 +7,7 @@ const {
   sendOrderReceiptEmail,
 } = require("../config/email");
 const Order = require("../models/Order");
+
 const getLuluToken = async () => {
   const response = await axios.post(
     "https://api.lulu.com/auth/realms/glasstree/protocol/openid-connect/token",
@@ -71,6 +72,7 @@ const generatePDFWithAPI2PDF = async (
 
   return response.data.FileUrl;
 };
+
 const generateInteriorHTML = (
   scrapbook,
   memories,
@@ -301,6 +303,7 @@ const generateInteriorHTML = (
         </html>
     `;
 };
+
 const generateCoverHTML = (
   scrapbook,
   coverStyle,
@@ -394,36 +397,60 @@ const generateCoverHTML = (
 
 const createPrintOrder = async (req, res) => {
   console.log("Print Order started");
-  console.log("Request body:", req.body);
-  console.log("Book Style:", req.body.bookStyle);
-  const prices = {
-    small: 35,
-    standard: 50,
-    premium: 65,
-  };
 
   try {
-    const {
-      scrapbookId,
-      dedicationNote,
-      coverStyle,
-      bookSize,
-      shippingAddress,
-      customCoverUrl,
-      bookStyle,
-    } = req.body;
+    // FIX: this is the only thing the client now controls about this
+    // request — a payment reference. Everything else (bookSize, coverStyle,
+    // shippingAddress, dedicationNote, customCoverUrl) is pulled from the
+    // Order that initializePayment created and verifyPayment already
+    // confirmed was paid. The old version trusted req.body for all of this
+    // directly, with no check that any money had changed hands at all.
+    const { paystackReference } = req.body;
 
-    const scrapbook = await Scrapbook.findById(scrapbookId);
-    const memories = await Memory.find({ scrapbook: scrapbookId }).populate(
-      "createdBy",
-      "username",
-    );
+    if (!paystackReference) {
+      return res.status(400).json({ message: "Missing payment reference" });
+    }
 
+    const order = await Order.findOne({
+      user: req.user._id,
+      paystackReference,
+    }).populate("scrapbook");
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    if (order.isPending || !order.verifiedAt) {
+      return res.status(402).json({
+        message: "Payment has not been verified for this order yet",
+      });
+    }
+
+    // FIX: idempotency against Lulu. A real print job costs real money —
+    // this must never fire twice for the same order. If a Lulu job was
+    // already created (luluOrderId is a real id, not the "pending"
+    // placeholder), short-circuit instead of printing a second copy.
+    if (order.luluOrderId && order.luluOrderId !== "pending") {
+      return res.status(200).json({
+        message: "Print order already created",
+        orderId: order.luluOrderId,
+        estimatedDelivery: order.estimatedDelivery,
+      });
+    }
+
+    const scrapbook = order.scrapbook;
     if (!scrapbook) {
       return res.status(404).json({ message: "Scrapbook not found" });
     }
 
-    // console.log('Generating interior PDF...');
+    // Pulled from the verified order, not req.body.
+    const { dedicationNote, coverStyle, bookSize, bookStyle, shippingAddress, customCoverUrl } = order;
+
+    const memories = await Memory.find({ scrapbook: scrapbook._id }).populate(
+      "createdBy",
+      "username",
+    );
+
     const interiorHTML = generateInteriorHTML(
       scrapbook,
       memories,
@@ -433,15 +460,16 @@ const createPrintOrder = async (req, res) => {
     );
     const pdfUrl = await generatePDFWithAPI2PDF(interiorHTML, bookSize);
     console.log("Interior PDF URL:", pdfUrl);
+
     const podPackageIds = {
       small: "0583X0827FCPRECW080CW444MXX",
       standard: "0600X0900FCPRELW080CW444GNG",
       premium: "0850X1100FCPRELW080CW444GNG",
     };
+
     console.log("Getting Lulu token...");
     const token = await getLuluToken();
 
-    // Get cover dimensions from Lulu
     const coverDimensions = await axios.post(
       "https://api.lulu.com/cover-dimensions/",
       {
@@ -460,10 +488,6 @@ const createPrintOrder = async (req, res) => {
     const coverWidth = coverDimensions.data.width / 72;
     const coverHeight = coverDimensions.data.height / 72;
 
-    // console.log('Cover dimensions:', JSON.stringify(coverDimensions.data,null,2));
-    // console.log('Cover dimensions in inches:', coverWidth, coverHeight);
-
-    // console.log('Generating cover PDF...');
     const coverHTML = generateCoverHTML(
       scrapbook,
       coverStyle,
@@ -472,14 +496,8 @@ const createPrintOrder = async (req, res) => {
       coverHeight,
       bookSize,
     );
-    const coverPdfUrl = await generatePDFWithAPI2PDF(
-      coverHTML,
-      coverWidth,
-      coverHeight,
-    );
-    // console.log('Cover PDF URL:', coverPdfUrl);
+    const coverPdfUrl = await generatePDFWithAPI2PDF(coverHTML, coverWidth, coverHeight);
 
-    // console.log('Creating Lulu print job...');
     const printJob = await axios.post(
       "https://api.lulu.com/print-jobs/",
       {
@@ -516,20 +534,18 @@ const createPrintOrder = async (req, res) => {
     );
 
     console.log("Print job created:", printJob.data.id);
-    // Save order to database
-    const savedOrder = await Order.create({
-      user: req.user._id,
-      scrapbook: scrapbookId,
-      luluOrderId: printJob.data.id,
-      bookSize,
-      bookStyle: bookStyle || "polaroid",
-      coverStyle,
-      amount: prices[bookSize],
-      shippingAddress,
-      status: "created",
-    });
 
-    console.log("Order saved to database");
+    // FIX: update the SAME order that was paid for, instead of calling
+    // Order.create() again — the old version created a second, disconnected
+    // Order document here, duplicating the one initializePayment already made.
+    // order.amount already holds the real Paystack-confirmed amount, set by
+    // verifyPayment — no need for the old hardcoded USD `prices` map here.
+    order.luluOrderId = printJob.data.id;
+    order.status = "created";
+    await order.save();
+
+    console.log("Order updated with Lulu print job");
+
     try {
       await sendOrderReceiptEmail(req.user.email, req.user.username, {
         luluOrderId: printJob.data.id,
@@ -537,7 +553,7 @@ const createPrintOrder = async (req, res) => {
         bookSize,
         bookStyle: bookStyle || "polaroid",
         shippingAddress,
-        amount: prices[bookSize],
+        amount: order.amount,
       });
       console.log("Receipt email sent");
     } catch (emailError) {
@@ -547,7 +563,7 @@ const createPrintOrder = async (req, res) => {
     res.status(200).json({
       message: "Print order created successfully!",
       orderId: printJob.data.id,
-      estimatedDelivery: "7-14 business days",
+      estimatedDelivery: order.estimatedDelivery,
     });
   } catch (error) {
     console.error("Full error:", error);

@@ -46,6 +46,28 @@ const sendInviteEmail = async (to, inviteUsername, scrapbookTitle) => {
         `,
   });
 };
+const sendVerificationEmail = async (to, token) => {
+  const client = new BrevoClient({
+    apiKey: process.env.BREVO_API_KEY,
+  });
+
+  await client.sendTransacEmail({
+    to: [{ email: to }],
+    sender: { name: "Echoes", email: "echoesmemo.noreply@gmail.com" },
+    subject: "Verify your Echoes account 🌸",
+    htmlContent: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #232020; color: #fff2d7;">
+                <h1 style="color: #72011f; text-align: center;">Echoes</h1>
+                <h2 style="text-align: center;">Verify your email 🌸</h2>
+                <p>Thanks for signing up! Click the button below to verify your email address.</p>
+                <div style="text-align: center; margin: 30px 0;">
+                    <a href="${process.env.CLIENT_URL}/verify-email/${token}" style="background: #72011f; color: #fff2d7; padding: 14px 30px; border-radius: 10px; text-decoration: none; font-size: 1rem;">Verify Email</a>
+                </div>
+                <p style="font-size: 0.85rem; color: rgba(255,242,215,0.5);">If you didn't create an Echoes account ignore this email.</p>
+            </div>
+        `,
+  });
+};
 
 const sendNewMemoryEmail = async (
   to,
@@ -286,5 +308,6 @@ module.exports = {
   sendCapsuleUnlockEmail,
   sendSubscriptionReminderEmail,
   sendOrderReceiptEmail,
-   sendShippingEmail
+  sendShippingEmail,
+  sendVerificationEmail,
 };

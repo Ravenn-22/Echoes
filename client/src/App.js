@@ -18,6 +18,7 @@ import Help from './pages/Help';
 import Orders from './pages/Orders';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsCondition from './pages/TermsCondition';
+import VerifyEmail from './pages/VerifyEmail'
 
 const PrivateRoute = ({ children }) => {
     const { user } = useAuth();
@@ -29,6 +30,7 @@ function App() {
         <Router>
             <Routes>
                 <Route path='/' element={<Views />} />
+                <Route path='/verify-email/:token' element={<VerifyEmail />} />
                  <Route path="/auth" element={<Auth />} />
                  <Route path="/privacy" element={<PrivacyPolicy />} />
                  <Route path="/terms" element={<TermsCondition />} />

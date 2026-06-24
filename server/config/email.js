@@ -51,7 +51,7 @@ const sendVerificationEmail = async (to, token) => {
     apiKey: process.env.BREVO_API_KEY,
   });
 
-  await client.sendTransacEmail({
+  await client.transactionalEmails.sendTransacEmail({
     to: [{ email: to }],
     sender: { name: "Echoes", email: "echoesmemo.noreply@gmail.com" },
     subject: "Verify your Echoes account 🌸",
@@ -146,7 +146,7 @@ const sendOrderReceiptEmail = async (to, username, order) => {
     minimal: "Minimal",
   };
 
-  await client.sendTransacEmail({
+  await client.transactionalEmails.sendTransacEmail({
     to: [{ email: to }],
     sender: { name: "Echoes", email: "echoesmemo.noreply@gmail.com" },
     subject: `Your Echoes Order Receipt #${order.luluOrderId} 📖`,
@@ -210,7 +210,7 @@ const sendCapsuleUnlockEmail = async (
 
   const isLetter = type === "letter";
 
-  await client.sendTransacEmail({
+  await client.transactionalEmails.sendTransacEmail({
     to: [{ email: to }],
     sender: { name: "Echoes", email: "echoesmemo.noreply@gmail.com" },
     subject: isLetter
@@ -248,7 +248,7 @@ const sendShippingEmail = async (to, username, orderId) => {
     apiKey: process.env.BREVO_API_KEY,
   });
 
-  await client.sendTransacEmail({
+  await client.transactionalEmails.sendTransacEmail({
     to: [{ email: to }],
     sender: { name: "Echoes", email: "echoesmemo.noreply@gmail.com" },
     subject: "Your Echoes book has been shipped! 📦",
@@ -272,7 +272,7 @@ const sendSubscriptionReminderEmail = async (to, username, expiryDate) => {
     apiKey: process.env.BREVO_API_KEY,
   });
 
-  await client.sendTransacEmail({
+  await client.transactionalEmails.sendTransacEmail({
     to: [{ email: to }],
     sender: { name: "Echoes", email: "echoesmemo.noreply@gmail.com" },
     subject: "Your Echoes Pro subscription is expiring soon 🌸",

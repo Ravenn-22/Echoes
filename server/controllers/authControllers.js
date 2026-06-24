@@ -31,19 +31,22 @@ const registerUser = async (req, res) => {
     } catch (emailError) {
       console.error("Verification email error:", emailError.message);
     }
+    
 
-    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
-      expiresIn: "30d",
-    });
+    // const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
+    //   expiresIn: "30d",
+    // });
 
     res.status(201).json({
+      message: "Registration successful. Please verify your email before logging in.",
       _id: newUser._id,
       username: newUser.username,
       email: newUser.email,
       isPro: newUser.isPro,
       proExpiresAt: newUser.proExpiresAt,
-      isVerified: newUser.isVerified,
-      token
+      isVerified: newUser.isVerified
+      
+      // token
     });
   } catch (error) {
     if (error.code === 11000) {
@@ -66,6 +69,11 @@ const loginUser = async (req, res) => {
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid Credentials" });
     }
+    if (!user.isVerified) {
+  return res.status(403).json({
+    message: "Please verify your email before logging in."
+  });
+}
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "30d",
     });
@@ -76,6 +84,7 @@ const loginUser = async (req, res) => {
       profilePicture: user.profilePicture,
       isPro: user.isPro,
       proExpiresAt: user.proExpiresAt,
+      isVerified: user.isVerified,
       token,
     });
   } catch (error) {

@@ -2,10 +2,9 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "./PrintCustomize.css";
 import {
-  createPrintOrder,
+  
   getMemories,
-  initializePayment,
-  getOrders,
+  initializePayment
 } from "../services/api";
 import axios from "axios";
 import compressImage from "../compressImage";

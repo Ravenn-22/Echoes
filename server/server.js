@@ -29,6 +29,7 @@ const {
 } = require("./config/email");
 
 const app = express();
+app.set('trust proxy', 1);
 connectDB();
 const server = http.createServer(app);
 const io = init(server);
@@ -194,6 +195,7 @@ app.post(
 
 // ─── BODY PARSER
 app.use(express.json());
+
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes

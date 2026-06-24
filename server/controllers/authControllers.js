@@ -5,6 +5,7 @@ const crypto = require("crypto");
 const { sendVerificationEmail } = require("../config/email");
 
 const { sendResetEmail } = require("../config/email");
+const VERIFICATION_TOKEN_TTL_MS = 60 * 60 * 1000; // 1 hour — same window as password reset
 
 const registerUser = async (req, res) => {
   try {
@@ -24,29 +25,23 @@ const registerUser = async (req, res) => {
       email,
       password: hashPass,
       verificationToken,
-      isVerified: false
+      verificationTokenExpire: new Date(Date.now() + VERIFICATION_TOKEN_TTL_MS),
+      isVerified: false,
     });
     try {
       await sendVerificationEmail(email, verificationToken);
     } catch (emailError) {
       console.error("Verification email error:", emailError.message);
     }
-    
-
-    // const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
-    //   expiresIn: "30d",
-    // });
-
     res.status(201).json({
-      message: "Registration successful. Please verify your email before logging in.",
+      message:
+        "Registration successful. Please verify your email before logging in.",
       _id: newUser._id,
       username: newUser.username,
       email: newUser.email,
       isPro: newUser.isPro,
       proExpiresAt: newUser.proExpiresAt,
-      isVerified: newUser.isVerified
-      
-      // token
+      isVerified: newUser.isVerified,
     });
   } catch (error) {
     if (error.code === 11000) {
@@ -70,10 +65,10 @@ const loginUser = async (req, res) => {
       return res.status(400).json({ message: "Invalid Credentials" });
     }
     if (!user.isVerified) {
-  return res.status(403).json({
-    message: "Please verify your email before logging in."
-  });
-}
+      return res.status(403).json({
+        message: "Please verify your email before logging in.",
+      });
+    }
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "30d",
     });
@@ -91,6 +86,51 @@ const loginUser = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+const resendVerificationEmail = async (req, res) => {
+  try {
+    const email = req.body.email?.toLowerCase();
+    if (!email) {
+      return res.status(400).json({ message: "Email is required" });
+    }
+
+    const user = await User.findOne({ email });
+
+    // Deliberately vague response whether or not the account exists, to
+    // avoid leaking which emails are registered.
+    const genericResponse = {
+      message:
+        "If an account with that email exists and isn't verified, a new verification email has been sent.",
+    };
+
+    if (!user || user.isVerified) {
+      return res.status(200).json(genericResponse);
+    }
+
+    const verificationToken = crypto.randomBytes(32).toString("hex");
+    user.verificationToken = verificationToken;
+    user.verificationTokenExpire = new Date(
+      Date.now() + VERIFICATION_TOKEN_TTL_MS,
+    );
+    await user.save();
+
+    try {
+      await sendVerificationEmail(email, verificationToken);
+    } catch (emailError) {
+      console.error("Resend verification email error:", emailError.message);
+      return res
+        .status(500)
+        .json({
+          message: "Failed to send verification email. Please try again.",
+        });
+    }
+
+    res.status(200).json(genericResponse);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 const updateProfilePicture = async (req, res) => {
   try {
     const user = await User.findByIdAndUpdate(
@@ -211,6 +251,7 @@ const changePassword = async (req, res) => {
 module.exports = {
   registerUser,
   loginUser,
+  resendVerificationEmail,
   forgotPassword,
   resetPassword,
   updateProfilePicture,

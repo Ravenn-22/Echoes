@@ -10,8 +10,15 @@ export const AuthProvider = ({ children }) => {
 
     const register = async (formData) => {
         const { data } = await registerUser(formData);
-        localStorage.setItem('user', JSON.stringify(data));
-        setUser(data);
+        // FIX: registerUser no longer returns a token — the account isn't
+        // usable until the email is verified. Previously this stored a
+        // tokenless user in localStorage and called setUser, which logged
+        // them in immediately. Every subsequent API call then sent
+        // "Authorization: Bearer undefined" and silently 401'd, and the UI
+        // showed them as logged in despite not actually being able to do
+        // anything. Now it just returns the response data so the Register
+        // page can show a "check your email to verify" message instead.
+        return data;
     };
 
     const login = async (formData) => {
@@ -25,11 +32,11 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
     };
     const updateUsername = async (username) => {
-    const { data } = await updateUsernameApi(username);
-    const updatedUser = { ...user, username: data.username };
-    localStorage.setItem('user', JSON.stringify(updatedUser));
-    setUser(updatedUser);
-};
+        const { data } = await updateUsernameApi(username);
+        const updatedUser = { ...user, username: data.username };
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+        setUser(updatedUser);
+    };
     const updateProfilePicture = async (profilePicture) => {
         const { data } = await updatePfp(profilePicture);
         const updatedUser = { ...user, profilePicture: data.profilePicture };

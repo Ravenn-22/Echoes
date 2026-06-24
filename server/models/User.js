@@ -40,6 +40,9 @@ const userSchema = new mongoose.Schema(
     verificationToken: {
       type: String,
     },
+    verificationTokenExpire: {
+      type: Date,
+    },
     proExpiresAt: {
       type: Date,
       default: null,

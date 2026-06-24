@@ -84,3 +84,41 @@ form{
 .passwordField{
     position: relative;
 }
+.login-error,
+.register-error {
+  color: #72011f;
+  font-size: 0.85rem;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.resend-verification {
+  margin-top: 12px;
+  text-align: center;
+}
+
+.resend-verification button {
+  background: transparent;
+  color: #72011f;
+  border: 1px solid #72011f;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.resend-verification button:hover:not(:disabled) {
+  background: #72011f;
+  color: #fff2d7;
+}
+
+.resend-verification button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.resend-verification p {
+  font-size: 0.85rem;
+  color: #C9627D;
+}

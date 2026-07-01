@@ -318,6 +318,7 @@ footer {
 .copyright a {
   color: #c9627d;
   text-decoration: none;
+  padding: 10px;
 }
 
 .copyright a:hover {

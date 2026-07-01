@@ -193,6 +193,7 @@ const Views = () => {
         <p>
           © 2026 Echoes🌸 by Temitayo. All rights reserved.{" "}
           <a href="/privacy">Privacy Policy</a>
+          <a href="/terms">Terms and Conditions</a>
         </p>
       </div>
     </div>

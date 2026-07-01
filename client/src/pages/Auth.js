@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import "./Auth.css";
@@ -25,6 +25,14 @@ const Auth = () => {
   const handleRegisterChange = (e) => {
     setRegisterData({ ...registerData, [e.target.name]: e.target.value });
   };
+  const [verifiedMessage, setVerifiedMessage] = useState("");
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("verified") === "true") {
+      setVerifiedMessage("Email verified successfully! You can now log in 🌸");
+    }
+  }, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -81,6 +89,7 @@ const Auth = () => {
               <button type="submit" className="auth-btn" disabled={loading}>
                 {loading ? "Please wait... " : "Login"}{" "}
               </button>
+              {verifiedMessage && <p className="auth-success">{verifiedMessage}</p>}
             </form>
             <div className="auth-switch">
               Don't have an account?{" "}
@@ -135,8 +144,10 @@ const Auth = () => {
                 <a href="/privacy" target="_blank" rel="noreferrer">
                   Privacy Policy
                 </a>
+                <a href="/terms" target="_blank" rel="noreferrer">
+                  Terms and Conditions
+                </a>
               </p>
-              
             </form>
             <div className="auth-switch">
               Already have an account?{" "}

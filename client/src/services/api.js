@@ -25,8 +25,21 @@ export const getMemories = (scrapbookId, page = 1) => API.get(`/memories?scrapbo
 export const updateMemory = (id, formData) => API.put(`/memories/${id}`, formData);
 export const deleteMemory = (id) => API.delete(`/memories/${id}`);
 export const updateUsername = (username) => API.put('/auth/update-username', { username });
-export const initializePayment = (email, amount, plan) => API.post('/paystack/initialize', { email, amount, plan });
+
+// FIX: was (email, amount, plan) — amount is dropped entirely now since the
+// server computes the real charge amount itself. Pass a single object with
+// whatever fields are relevant: { plan, email } for subscriptions, or
+// { plan, scrapbookId, dedicationNote, coverStyle, bookStyle, shippingAddress,
+// customCoverUrl } for print orders.
+export const initializePayment = (payload) => API.post('/paystack/initialize', payload);
+
 export const verifyPayment = (reference) => API.get(`/paystack/verify/${reference}`);
+
+// REMOVED: createPendingOrder — order creation now happens server-side,
+// atomically with initializePayment. There is no separate endpoint for it
+// anymore; remove any remaining call sites.
+
+export const completePendingOrder = (reference) => API.put(`/orders/pending/${reference}`);
 
 export const uploadImage = async (file) => {
     const formData = new FormData();
@@ -49,6 +62,9 @@ export const resetPassword = (token, password) => API.put(`/auth/reset-password/
 export const updateProfilePicture = (profilePicture) => API.put('/auth/update-profile-picture', { profilePicture });
 export const changePassword = (currentPassword, newPassword) => API.put('/auth/change-password', { currentPassword, newPassword });
 export const pinMemory = (id) => API.put(`/memories/${id}/pin`);
+
+// FIX: createPrintOrder now requires paystackReference in orderData so the
+// backend can look up the verified Order — see PaymentVerify patch.
 export const createPrintOrder = (orderData) => API.post('/print/create', orderData);
 
 export const createCapsule = (capsuleData) => API.post('/capsules', capsuleData);

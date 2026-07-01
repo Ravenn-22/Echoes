@@ -1,46 +1,133 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
+    <meta charset="UTF-8" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/Echoes.png" />
+    <link rel="apple-touch-icon" href="/Echoes.png" />
+
+    <!-- Responsive -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- SEO -->
+    <title>Echoes — Create Private Shared Memory Books</title>
+
     <meta
       name="description"
-      content="Web site created using create-react-app"
+      content="Your memories deserve more than a camera roll. Create private shared memory books with couples, family, and friends. Upload together in real time and print premium hardcover photo albums delivered worldwide."
     />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
 
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-      <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Agu+Display:MORF@12&family=Dancing+Script:wght@400..700&family=Edu+NSW+ACT+Cursive:wght@400..700&family=Lobster+Two:ital,wght@0,400;0,700;1,400;1,700&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Playwrite+IE+Guides&display=swap" rel="stylesheet">
-    <title>Echoes</title>
+    <meta
+      name="keywords"
+      content="Echoes, scrapbook, digital scrapbook, photo book, memory book, couples scrapbook, family scrapbook, shared albums, hardcover photo book, memories"
+    />
+
+    <meta name="author" content="Echoes" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#72011F" />
+
+    <!-- Canonical -->
+    <link rel="canonical" href="https://echoesmemo.xyz/" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Echoes" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:url" content="https://echoesmemo.xyz/" />
+
+    <meta
+      property="og:title"
+      content="Echoes — Your memories deserve more than a camera roll."
+    />
+
+    <meta
+      property="og:description"
+      content="Create private shared memory books with the people who matter most. Upload together in real time and print premium hardcover albums delivered worldwide."
+    />
+
+    <meta
+      property="og:image"
+      content="https://echoesmemo.xyz/og-image.png"
+    />
+
+    <meta
+      property="og:image:alt"
+      content="Echoes premium memory books for couples, families and friends."
+    />
+
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <meta
+      name="twitter:title"
+      content="Echoes — Your memories deserve more than a camera roll."
+    />
+
+    <meta
+      name="twitter:description"
+      content="Create private shared memory books, upload together in real time, and print premium hardcover albums delivered worldwide."
+    />
+
+    <meta
+      name="twitter:image"
+      content="https://echoesmemo.xyz/og-image.png"
+    />
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Echoes",
+        "url": "https://echoesmemo.xyz",
+        "applicationCategory": "LifestyleApplication",
+        "operatingSystem": "Web",
+        "description": "A scrapbook platform where couples, families, and friends create private shared memory books, upload photos together in real time, and print premium hardcover albums delivered anywhere in the world.",
+        "image": "https://echoesmemo.xyz/logo.png",
+        "publisher": {
+          "@type": "Organization",
+          "name": "Echoes",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://echoesmemo.xyz/logo.png"
+          }
+        },
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "featureList": [
+          "Private shared memory books",
+          "Real-time photo uploads",
+          "Invite family and friends",
+          "Unlimited memories",
+          "Premium hardcover photo albums",
+          "Worldwide delivery"
+        ]
+      }
+    </script>
+
+    <!-- Manifest -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Agu+Display:MORF@12&family=Dancing+Script:wght@400..700&family=Edu+NSW+ACT+Cursive:wght@400..700&family=Lobster+Two:ital,wght@0,400;0,700;1,400;1,700&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Playwrite+IE+Guides&display=swap"
+      rel="stylesheet"
+    />
   </head>
+
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
+
     <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
-
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
-
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
   </body>
 </html>
